@@ -1,0 +1,38 @@
+/* ── TasksPage Animations ───────────────────────────────────────────────── */
+
+/**
+ * Shimmer sweep: replaces the infinite Framer Motion JS animation on the
+ * success progress bar. CSS animations run on the GPU compositor thread —
+ * zero JS overhead, no frame budget impact.
+ */
+@keyframes tasks-shimmer-sweep {
+  from { transform: translateX(-200%); }
+  to   { transform: translateX(200%);  }
+}
+
+.tasks-shimmer {
+  position: absolute;
+  inset: 0;
+  opacity: 0.6;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: tasks-shimmer-sweep 3s linear infinite;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/**
+ * Background nebula pulse used on each TaskCard via inline style reference.
+ * Defining the keyframe here ensures it's actually applied.
+ */
+@keyframes nebula-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1);    }
+  50%       { opacity: 1;   transform: scale(1.05); }
+}
+
+/**
+ * Star twinkle animation on TaskCard background stars.
+ */
+@keyframes star-shine {
+  0%, 100% { opacity: 0.3; transform: scale(1);   }
+  50%       { opacity: 0.8; transform: scale(1.2); }
+}

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap"
+    as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+  </noscript>
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f3f4f6" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="description"
+    content="Build exam-ready flashcards in seconds, study with adaptive spaced repetition, and improve long-term memory with Drizzlix." />
+  <meta name="keywords"
+    content="AI flashcards, spaced repetition app, study with AI, exam prep flashcards, smart revision tool" />
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+  <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+  <meta property="og:title" content="Drizzlix | AI Flashcards That Actually Stick" />
+  <meta property="og:description"
+    content="Build exam-ready flashcards in seconds, study with adaptive spaced repetition, and improve long-term memory with Drizzlix." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://drizzlix.vercel.app/" />
+  <meta property="og:site_name" content="Drizzlix" />
+  <meta property="og:image" content="https://drizzlix.vercel.app/assets/hero.png" />
+  <meta property="og:image:secure_url" content="https://drizzlix.vercel.app/assets/hero.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image:alt" content="Drizzlix AI flashcard learning interface" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Drizzlix | AI Flashcards That Actually Stick" />
+  <meta name="twitter:description"
+    content="Build exam-ready flashcards in seconds, study with adaptive spaced repetition, and improve long-term memory with Drizzlix." />
+  <meta name="twitter:image" content="https://drizzlix.vercel.app/assets/hero.png" />
+  <meta name="twitter:url" content="https://drizzlix.vercel.app/" />
+  <link rel="canonical" href="https://drizzlix.vercel.app/" />
+  <meta name="google-site-verification" content="EePRuHpy_dhIXWWUCcVj-T2pdDE08P9qzt5nsvyw5IE" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://drizzlix.vercel.app#organization",
+          "name": "Drizzlix",
+          "url": "https://drizzlix.vercel.app",
+          "logo": "https://drizzlix.vercel.app/favicon.svg"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://drizzlix.vercel.app#website",
+          "name": "Drizzlix",
+          "url": "https://drizzlix.vercel.app",
+          "publisher": { "@id": "https://drizzlix.vercel.app#organization" }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Drizzlix",
+          "applicationCategory": "EducationalApplication",
+          "applicationSubCategory": "Flashcard Learning Software",
+          "operatingSystem": "Web",
+          "url": "https://drizzlix.vercel.app",
+          "description": "Build exam-ready flashcards in seconds, study with adaptive spaced repetition, and improve long-term memory with Drizzlix.",
+          "featureList": ["AI flashcard generation", "Spaced repetition", "Pomodoro timer", "Smart study tasks"],
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://drizzlix.vercel.app/#webpage",
+          "name": "Drizzlix | AI Flashcards That Actually Stick",
+          "url": "https://drizzlix.vercel.app/",
+          "isPartOf": { "@id": "https://drizzlix.vercel.app#website" }
+        }
+      ]
+    }
+  </script>
+
+  <title>Drizzlix | AI Flashcards That Actually Stick</title>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script>
+    (function cleanupServiceWorker() {
+      if (!('serviceWorker' in navigator)) return;
+
+      var reloadKey = 'drizzlix.sw-reset.v1';
+
+      navigator.serviceWorker
+        .getRegistrations()
+        .then(function (registrations) {
+          return Promise.all(
+            registrations.map(function (registration) {
+              return registration.unregister().catch(function () {
+                return false;
+              });
+            }),
+          );
+        })
+        .then(function () {
+          if (!('caches' in window)) return;
+          return caches.keys().then(function (keys) {
+            var appKeys = keys.filter(function (key) {
+              return key.indexOf('neurodeck-shell-v') === 0;
+            });
+            return Promise.all(
+              appKeys.map(function (key) {
+                return caches.delete(key);
+              }),
+            );
+          });
+        })
+        .then(function () {
+          var hasController = Boolean(navigator.serviceWorker.controller);
+          var hasReloaded = window.sessionStorage.getItem(reloadKey) === '1';
+
+          if (hasController && !hasReloaded) {
+            window.sessionStorage.setItem(reloadKey, '1');
+            window.location.reload();
+            return;
+          }
+
+          if (!hasController && hasReloaded) {
+            window.sessionStorage.removeItem(reloadKey);
+          }
+        })
+        .catch(function () {
+          // Keep page startup resilient even when cleanup fails.
+        });
+    })();
+  </script>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>

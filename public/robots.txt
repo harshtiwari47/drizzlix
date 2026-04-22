@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://drizzlix.vercel.app/sitemap.xml

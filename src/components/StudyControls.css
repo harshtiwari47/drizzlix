@@ -1,0 +1,253 @@
+.study-controls {
+  --sc-gap: 0.75rem;
+  --sc-pad-x: 0.8rem;
+  --sc-pad-y: 0.68rem;
+  --sc-min-h: 52px;
+  --sc-min-w: 124px;
+  --sc-radius: 14px;
+  --sc-icon: 17px;
+  --sc-label: 0.77rem;
+  --sc-pill: 0.6rem;
+  position: fixed;
+  box-sizing: border-box;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sc-gap);
+  z-index: 1000;
+  padding: 0.72rem;
+  background: rgba(12, 12, 18, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 22px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.42);
+}
+
+.control-btn {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  padding: var(--sc-pad-y) var(--sc-pad-x);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--sc-radius);
+  color: var(--secondary);
+  cursor: pointer;
+  transition: transform 0.22s ease, border-color 0.22s ease, color 0.22s ease, background 0.22s ease;
+  overflow: hidden;
+  min-width: var(--sc-min-w);
+  min-height: var(--sc-min-h);
+  touch-action: manipulation;
+}
+
+.btn-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  min-width: 0;
+}
+
+.label-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--sc-label);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.shortcut-pill {
+  font-size: var(--sc-pill);
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.46);
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.09);
+  padding: 0.14rem 0.4rem;
+  border-radius: 999px;
+}
+
+/* Base Hover Effects */
+.control-btn:hover {
+  transform: translateX(-3px);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.control-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.45);
+  outline-offset: 2px;
+}
+
+/* Shimmer Animation */
+.btn-shimmer {
+  position: absolute;
+  top: -100%; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  transition: none;
+  pointer-events: none;
+}
+
+.control-btn:hover .btn-shimmer {
+  animation: shimmer-slide-vertical 1.5s infinite;
+}
+
+@keyframes shimmer-slide-vertical {
+  from { top: -100%; }
+  to { top: 100%; }
+}
+
+/* Background Glow */
+.btn-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 60%; height: 60%;
+  background: currentColor;
+  filter: blur(30px);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.control-btn:hover .btn-glow {
+  opacity: 0.16;
+}
+
+/* Theme Colors */
+.btn-hard:hover { color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+.btn-good:hover { color: var(--primary); border-color: rgba(255, 255, 255, 0.3); }
+.btn-easy:hover { color: #3b82f6; border-color: rgba(59, 130, 246, 0.3); }
+
+.btn-icon {
+  width: var(--sc-icon);
+  height: var(--sc-icon);
+  transition: transform 0.22s ease, filter 0.22s ease;
+  flex-shrink: 0;
+}
+
+.control-btn:hover .btn-icon {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.control-btn:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 1100px) {
+  .study-controls {
+    --sc-gap: 0.58rem;
+    --sc-pad-x: 0.68rem;
+    --sc-pad-y: 0.55rem;
+    --sc-min-h: 48px;
+    --sc-min-w: 114px;
+    --sc-radius: 13px;
+    --sc-icon: 16px;
+    --sc-label: 0.72rem;
+    --sc-pill: 0.58rem;
+    right: 1rem;
+    padding: 0.6rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .study-controls {
+    --sc-gap: 0.36rem;
+    --sc-pad-x: 0.52rem;
+    --sc-pad-y: 0.52rem;
+    --sc-min-h: 46px;
+    --sc-min-w: 0;
+    --sc-radius: 999px;
+    --sc-icon: 15px;
+    --sc-label: 0.64rem;
+    --sc-pill: 0.56rem;
+    top: auto;
+    left: 50%;
+    right: auto;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 0.65rem);
+    transform: translateX(-50%);
+    flex-direction: row;
+    padding: 0.45rem;
+    border-radius: 999px;
+    gap: 0.38rem;
+    z-index: 1200;
+    width: min(calc(100vw - 0.9rem), 560px);
+    max-width: calc(100vw - 0.9rem);
+  }
+
+  .control-btn {
+    gap: 0.34rem;
+    border-radius: 999px;
+  }
+
+  .control-btn:hover {
+    transform: none;
+  }
+
+  .btn-label {
+    gap: 0.3rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .study-controls {
+    --sc-pad-x: 0.35rem;
+    --sc-pad-y: 0.48rem;
+    --sc-label: 0.61rem;
+    width: calc(100vw - 0.6rem);
+    justify-content: space-between;
+  }
+
+  .control-btn {
+    flex: 1;
+    justify-content: center;
+    padding: var(--sc-pad-y) var(--sc-pad-x);
+  }
+
+  .btn-label {
+    gap: 0.24rem;
+  }
+
+  .shortcut-pill {
+    padding: 0.1rem 0.28rem;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .control-btn:hover {
+    transform: none;
+    color: var(--secondary);
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .control-btn:hover .btn-icon {
+    transform: none;
+    filter: none;
+  }
+
+  .control-btn:hover .btn-shimmer,
+  .control-btn:hover .btn-glow {
+    animation: none;
+    opacity: 0;
+  }
+}

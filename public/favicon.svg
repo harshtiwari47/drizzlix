@@ -1,0 +1,27 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGlow" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0f172a" />
+      <stop offset="1" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="cardStroke" x1="10" y1="10" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7dd3fc" />
+      <stop offset="1" stop-color="#93c5fd" />
+    </linearGradient>
+    <linearGradient id="orbitStroke" x1="6" y1="8" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#38bdf8" stop-opacity="0.25" />
+      <stop offset="0.45" stop-color="#bae6fd" stop-opacity="0.95" />
+      <stop offset="1" stop-color="#38bdf8" stop-opacity="0.25" />
+    </linearGradient>
+  </defs>
+
+  <circle cx="16" cy="16" r="13" fill="url(#bgGlow)" />
+
+  <ellipse cx="16" cy="16" rx="10.5" ry="7.2" transform="rotate(-20 16 16)" stroke="url(#orbitStroke)" stroke-width="1.3" />
+
+  <rect x="10" y="10" width="12" height="12" rx="3" fill="#081122" stroke="url(#cardStroke)" stroke-width="1.4" />
+  <line x1="12.7" y1="14.2" x2="19.3" y2="14.2" stroke="#dbeafe" stroke-width="1.3" stroke-linecap="round" />
+  <line x1="12.7" y1="17" x2="17.8" y2="17" stroke="#93c5fd" stroke-width="1.15" stroke-linecap="round" />
+
+  <path d="M24.4 10.1L25 11.4L26.4 11.6L25.4 12.6L25.6 14L24.4 13.3L23.2 14L23.4 12.6L22.4 11.6L23.8 11.4L24.4 10.1Z" fill="#f8fafc" />
+</svg>

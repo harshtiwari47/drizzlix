@@ -1,0 +1,204 @@
+.command-input-wrapper {
+  background: var(--glass-surface);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--radius-full);
+  padding: 0.6rem 0.6rem 0.6rem 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 760px;
+  position: relative;
+  transition: all 0.3s ease;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  z-index: 10;
+}
+
+.command-input-wrapper:focus-within {
+  box-shadow: 0 10px 50px rgba(255, 255, 255, 0.05); 
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.command-icon {
+  color: var(--secondary);
+  flex-shrink: 0;
+}
+
+.command-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  outline: none;
+  font-weight: 500;
+}
+
+.command-input::placeholder {
+  color: #6b7280;
+  font-family: var(--font-body);
+  font-weight: 400;
+}
+
+.command-submit {
+  flex-shrink: 0;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #6b7280;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  touch-action: manipulation;
+}
+
+.command-submit:not(:disabled) {
+  background: var(--primary);
+  color: var(--text-inverse);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.command-submit:not(:disabled):hover {
+  background: #ffffff;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.command-submit:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: scale(1);
+}
+
+/* --- Model Selector Dropdown --- */
+.model-selector-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+
+.model-selector-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(30,30,30,0.6);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--secondary);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  touch-action: manipulation;
+}
+
+.model-selector-btn:hover {
+  background: rgba(50,50,50,0.8);
+  color: var(--primary);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.model-dropdown {
+  position: absolute;
+  top: 130%;
+  right: 0;
+  background: rgba(15,15,15,0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 120px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  z-index: 100;
+  animation: fadeUp 0.15s ease-out forwards;
+}
+
+.model-option {
+  padding: 0.5rem 0.75rem;
+  color: var(--secondary);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.model-option:hover, .model-option.active {
+  background: rgba(255,255,255,0.1);
+  color: var(--primary);
+}
+
+@media (max-width: 760px) {
+  .command-input-wrapper {
+    gap: 0.65rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+  }
+
+  .command-input {
+    font-size: 0.95rem;
+  }
+
+  .model-selector-container {
+    margin-right: 0.1rem;
+  }
+
+  .model-selector-btn {
+    font-size: 0.7rem;
+    padding: 0.32rem 0.5rem;
+    max-width: 96px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .command-submit {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+@media (max-width: 520px) {
+  .command-input-wrapper {
+    gap: 0.5rem;
+    padding: 0.42rem;
+  }
+
+  .command-icon {
+    display: none;
+  }
+
+  .command-input {
+    font-size: 0.9rem;
+    padding-left: 0.15rem;
+  }
+
+  .model-selector-btn {
+    max-width: 84px;
+  }
+
+  .command-submit {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .command-submit:not(:disabled):hover {
+    transform: none;
+  }
+}
