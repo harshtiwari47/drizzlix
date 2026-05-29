@@ -1,11 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Plus, Save, Trash2, Bold, Italic, Code, Strikethrough, Heading2, Link, List, Quote, Image, Copy, Wand2 } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkMath from 'remark-math';
-import remarkGfm from 'remark-gfm';
-import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDeck } from '../context/DeckContext';
 import { useAuth } from '../context/AuthContext';
@@ -223,9 +219,9 @@ const CardEditorBlock = React.memo(function CardEditorBlock({
             {showPreview && (
               <div className="live-preview-mini">
                 <div className="preview-label">Live Render</div>
-                <ReactMarkdown remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeKatex]}>
+                <MarkdownRenderer>
                   {card.front || '_Concept Preview_'}
-                </ReactMarkdown>
+                </MarkdownRenderer>
               </div>
             )}
           </div>
@@ -260,9 +256,9 @@ const CardEditorBlock = React.memo(function CardEditorBlock({
             {showPreview && (
               <div className="live-preview-mini">
                 <div className="preview-label">Live Render</div>
-                <ReactMarkdown remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeKatex]}>
+                <MarkdownRenderer>
                   {card.back || '_Synthesis Preview_'}
-                </ReactMarkdown>
+                </MarkdownRenderer>
               </div>
             )}
           </div>

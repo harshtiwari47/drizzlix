@@ -1,11 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
 import { Network, Eye, Volume2, VolumeX } from 'lucide-react';
-import 'katex/dist/katex.min.css';
+import MarkdownRenderer from './MarkdownRenderer';
 import './Flashcard.css';
 
 function normalizeEscapedText(text = '') {
@@ -243,21 +239,17 @@ const Flashcard = React.memo(function Flashcard({
             </button>
             <div className="flashcard-content">
               <div className="markdown-answer" onWheel={handleMarkdownWheel} tabIndex={0}>
-                <div
+                <MarkdownRenderer
+                  fontSize={frontFontSize}
                   className="card-text card-front-title"
-                  style={{ fontSize: frontFontSize }}
                 >
-                  <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>
-                        {normalizedFrontContent}
-                  </ReactMarkdown>
-                </div>
+                  {normalizedFrontContent}
+                </MarkdownRenderer>
                 {showHint && hintPreview && (
                   <div className="card-hint-box">
                     <p className="card-hint-title">Hint</p>
                     <div className="card-hint-text markdown-hint">
-                      <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>
-                        {hintPreview}
-                      </ReactMarkdown>
+                      <MarkdownRenderer>{hintPreview}</MarkdownRenderer>
                     </div>
                   </div>
                 )}
@@ -282,14 +274,12 @@ const Flashcard = React.memo(function Flashcard({
             </button>
             <div className="flashcard-content">
               <div className="markdown-answer" onWheel={handleMarkdownWheel} tabIndex={0}>
-                <div
+                <MarkdownRenderer
+                  fontSize={backFontSize}
                   className="card-text card-back-answer"
-                  style={{ fontSize: backFontSize }}
                 >
-                  <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>
-                    {normalizedBackContent}
-                  </ReactMarkdown>
-                </div>
+                  {normalizedBackContent}
+                </MarkdownRenderer>
               </div>
             </div>
           </div>

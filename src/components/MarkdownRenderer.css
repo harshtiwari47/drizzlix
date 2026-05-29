@@ -1,0 +1,169 @@
+/* ==========================================================================
+   MarkdownRenderer — Shared Markdown Element Styles
+   Single source of truth for both /study (Flashcard) and /edit (CreateDeck).
+   Context-specific layout (text-align, scroll, font) stays in each component.
+   ========================================================================== */
+
+.md-render {
+  /* Inherits font-family + color from parent context (card-front-title / card-back-answer / live-preview-mini) */
+  line-height: 1.7;
+}
+
+/* --- Spacing resets --- */
+.md-render > *:first-child { margin-top: 0; }
+.md-render > *:last-child  { margin-bottom: 0; }
+
+/* --- Paragraphs --- */
+.md-render p {
+  margin: 0.5rem 0;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* --- Headings --- */
+.md-render h1,
+.md-render h2,
+.md-render h3,
+.md-render h4 {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.25;
+}
+
+.md-render h1 {
+  font-size: 1.5em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.35rem;
+}
+
+.md-render h2 { font-size: 1.25em; }
+.md-render h3 { font-size: 1.1em; color: var(--text-secondary); }
+
+.md-render h1:first-child,
+.md-render h2:first-child,
+.md-render h3:first-child { margin-top: 0; }
+
+/* --- Lists --- */
+.md-render ul,
+.md-render ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.md-render li {
+  margin-bottom: 0.35rem;
+  line-height: 1.6;
+}
+
+/* --- Strong / Em --- */
+.md-render strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.md-render em {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* --- Inline code --- */
+.md-render code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  padding: 0.18em 0.42em;
+  font-size: 0.85em;
+  color: #e2e8f0;
+}
+
+/* --- Code blocks --- */
+.md-render pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  overflow-x: auto;
+  margin: 0.65rem 0;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 120, 120, 0.45) transparent;
+}
+
+.md-render pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #93c5fd;
+  font-size: 0.9em;
+}
+
+/* --- Blockquote --- */
+.md-render blockquote {
+  border-left: 3px solid var(--text-secondary);
+  margin: 0.7rem 0;
+  padding: 0.4rem 0 0.4rem 1.1rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03), transparent);
+}
+
+.md-render blockquote p { margin: 0; }
+
+/* --- Tables (GFM) --- */
+.md-render table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88em;
+  margin: 0.75rem 0;
+}
+
+.md-render th,
+.md-render td {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.45rem 0.7rem;
+  text-align: left;
+}
+
+.md-render th {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+
+.md-render tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* --- Images --- */
+.md-render img {
+  max-width: 100%;
+  max-height: 240px;
+  height: auto;
+  display: block;
+  margin: 0.65rem auto;
+  border-radius: var(--radius-md);
+  object-fit: contain;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
+}
+
+/* --- KaTeX (math) --- */
+.md-render .katex {
+  font-size: 1.05em;
+  color: var(--primary);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.md-render .katex-display {
+  margin: 0.65rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  text-align: center;
+}
