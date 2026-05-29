@@ -7,8 +7,11 @@ import './Flashcard.css';
 function normalizeEscapedText(text = '') {
   return String(text)
     .replace(/\\r\\n/g, '\n')
-    .replace(/\\n/g, '\n')
-    .replace(/\\t/g, '  ');
+    // Negative lookahead: don't replace \n / \t when followed by a letter —
+    // that means it's a LaTeX command (\nabla, \newline, \nu, \text, \tau …)
+    // not a JSON-escaped whitespace character.
+    .replace(/\\n(?![a-zA-Z])/g, '\n')
+    .replace(/\\t(?![a-zA-Z])/g, '  ');
 }
 
 function markdownToReadableText(markdown = '') {
