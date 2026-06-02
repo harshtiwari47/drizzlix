@@ -2394,23 +2394,32 @@ export default function NotesPage() {
                           let cleanAlt = alt || '';
                           
                           // Check for size parameters at the end of the alt text
-                          // Formats: =300, =300x200, =100%, =50%xauto
+                          // Formats: =300, =300x200, =100%
                           const sizeMatch = cleanAlt.match(/(.*?)\s*=(\d+%?)(?:x(\d+%?|auto))?$/i);
                           
-                          if (sizeMatch) {
+                          // Check for box parameters anywhere in the alt text
+                          // Formats: [w=122 h=23], [h=50%], [w=300px, h=auto]
+                          const boxRegex = /\[\s*(w=[a-zA-Z0-9%]+|h=[a-zA-Z0-9%]+)(?:\s*,?\s*(w=[a-zA-Z0-9%]+|h=[a-zA-Z0-9%]+))?\s*\]/i;
+                          const boxMatch = cleanAlt.match(boxRegex);
+
+                          if (boxMatch) {
+                            const parts = [boxMatch[1], boxMatch[2]].filter(Boolean);
+                            parts.forEach(p => {
+                              if (p.toLowerCase().startsWith('w=')) width = p.substring(2);
+                              if (p.toLowerCase().startsWith('h=')) height = p.substring(2);
+                            });
+                            cleanAlt = cleanAlt.replace(boxMatch[0], '').trim();
+                          } else if (sizeMatch) {
                             cleanAlt = sizeMatch[1].trim();
                             width = sizeMatch[2];
-                            if (!width.endsWith('%') && !width.endsWith('px') && width !== 'auto') {
-                              width = `${width}px`;
-                            }
                             if (sizeMatch[3]) {
                               height = sizeMatch[3];
-                              if (!height.endsWith('%') && !height.endsWith('px') && height !== 'auto') {
-                                height = `${height}px`;
-                              }
                             }
                           }
                           
+                          if (width && !width.endsWith('%') && !width.endsWith('px') && width !== 'auto') width = `${width}px`;
+                          if (height && !height.endsWith('%') && !height.endsWith('px') && height !== 'auto') height = `${height}px`;
+
                           return (
                             <img
                               alt={cleanAlt}
