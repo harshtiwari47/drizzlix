@@ -8,16 +8,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload"
-    href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Geist:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap"
     as="style" onload="this.onload=null;this.rel='stylesheet'" />
   <noscript>
     <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Geist:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
   </noscript>
 
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" href="/logo.png" />
   <link rel="manifest" href="/manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f3f4f6" />
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
@@ -57,7 +57,7 @@
           "@id": "https://drizzlix.vercel.app#organization",
           "name": "Drizzlix",
           "url": "https://drizzlix.vercel.app",
-          "logo": "https://drizzlix.vercel.app/favicon.svg"
+          "logo": "https://drizzlix.vercel.app/logo.png"
         },
         {
           "@type": "WebSite",
@@ -89,6 +89,16 @@
   </script>
 
   <title>Drizzlix | AI Flashcards That Actually Stick</title>
+
+  <!-- No-flicker theme bootstrap: runs before React to prevent wrong-theme flash -->
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('settings.theme');
+        if (t) document.documentElement.setAttribute('data-theme', t);
+      } catch(e) {}
+    })();
+  </script>
 </head>
 
 <body>

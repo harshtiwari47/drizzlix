@@ -175,9 +175,9 @@ export default function Mastery() {
     <div className="mastery-container">
       <header className="mastery-header">
         <div>
-          <h2 className="mastery-title title-sparkle-effect">
+          <h2 className="title-sparkle-effect">
             <Activity size={26} className="page-title-icon" />
-            SRS Diagnostics
+            Learning Statistics
           </h2>
           <p className="mastery-subtitle">Spaced-repetition performance mapped to real review behavior.</p>
         </div>

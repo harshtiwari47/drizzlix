@@ -61,8 +61,6 @@ export async function pullAndReconcileCloudState(token, ownerKey, dispatch) {
     const serverState = normalizePomodoroState(data?.state);
     if (!serverState) return;
 
-    console.log('[SYNC] pullAndReconcileCloudState received ServerState. UpdatedAt:', serverState.updatedAt);
-
     const localState = await getPomodoroState(ownerKey || 'default');
     if (!localState) {
       dispatch({ type: 'LOAD_STATE', payload: serverState });
@@ -117,7 +115,6 @@ export async function performCloudPush(state, token, ownerKey, dispatch) {
     const data = await response.json().catch(() => null);
     if (data?.state && dispatch) {
       const authoritativeState = normalizePomodoroState(data.state);
-      console.log('[SYNC] performCloudPush Success. Authoritative Server UpdatedAt:', authoritativeState?.updatedAt);
       if (authoritativeState) {
         dispatch({ type: 'LOAD_STATE', payload: authoritativeState });
         await savePomodoroState(authoritativeState, ownerKey || 'default');

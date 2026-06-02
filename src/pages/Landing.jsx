@@ -219,7 +219,7 @@ const BENTO = [
     title: 'Pomodoro Timer',
     text: 'Built-in focus timer with work/break cycles and persistent session history.',
     glow: 'rgba(251,191,36,0.12)',
-    accent: '#fbbf24',
+    accent: 'var(--warning)',
   },
   {
     id: 'analytics',
@@ -291,7 +291,7 @@ export default function Landing() {
       >
         <div className="landing-brand">
           <div className="brand-icon">
-            <img src="/favicon.svg" alt="Drizzlix logo" width="24" height="24" />
+            <img src="/logo.png" alt="Drizzlix logo" width="24" height="24" />
           </div>
           <span>Drizzlix</span>
         </div>
@@ -333,7 +333,7 @@ export default function Landing() {
               Drizzlix actively tests your memory to solve the forgetting curve.
               Upload PDFs to generate <Link to="/features/notes" style={{ color: '#818cf8' }}>AI Flashcards</Link>,
               manage study schedules with <Link to="/features/tasks" style={{ color: '#34d399' }}>Smart Tasks</Link>, and
-              build unshakeable focus using the integrated <Link to="/features/pomodoro" style={{ color: '#fbbf24' }}>Pomodoro Timer</Link>.
+              build unshakeable focus using the integrated <Link to="/features/pomodoro" style={{ color: 'var(--warning)' }}>Pomodoro Timer</Link>.
             </motion.p>
 
 
@@ -562,7 +562,7 @@ export default function Landing() {
           <div className="footer-col footer-brand-col">
             <div className="landing-brand footer-logo">
               <div className="brand-icon">
-                <img src="/favicon.svg" alt="Drizzlix logo" width="24" height="24" />
+                <img src="/logo.png" alt="Drizzlix logo" width="24" height="24" />
               </div>
               <span>Drizzlix</span>
             </div>

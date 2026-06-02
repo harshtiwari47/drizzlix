@@ -30,7 +30,7 @@ if (missingAuthEnv.length > 0) {
 
 app.use(helmet({
   crossOriginOpenerPolicy: { policy: coopPolicy },
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: "same-origin" }
 }));
 
 // CORS Configuration
@@ -60,7 +60,7 @@ app.use(cors({
       callback(new Error('CORS Not Allowed'));
     }
   },
-  credentials: true
+  credentials: false
 }));
 
 // Global Rate Limiting
@@ -80,7 +80,9 @@ const authLimiter = rateLimit({
   message: { msg: 'Too many authentication attempts, please try again later.' },
 });
 
-app.use(express.json({ limit: '2mb' }));
+// Route-specific large payload parsing
+app.use('/api/decks', express.json({ limit: '2mb' }));
+app.use(express.json({ limit: '100kb' }));
 
 const MAX_STATS_PAYLOAD_BYTES = 100 * 1024;
 const MAX_POMODORO_PAYLOAD_BYTES = 50 * 1024;
@@ -152,7 +154,7 @@ function getPayloadSizeBytes(payload) {
 }
 
 function sanitizePictureSource(value) {
-  const cleaned = normalizeString(value, 2_000_000, '');
+  const cleaned = normalizeString(value, 4000, '');
   if (!cleaned) return '';
   if (cleaned.startsWith('data:image/')) return cleaned;
   if (/^https?:\/\//i.test(cleaned)) return cleaned;
@@ -214,11 +216,11 @@ function sanitizeDeckInput(rawDeck) {
       id,
       sourceDeckId,
       title,
-      thumbnail: normalizeString(rawDeck.thumbnail, 2_000_000, ''),
+      thumbnail: normalizeString(rawDeck.thumbnail, 4000, ''),
       labels: normalizeStringArray(rawDeck.labels, MAX_DECK_LABELS, 40),
       cards,
-      isPublic: Boolean(rawDeck.isPublic),
-      isDiscoverable: Boolean(rawDeck.isDiscoverable),
+      isPublic: rawDeck.isPublic !== undefined ? Boolean(rawDeck.isPublic) : undefined,
+      isDiscoverable: rawDeck.isDiscoverable !== undefined ? Boolean(rawDeck.isDiscoverable) : undefined,
       discoverMetadata
     }
   };
@@ -327,14 +329,46 @@ function sanitizeNotePayload(rawNote, { partial = false } = {}) {
   return { ok: true, value: updates };
 }
 
-// MongoDB Connect
-if (process.env.MONGO_URI) {
-  mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('MongoDB Connected via Mongoose'))
-    .catch(err => console.log('MongoDB Connection Failed:', err.message));
-} else {
-  console.log('MongoDB Connection Skipped: MONGO_URI is undefined. Vercel deployment requires Environment Variables to be configured.');
+// MongoDB Connect (Serverless Optimized)
+let cached = global.mongoose;
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
 }
+
+async function connectDB() {
+  if (cached.conn) return cached.conn;
+  if (!process.env.MONGO_URI) {
+    console.log('MongoDB Connection Skipped: MONGO_URI is undefined.');
+    return null;
+  }
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    }).then((mongoose) => {
+      console.log('MongoDB Connected via Mongoose (Cached)');
+      return mongoose;
+    });
+  }
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    console.error('MongoDB Connection Failed:', e.message);
+    throw e;
+  }
+  return cached.conn;
+}
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error("Database connection failed during request:", error);
+    res.status(500).json({ msg: "Database connection failed" });
+  }
+});
 
 // Middleware to verify JWT
 const authenticate = (req, res, next) => {
@@ -404,8 +438,11 @@ app.post('/api/auth/google', authLimiter, async (req, res) => {
       return res.status(401).json({ msg: 'Google account verification failed.' });
     }
 
-    // Identity Synchronization
-    let user = await User.findOne({ googleId: payload.sub });
+    // Identity Synchronization & Collision Guard
+    let user = await User.findOne({ email: payload.email });
+    if (user && user.googleId !== payload.sub) {
+      return res.status(403).json({ msg: 'Account with this email already exists under a different sign-in method.' });
+    }
     if (!user) {
       user = new User({
         googleId: payload.sub,
@@ -415,12 +452,17 @@ app.post('/api/auth/google', authLimiter, async (req, res) => {
       });
       await user.save();
     } else {
-      const updates = {};
-      if (payload.email && user.email !== payload.email) updates.email = payload.email;
-      if (payload.name && user.name !== payload.name) updates.name = payload.name;
-      if (payload.picture && user.picture !== payload.picture) updates.picture = payload.picture;
-      if (Object.keys(updates).length > 0) {
-        user = await User.findByIdAndUpdate(user._id, updates, { new: true });
+      let isModified = false;
+      if (user.name !== payload.name) {
+        user.name = payload.name;
+        isModified = true;
+      }
+      if (user.picture !== payload.picture) {
+        user.picture = payload.picture;
+        isModified = true;
+      }
+      if (isModified) {
+        await user.save();
       }
     }
 
@@ -466,8 +508,13 @@ app.post('/api/stats', authenticate, async (req, res) => {
 
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ msg: 'User not found.' });
-    user.stats = req.body;
-    user.markModified('stats'); // Override mixed object checks
+    const allowedKeys = ['totalStudyTime', 'cardsReviewed', 'streakDays', 'lastStudyDate', 'xp'];
+    const sanitizedStats = {};
+    for (const k of allowedKeys) {
+      if (req.body[k] !== undefined) sanitizedStats[k] = req.body[k];
+    }
+    user.stats = { ...user.stats, ...sanitizedStats };
+    user.markModified('stats');
     await user.save();
     res.json(user.stats);
   } catch (err) {
@@ -589,7 +636,7 @@ app.post('/api/pomodoro-state', authenticate, async (req, res) => {
 // Route: Retrieve Neural Decks
 app.get('/api/decks', authenticate, async (req, res) => {
   try {
-    const decks = await Deck.find({ userId: req.user.id });
+    const decks = await Deck.find({ userId: req.user.id }).select('-cards').lean();
     res.json(decks);
   } catch (err) {
     console.error('API /decks GET error:', err);
@@ -635,13 +682,16 @@ app.post('/api/decks', authenticate, async (req, res) => {
       thumbnail: deckData.thumbnail,
       labels: deckData.labels,
       cards: deckData.cards,
-      isPublic: Boolean(deckData.isPublic),
       discoverMetadata: {
         topic: deckData?.discoverMetadata?.topic || '',
         level: deckData?.discoverMetadata?.level || '',
         language: deckData?.discoverMetadata?.language || ''
       }
     };
+
+    if (typeof deckData.isPublic === 'boolean') {
+      setPayload.isPublic = deckData.isPublic;
+    }
 
     if (typeof deckData.isDiscoverable === 'boolean') {
       setPayload.isDiscoverable = deckData.isDiscoverable;
@@ -780,21 +830,12 @@ app.get('/api/users/search', async (req, res) => {
     const limit = clampNumber(req.query.limit, 1, 20, 8);
     const escapedQuery = escapeRegexForQuery(query);
 
-    const users = await User.aggregate([
-      { $addFields: { idText: { $toString: '$_id' } } },
-      {
-        $match: {
-          $or: [
-            { name: { $regex: escapedQuery, $options: 'i' } },
-            { username: { $regex: escapedQuery, $options: 'i' } },
-            { idText: { $regex: escapedQuery, $options: 'i' } }
-          ]
-        }
-      },
-      { $project: { _id: 1, name: 1, username: 1, picture: 1 } },
-      { $sort: { username: 1, name: 1, _id: 1 } },
-      { $limit: Number(limit) }
-    ]);
+    const users = await User.find({
+      $or: [
+        { name: { $regex: '^' + escapedQuery, $options: 'i' } },
+        { username: { $regex: '^' + escapedQuery, $options: 'i' } }
+      ]
+    }).select('_id name username picture').sort({ username: 1, name: 1, _id: 1 }).limit(Number(limit)).lean();
 
     if (users.length === 0) return res.json([]);
 
@@ -838,6 +879,7 @@ app.get('/api/users/search', async (req, res) => {
 
 // Route: Get any user's public profile + their public decks by username
 app.get('/api/u/:username', async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
   try {
     const username = req.params.username.toLowerCase();
     const user = await User.findOne({ username }).select('name username bio picture createdAt overlayEffect avatarEffect');
@@ -855,7 +897,8 @@ app.get('/api/u/:username', async (req, res) => {
       ]
     })
       .sort({ saves: -1, updatedAt: -1 })
-      .select('id title thumbnail labels cards saves updatedAt');
+      .select('id title thumbnail labels saves updatedAt -cards')
+      .lean();
     res.json({ user, decks: sharedDecks });
   } catch (err) {
     console.error('API /u/:username error:', err);
@@ -891,6 +934,7 @@ app.get('/api/u/:username/decks/:deckId', authenticateOptional, async (req, res)
 
 // Route: Get all public decks for the Discover feed (no auth required)
 app.get('/api/discover', async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
   try {
     const decks = await Deck.find({
       isPublic: true,
@@ -900,7 +944,7 @@ app.get('/api/discover', async (req, res) => {
       ]
     })
       .sort({ saves: -1, updatedAt: -1 })
-      .select('id title thumbnail labels cards saves publishedBy discoverMetadata updatedAt')
+      .select('id title thumbnail labels saves publishedBy discoverMetadata updatedAt -cards')
       .lean();
 
     // Enrich publishedBy with the latest username from the User collection
@@ -1002,9 +1046,8 @@ app.post('/api/decks/:id/save', authenticate, async (req, res) => {
     });
     await copiedDeck.save();
 
-    // Increment source deck's save counter
-    sourceDeck.saves = (sourceDeck.saves || 0) + 1;
-    await sourceDeck.save();
+    // Atomically increment source deck's save counter
+    await Deck.findOneAndUpdate({ id: req.params.id, isPublic: true }, { $inc: { saves: 1 } });
 
     res.json(copiedDeck);
   } catch (err) {
@@ -1092,7 +1135,10 @@ app.post('/api/notes', authenticate, async (req, res) => {
     const note = new Note({ userId: req.user.id, ...sanitizedNote.value });
     await note.save();
     res.status(201).json(note);
-  } catch (err) { res.status(500).json({ msg: 'Error creating note' }); }
+  } catch (err) { 
+    if (err.name === 'ValidationError') return res.status(400).json({ msg: err.message });
+    res.status(500).json({ msg: 'Error creating note' }); 
+  }
 });
 
 // UPDATE a note
@@ -1114,7 +1160,10 @@ app.patch('/api/notes/:id', authenticate, async (req, res) => {
 
     await note.save();
     res.json(note);
-  } catch (err) { res.status(500).json({ msg: 'Error updating note' }); }
+  } catch (err) { 
+    if (err.name === 'ValidationError') return res.status(400).json({ msg: err.message });
+    res.status(500).json({ msg: 'Error updating note' }); 
+  }
 });
 
 // DELETE a note

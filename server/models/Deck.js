@@ -35,4 +35,7 @@ const deckSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+deckSchema.index({ userId: 1, id: 1 }, { unique: true });
+deckSchema.index({ isPublic: 1, isDiscoverable: 1 });
+
 module.exports = mongoose.model('Deck', deckSchema);

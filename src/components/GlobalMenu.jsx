@@ -135,7 +135,7 @@ export default function GlobalMenu({ isOpen, onClose }) {
               {!isInstalled && (
                 <button className="menu-item-btn install-btn" onClick={handleInstallClick}>
                   <div className="menu-icon-wrap install-icon-wrap">
-                    <img src="/favicon.svg" alt="Drizzlix logo" className="install-app-logo" />
+                    <img src="/logo.png" alt="Drizzlix logo" className="install-app-logo" />
                   </div>
                   <span>{deferredPrompt ? 'Install Drizzlix' : 'Add Drizzlix to Home Screen'}</span>
                 </button>

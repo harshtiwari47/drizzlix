@@ -12,7 +12,7 @@ export default function PublicNotes() {
       <header className="landing-topbar glass-panel">
         <div className="landing-brand">
           <div className="brand-icon">
-            <img src="/favicon.svg" alt="Drizzlix logo" width="24" height="24" />
+            <img src="/logo.png" alt="Drizzlix logo" width="24" height="24" />
           </div>
           <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>Drizzlix</Link>
         </div>
@@ -52,7 +52,7 @@ export default function PublicNotes() {
             <h2>A Markdown Notes App Built for Real Study Work</h2>
             <div className="bento-text" style={{ maxWidth: '800px', margin: '0 auto', fontSize: '1.2rem', lineHeight: 1.6, textAlign: 'left' }}>
               <p style={{ marginBottom: '1rem' }}>
-                Drizzlix Notes is not just another online notebook. It is a focused writing environment designed for people who need to capture ideas clearly, organize them fast, and revisit them without friction. The notes workspace is part of the broader Drizzlix study system, so it fits naturally beside your <Link to="/features/pomodoro" style={{ color: '#fbbf24' }}>focus sessions</Link> and study workflow.
+                Drizzlix Notes is not just another online notebook. It is a focused writing environment designed for people who need to capture ideas clearly, organize them fast, and revisit them without friction. The notes workspace is part of the broader Drizzlix study system, so it fits naturally beside your <Link to="/features/pomodoro" style={{ color: 'var(--warning)' }}>focus sessions</Link> and study workflow.
               </p>
               <p>
                 The editor supports GitHub-Flavored Markdown, including headings, tables, checklists, fenced code blocks, block quotes, nested lists, and rich formatting for structured notes. The split-screen preview shows formatted output instantly, so your study notes, technical documentation, and class summaries stay readable while you write.
@@ -119,9 +119,9 @@ export default function PublicNotes() {
             <h2>Who Uses This Notes Workspace?</h2>
             <div className="bento-text" style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'left', lineHeight: 1.8 }}>
               <ul>
-                <li><strong style={{ color: '#fff' }}>Students:</strong> Capture lecture notes, chapter summaries, formulas, and revision guides in one place with cleaner structure and easier review.</li>
-                <li><strong style={{ color: '#fff' }}>Engineers and technical writers:</strong> Write documentation with Markdown, code blocks, and structured headings while keeping everything searchable and easy to revisit.</li>
-                <li><strong style={{ color: '#fff' }}>Self-learners:</strong> Build organized notes for books, courses, research, or personal study systems without losing track of important references.</li>
+                <li><strong style={{ color: 'var(--text-primary)' }}>Students:</strong> Capture lecture notes, chapter summaries, formulas, and revision guides in one place with cleaner structure and easier review.</li>
+                <li><strong style={{ color: 'var(--text-primary)' }}>Engineers and technical writers:</strong> Write documentation with Markdown, code blocks, and structured headings while keeping everything searchable and easy to revisit.</li>
+                <li><strong style={{ color: 'var(--text-primary)' }}>Self-learners:</strong> Build organized notes for books, courses, research, or personal study systems without losing track of important references.</li>
               </ul>
             </div>
           </div>
@@ -132,17 +132,17 @@ export default function PublicNotes() {
             <h2>Frequently Asked Questions</h2>
             <div className="bento-text" style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'left' }}>
               <div style={{ marginBottom: '2rem' }}>
-                <h3 style={{ color: '#fff', marginBottom: '0.5rem' }}>Can I use Drizzlix Notes offline?</h3>
+                <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Can I use Drizzlix Notes offline?</h3>
                 <p>Yes. Drizzlix Notes is built with offline-first syncing, which means you can keep writing and editing notes without an internet connection. Your changes are stored locally and synced when you reconnect.</p>
               </div>
 
               <div style={{ marginBottom: '2rem' }}>
-                <h3 style={{ color: '#fff', marginBottom: '0.5rem' }}>What markdown features are supported?</h3>
+                <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>What markdown features are supported?</h3>
                 <p>Drizzlix supports GitHub-Flavored Markdown, including tables, checklists, fenced code blocks, inline code, headings, quotes, and lists for clean study notes and technical writing.</p>
               </div>
 
               <div style={{ marginBottom: '2rem' }}>
-                <h3 style={{ color: '#fff', marginBottom: '0.5rem' }}>Can I organize notes by category and pin them?</h3>
+                <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Can I organize notes by category and pin them?</h3>
                 <p>Yes. Drizzlix Notes includes categories, pinning, and search so you can keep important notes visible and find the rest quickly.</p>
               </div>
             </div>

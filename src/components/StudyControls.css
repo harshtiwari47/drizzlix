@@ -18,12 +18,12 @@
   gap: var(--sc-gap);
   z-index: 1000;
   padding: 0.72rem;
-  background: rgba(12, 12, 18, 0.72);
+  background: var(--glass-surface);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--card-border);
   border-radius: 22px;
-  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.42);
+  box-shadow: 0 10px 34px var(--shadow-color);
 }
 
 .control-btn {
@@ -35,10 +35,10 @@
   justify-content: space-between;
   gap: 0.55rem;
   padding: var(--sc-pad-y) var(--sc-pad-x);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--card-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   border-radius: var(--sc-radius);
   color: var(--secondary);
   cursor: pointer;
@@ -70,9 +70,9 @@
 .shortcut-pill {
   font-size: var(--sc-pill);
   line-height: 1;
-  color: rgba(255, 255, 255, 0.46);
+  color: var(--text-secondary);
   font-weight: 800;
-  background: rgba(255, 255, 255, 0.09);
+  background: var(--card-border);
   padding: 0.14rem 0.4rem;
   border-radius: 999px;
 }
@@ -80,13 +80,13 @@
 /* Base Hover Effects */
 .control-btn:hover {
   transform: translateX(-3px);
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
+  border-color: var(--outline);
+  background: var(--card-hover);
+  color: var(--text-primary);
 }
 
 .control-btn:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.45);
+  outline: 2px solid var(--outline);
   outline-offset: 2px;
 }
 
@@ -133,9 +133,9 @@
 }
 
 /* Theme Colors */
-.btn-hard:hover { color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
-.btn-good:hover { color: var(--primary); border-color: rgba(255, 255, 255, 0.3); }
-.btn-easy:hover { color: #3b82f6; border-color: rgba(59, 130, 246, 0.3); }
+.btn-hard:hover { color: var(--danger); border-color: var(--danger); }
+.btn-good:hover { color: var(--primary); border-color: var(--primary); }
+.btn-easy:hover { color: var(--accent-secondary); border-color: var(--accent-secondary); }
 
 .btn-icon {
   width: var(--sc-icon);
@@ -236,8 +236,8 @@
   .control-btn:hover {
     transform: none;
     color: var(--secondary);
-    border-color: rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--card-border);
+    background: var(--card-bg);
   }
 
   .control-btn:hover .btn-icon {

@@ -51,56 +51,56 @@ function DeckPreviewOverlay({ deck, onClose, onSave, isSaved, isSaving, isNarrow
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       onClick={onClose}
-      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: isNarrow ? '0.7rem' : '2rem' }}
+      style={{ position: 'fixed', inset: 0, background: 'var(--shadow-color)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: isNarrow ? '0.7rem' : '2rem' }}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.94, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.94 }} transition={{ type: 'spring', stiffness: 300, damping: 28 }}
         onClick={e => e.stopPropagation()}
-        style={{ background: 'rgba(10,10,10,0.98)', border: '1px solid rgba(255,255,255,0.09)', borderRadius: isNarrow ? '1rem' : '1.5rem', width: '100%', maxWidth: isNarrow ? '100%' : '680px', boxShadow: '0 40px 100px rgba(0,0,0,0.9)', display: 'flex', flexDirection: 'column', overflow: 'hidden', maxHeight: isNarrow ? 'calc(100dvh - 1.4rem)' : '90vh' }}
+        style={{ background: 'var(--glass-surface-solid)', border: '1px solid var(--card-hover)', borderRadius: isNarrow ? '1rem' : '1.5rem', width: '100%', maxWidth: isNarrow ? '100%' : '680px', boxShadow: '0 40px 100px rgba(0,0,0,0.9)', display: 'flex', flexDirection: 'column', overflow: 'hidden', maxHeight: isNarrow ? 'calc(100dvh - 1.4rem)' : '90vh' }}
       >
-        <div style={{ padding: isNarrow ? '1rem 1rem 0.9rem' : '1.5rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: '0.7rem' }}>
-          <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', color: 'white', fontSize: isNarrow ? '1rem' : '1.3rem', letterSpacing: '-0.02em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{deck.title}</h3>
-          <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', color: 'var(--secondary)', cursor: 'pointer', padding: '0.5rem', borderRadius: '50%', display: 'flex', transition: 'all 0.15s' }}>
+        <div style={{ padding: isNarrow ? '1rem 1rem 0.9rem' : '1.5rem 2rem', borderBottom: '1px solid var(--card-hover)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: '0.7rem' }}>
+          <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontSize: isNarrow ? '1rem' : '1.3rem', letterSpacing: '-0.02em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{deck.title}</h3>
+          <button onClick={onClose} style={{ background: 'var(--card-hover)', border: '1px solid var(--card-border)', color: 'var(--secondary)', cursor: 'pointer', padding: '0.5rem', borderRadius: '50%', display: 'flex', transition: 'all 0.15s' }}>
             <X size={18} />
           </button>
         </div>
-        <div style={{ height: '2px', background: 'rgba(255,255,255,0.05)', flexShrink: 0 }}>
-          <motion.div animate={{ width: `${((idx + 1) / cards.length) * 100}%` }} transition={{ ease: 'easeOut', duration: 0.3 }} style={{ height: '100%', background: 'linear-gradient(90deg, rgba(99,179,237,0.8), rgba(99,179,237,0.4))' }} />
+        <div style={{ height: '2px', background: 'var(--card-bg)', flexShrink: 0 }}>
+          <motion.div animate={{ width: `${((idx + 1) / cards.length) * 100}%` }} transition={{ ease: 'easeOut', duration: 0.3 }} style={{ height: '100%', background: 'linear-gradient(90deg, rgba(99,179,237,0.8), var(--accent-primary))' }} />
         </div>
         <div style={{ padding: isNarrow ? '0.65rem 1rem' : '0.75rem 2rem', display: 'flex', justifyContent: 'space-between', flexShrink: 0, gap: '0.6rem', flexWrap: isNarrow ? 'wrap' : 'nowrap' }}>
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', color: 'var(--secondary)' }}>Card <strong style={{ color: 'white' }}>{idx + 1}</strong> / <strong style={{ color: 'white' }}>{cards.length}</strong></span>
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.3)' }}>Space to flip · ← → navigate</span>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', color: 'var(--secondary)' }}>Card <strong style={{ color: 'var(--text-primary)' }}>{idx + 1}</strong> / <strong style={{ color: 'var(--text-primary)' }}>{cards.length}</strong></span>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Space to flip · ← → navigate</span>
         </div>
         <div style={{ flex: 1, overflowY: 'auto', padding: isNarrow ? '0 1rem 1rem' : '0 2rem 1.5rem' }}>
           <AnimatePresence mode="wait">
             <motion.div key={idx} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.18 }} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ background: 'rgba(99,179,237,0.05)', border: '1px solid rgba(99,179,237,0.15)', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}>
-                <p style={{ margin: '0 0 0.5rem 0', fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#63b3ed' }}>Concept</p>
-                <div style={{ fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'white', lineHeight: 1.6 }}>
+              <div style={{ background: 'var(--badge-bg)', border: '1px solid var(--badge-bg)', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}>
+                <p style={{ margin: '0 0 0.5rem 0', fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-primary)' }}>Concept</p>
+                <div style={{ fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'var(--text-primary)', lineHeight: 1.6 }}>
                   <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>{card?.front || ''}</ReactMarkdown>
                 </div>
               </div>
               {flipped ? (
-                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}>
+                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}>
                   <p style={{ margin: '0 0 0.5rem 0', fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--secondary)' }}>Synthesis</p>
                   <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.95rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.7 }}>
                     <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>{card?.back || ''}</ReactMarkdown>
                   </div>
                 </motion.div>
               ) : (
-                <button onClick={() => setFlipped(true)} style={{ width: '100%', padding: '1rem', background: 'transparent', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '1rem', color: 'var(--secondary)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                <button onClick={() => setFlipped(true)} style={{ width: '100%', padding: '1rem', background: 'transparent', border: '1px dashed var(--card-border)', borderRadius: '1rem', color: 'var(--secondary)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                   <Eye size={15} /> Reveal Synthesis
                 </button>
               )}
             </motion.div>
           </AnimatePresence>
         </div>
-        <div style={{ padding: isNarrow ? '0.8rem 1rem 1rem' : '1rem 2rem 1.5rem', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0, flexWrap: isNarrow ? 'wrap' : 'nowrap' }}>
-          <button onClick={prev} disabled={idx === 0} style={{ padding: '0.6rem 0.9rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: idx === 0 ? 'rgba(255,255,255,0.2)' : 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: idx === 0 ? 'default' : 'pointer', display: 'flex', transition: 'all 0.15s' }}><ChevronLeft size={16} /></button>
-          <button onClick={next} disabled={idx === cards.length - 1} style={{ padding: '0.6rem 0.9rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: idx === cards.length - 1 ? 'rgba(255,255,255,0.2)' : 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: idx === cards.length - 1 ? 'default' : 'pointer', display: 'flex', transition: 'all 0.15s' }}><ChevronRight size={16} /></button>
+        <div style={{ padding: isNarrow ? '0.8rem 1rem 1rem' : '1rem 2rem 1.5rem', borderTop: '1px solid var(--card-hover)', display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0, flexWrap: isNarrow ? 'wrap' : 'nowrap' }}>
+          <button onClick={prev} disabled={idx === 0} style={{ padding: '0.6rem 0.9rem', background: 'transparent', border: '1px solid var(--card-border)', color: idx === 0 ? 'var(--text-secondary)' : 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: idx === 0 ? 'default' : 'pointer', display: 'flex', transition: 'all 0.15s' }}><ChevronLeft size={16} /></button>
+          <button onClick={next} disabled={idx === cards.length - 1} style={{ padding: '0.6rem 0.9rem', background: 'transparent', border: '1px solid var(--card-border)', color: idx === cards.length - 1 ? 'var(--text-secondary)' : 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: idx === cards.length - 1 ? 'default' : 'pointer', display: 'flex', transition: 'all 0.15s' }}><ChevronRight size={16} /></button>
           <div style={{ flex: 1, display: isNarrow ? 'none' : 'block' }} />
-          <button onClick={onSave} disabled={isSaved || isSaving} style={{ padding: '0.65rem 1.5rem', background: isSaved ? 'rgba(34,197,94,0.12)' : 'rgba(99,179,237,0.15)', border: `1px solid ${isSaved ? 'rgba(34,197,94,0.4)' : 'rgba(99,179,237,0.4)'}`, color: isSaved ? '#4ade80' : '#63b3ed', borderRadius: 'var(--radius-md)', cursor: isSaved ? 'default' : 'pointer', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.88rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s', opacity: isSaving ? 0.6 : 1, width: isNarrow ? '100%' : 'auto' }}>
+          <button onClick={onSave} disabled={isSaved || isSaving} style={{ padding: '0.65rem 1.5rem', background: isSaved ? 'var(--success)' : 'var(--badge-bg)', border: `1px solid ${isSaved ? 'var(--success)' : 'var(--accent-primary)'}`, color: isSaved ? 'var(--success)' : 'var(--accent-primary)', borderRadius: 'var(--radius-md)', cursor: isSaved ? 'default' : 'pointer', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.88rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s', opacity: isSaving ? 0.6 : 1, width: isNarrow ? '100%' : 'auto' }}>
             {isSaved ? <><BookmarkCheck size={15} /> Saved</> : isSaving ? <>Saving…</> : <><Bookmark size={15} /> Save to Library</>}
           </button>
         </div>
@@ -120,26 +120,26 @@ function PublicDeckCard({ deck, onPreview, onSave, isSaved, isSaving }) {
     >
       {deck.thumbnail
         ? <div style={{ width: '100%', height: '120px', overflow: 'hidden' }}><img src={deck.thumbnail} alt="cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /></div>
-        : <div style={{ width: '100%', height: '120px', background: 'linear-gradient(135deg, rgba(99,179,237,0.08) 0%, rgba(0,0,0,0) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Globe size={32} color="rgba(99,179,237,0.25)" /></div>
+        : <div style={{ width: '100%', height: '120px', background: 'linear-gradient(135deg, rgba(99,179,237,0.08) 0%, rgba(0,0,0,0) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Globe size={32} color="var(--badge-bg)" /></div>
       }
-      <div style={{ position: 'absolute', top: '0.6rem', right: '0.6rem', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)', padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)', fontSize: '0.7rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: deck.saves > 0 ? '#63b3ed' : 'var(--secondary)', border: '1px solid rgba(99,179,237,0.2)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+      <div style={{ position: 'absolute', top: '0.6rem', right: '0.6rem', background: 'var(--shadow-color)', backdropFilter: 'blur(8px)', padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)', fontSize: '0.7rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: deck.saves > 0 ? 'var(--accent-primary)' : 'var(--secondary)', border: '1px solid var(--badge-bg)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
         <Bookmark size={10} /> {deck.saves || 0}
       </div>
       <div style={{ padding: '1.1rem', display: 'flex', flexDirection: 'column', flex: 1, gap: '0.6rem' }}>
-        <h4 style={{ margin: 0, fontFamily: 'var(--font-display)', color: 'white', fontSize: '1.1rem', lineHeight: 1.25, letterSpacing: '-0.02em' }}>{deck.title}</h4>
+        <h4 style={{ margin: 0, fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontSize: '1.1rem', lineHeight: 1.25, letterSpacing: '-0.02em' }}>{deck.title}</h4>
         {deck.labels?.length > 0 && (
           <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
-            {deck.labels.map((lbl, i) => <span key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.15rem 0.45rem', borderRadius: '4px', fontSize: '0.65rem', color: 'var(--secondary)', fontFamily: 'var(--font-body)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{lbl}</span>)}
+            {deck.labels.map((lbl, i) => <span key={i} style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)', padding: '0.15rem 0.45rem', borderRadius: '4px', fontSize: '0.65rem', color: 'var(--secondary)', fontFamily: 'var(--font-body)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{lbl}</span>)}
           </div>
         )}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--secondary)', fontSize: '0.78rem', fontFamily: 'var(--font-body)' }}>
           <Layers size={12} /> {cardTotal} {cardTotal === 1 ? 'node' : 'nodes'}
         </div>
         <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem' }}>
-          <button onClick={onPreview} style={{ flex: 1, padding: '0.6rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontWeight: 600, fontFamily: 'var(--font-body)', fontSize: '0.8rem', transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; e.currentTarget.style.color = 'white'; }} onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'var(--secondary)'; }}>
+          <button onClick={onPreview} style={{ flex: 1, padding: '0.6rem', background: 'transparent', border: '1px solid var(--card-border)', color: 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontWeight: 600, fontFamily: 'var(--font-body)', fontSize: '0.8rem', transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--text-secondary)'; e.currentTarget.style.color = 'white'; }} onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--card-border)'; e.currentTarget.style.color = 'var(--secondary)'; }}>
             <Eye size={13} /> Preview
           </button>
-          <button onClick={onSave} disabled={isSaved || isSaving} style={{ flex: 1, padding: '0.6rem', background: isSaved ? 'rgba(34,197,94,0.1)' : 'rgba(99,179,237,0.1)', border: `1px solid ${isSaved ? 'rgba(34,197,94,0.35)' : 'rgba(99,179,237,0.35)'}`, color: isSaved ? '#4ade80' : '#63b3ed', borderRadius: 'var(--radius-sm)', cursor: isSaved ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontWeight: 700, fontFamily: 'var(--font-body)', fontSize: '0.8rem', transition: 'all 0.2s', opacity: isSaving ? 0.6 : 1 }}>
+          <button onClick={onSave} disabled={isSaved || isSaving} style={{ flex: 1, padding: '0.6rem', background: isSaved ? 'var(--success)' : 'rgba(99,179,237,0.1)', border: `1px solid ${isSaved ? 'var(--success)' : 'rgba(99,179,237,0.35)'}`, color: isSaved ? 'var(--success)' : 'var(--accent-primary)', borderRadius: 'var(--radius-sm)', cursor: isSaved ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontWeight: 700, fontFamily: 'var(--font-body)', fontSize: '0.8rem', transition: 'all 0.2s', opacity: isSaving ? 0.6 : 1 }}>
             {isSaved ? <><BookmarkCheck size={13} /> Saved</> : isSaving ? <>Saving…</> : <><Bookmark size={13} /> Save</>}
           </button>
         </div>
@@ -162,12 +162,12 @@ function ProfileSkeletonLayout({ isNarrow, isTablet, shouldReduceMotion }) {
         style={{ background: 'var(--glass-surface)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-2xl)', padding: isNarrow ? '1rem' : (isTablet ? '1.4rem' : '2.5rem'), display: 'flex', alignItems: isNarrow ? 'flex-start' : 'center', gap: isNarrow ? '0.9rem' : '2rem', rowGap: isNarrow ? '1.2rem' : undefined, flexWrap: 'wrap' }}
         aria-hidden="true"
       >
-        <div style={{ width: avatarSize, height: avatarSize, borderRadius: '50%', background: 'linear-gradient(120deg, rgba(99,179,237,0.2), rgba(255,255,255,0.08))', border: '1px solid rgba(255,255,255,0.12)', flexShrink: 0 }} />
+        <div style={{ width: avatarSize, height: avatarSize, borderRadius: '50%', background: 'linear-gradient(120deg, var(--badge-bg), var(--card-hover))', border: '1px solid var(--card-border)', flexShrink: 0 }} />
         <div style={{ flex: 1, minWidth: isNarrow ? '100%' : 200, display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-          <div style={{ width: isNarrow ? '72%' : '38%', height: '20px', borderRadius: '999px', background: 'rgba(255,255,255,0.12)' }} />
-          <div style={{ width: isNarrow ? '58%' : '24%', height: '14px', borderRadius: '999px', background: 'rgba(255,255,255,0.1)' }} />
-          <div style={{ width: '86%', height: '12px', borderRadius: '999px', background: 'rgba(255,255,255,0.08)' }} />
-          <div style={{ width: '74%', height: '12px', borderRadius: '999px', background: 'rgba(255,255,255,0.08)' }} />
+          <div style={{ width: isNarrow ? '72%' : '38%', height: '20px', borderRadius: '999px', background: 'var(--card-border)' }} />
+          <div style={{ width: isNarrow ? '58%' : '24%', height: '14px', borderRadius: '999px', background: 'var(--card-hover)' }} />
+          <div style={{ width: '86%', height: '12px', borderRadius: '999px', background: 'var(--card-hover)' }} />
+          <div style={{ width: '74%', height: '12px', borderRadius: '999px', background: 'var(--card-hover)' }} />
         </div>
       </motion.div>
 
@@ -185,14 +185,14 @@ function ProfileSkeletonLayout({ isNarrow, isTablet, shouldReduceMotion }) {
             style={{ background: 'var(--glass-surface)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
             aria-hidden="true"
           >
-            <div style={{ height: '120px', background: 'linear-gradient(110deg, rgba(99,179,237,0.08), rgba(255,255,255,0.11), rgba(99,179,237,0.08))' }} />
+            <div style={{ height: '120px', background: 'linear-gradient(110deg, rgba(99,179,237,0.08), var(--card-border), rgba(99,179,237,0.08))' }} />
             <div style={{ padding: '1.1rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-              <div style={{ width: '70%', height: '16px', borderRadius: '999px', background: 'rgba(255,255,255,0.11)' }} />
-              <div style={{ width: '50%', height: '10px', borderRadius: '999px', background: 'rgba(255,255,255,0.09)' }} />
-              <div style={{ width: '84%', height: '10px', borderRadius: '999px', background: 'rgba(255,255,255,0.08)' }} />
+              <div style={{ width: '70%', height: '16px', borderRadius: '999px', background: 'var(--card-border)' }} />
+              <div style={{ width: '50%', height: '10px', borderRadius: '999px', background: 'var(--card-hover)' }} />
+              <div style={{ width: '84%', height: '10px', borderRadius: '999px', background: 'var(--card-hover)' }} />
               <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.5rem' }}>
-                <div style={{ flex: 1, height: '36px', borderRadius: 'var(--radius-sm)', background: 'rgba(255,255,255,0.1)' }} />
-                <div style={{ flex: 1, height: '36px', borderRadius: 'var(--radius-sm)', background: 'rgba(99,179,237,0.2)' }} />
+                <div style={{ flex: 1, height: '36px', borderRadius: 'var(--radius-sm)', background: 'var(--card-hover)' }} />
+                <div style={{ flex: 1, height: '36px', borderRadius: 'var(--radius-sm)', background: 'var(--badge-bg)' }} />
               </div>
             </div>
           </motion.div>
@@ -371,7 +371,7 @@ export default function Profile() {
       if (authUser?.username && authUser.username === username) setIsOwnProfile(true);
       else setIsOwnProfile(false);
 
-      fetch(`${BASE_URL}/u/${username}`)
+      fetch(`${BASE_URL}/u/${username}?t=${Date.now()}`)
         .then(r => r.ok ? r.json() : Promise.reject(r.status))
         .then(async (data) => {
           setProfile(data.user);
@@ -514,7 +514,7 @@ export default function Profile() {
   const avatarEffect = avatarEffectStyles[selectedAvatarEffect] || avatarEffectStyles.none;
 
   return (
-    <div style={{ padding: isNarrow ? '0 0.85rem 2.4rem' : (isTablet ? '0 1.5rem 3rem' : '0 3rem 4rem'), width: '100%', maxWidth: '1100px', margin: '0 auto', color: 'white', boxSizing: 'border-box' }}>
+    <div style={{ padding: isNarrow ? '0 0.85rem 2.4rem' : (isTablet ? '0 1.5rem 3rem' : '0 3rem 4rem'), width: '100%', maxWidth: '1100px', margin: '0 auto', color: 'var(--text-primary)', boxSizing: 'border-box' }}>
       <DashboardOverlayEffects
         effect={selectedProfileEffect}
         intensity={profileOverlayIntensity}
@@ -534,7 +534,7 @@ export default function Profile() {
           style={{ textAlign: 'center', padding: '5rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}
         >
           <div style={{ fontSize: '3.5rem', lineHeight: 1 }}>{error === 'not_found' ? '👤' : '⚠️'}</div>
-          <h2 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'white', letterSpacing: '-0.02em' }}>
+          <h2 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             {error === 'not_found' ? `@${username} doesn't exist` : 'Something went wrong'}
           </h2>
           <p style={{ margin: 0, fontFamily: 'var(--font-body)', color: 'var(--secondary)', fontSize: '0.95rem' }}>
@@ -542,7 +542,7 @@ export default function Profile() {
               ? 'That username hasn\'t been claimed yet. Double-check the link.'
               : 'We couldn\'t load this profile. Please try again later.'}
           </p>
-          <button onClick={() => navigate('/discover')} style={{ marginTop: '1.5rem', padding: '0.75rem 1.75rem', background: 'rgba(99,179,237,0.12)', border: '1px solid rgba(99,179,237,0.35)', color: '#63b3ed', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}>
+          <button onClick={() => navigate('/discover')} style={{ marginTop: '1.5rem', padding: '0.75rem 1.75rem', background: 'var(--badge-bg)', border: '1px solid rgba(99,179,237,0.35)', color: 'var(--accent-primary)', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}>
             Browse Discover
           </button>
         </motion.div>
@@ -927,8 +927,8 @@ export default function Profile() {
               ) : null}
 
               {profile?.picture
-                ? <img src={profile.picture} alt={profile.name} style={{ width: avatarSize, height: avatarSize, borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(255,255,255,0.1)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', position: 'relative', zIndex: 1 }} />
-                : <div style={{ width: avatarSize, height: avatarSize, borderRadius: '50%', background: 'rgba(99,179,237,0.15)', border: '3px solid rgba(99,179,237,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}><User size={isNarrow ? 28 : 36} color="#63b3ed" /></div>
+                ? <img src={profile.picture} alt={profile.name} style={{ width: avatarSize, height: avatarSize, borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--card-border)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', position: 'relative', zIndex: 1 }} />
+                : <div style={{ width: avatarSize, height: avatarSize, borderRadius: '50%', background: 'var(--badge-bg)', border: '3px solid rgba(99,179,237,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}><User size={isNarrow ? 28 : 36} color="var(--accent-primary)" /></div>
               }
 
               {selectedAvatarEffect !== 'none' ? (
@@ -957,7 +957,7 @@ export default function Profile() {
                 <div>
                   <h2 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: isNarrow ? '1.35rem' : (isTablet ? '1.75rem' : '2.2rem'), letterSpacing: '-0.03em', lineHeight: 1.15 }}>{profile?.name || 'Unknown User'}</h2>
                   {profile?.username && (
-                    <p style={{ margin: '0.2rem 0 0 0', fontFamily: 'var(--font-body)', fontSize: '1rem', color: '#63b3ed', fontWeight: 600 }}>@{profile.username}</p>
+                    <p style={{ margin: '0.2rem 0 0 0', fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'var(--accent-primary)', fontWeight: 600 }}>@{profile.username}</p>
                   )}
                   {profile?.bio && (
                     <p style={{ margin: '0.5rem 0 0 0', fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--secondary)', maxWidth: '560px', lineHeight: 1.6 }}>
@@ -969,9 +969,9 @@ export default function Profile() {
                   <button
                     type="button"
                            onClick={() => navigate('/profile/edit')}
-                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 'var(--radius-full)', padding: isNarrow ? '0.62rem 0.9rem' : '0.5rem 1rem', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.2s', width: isNarrow ? '100%' : 'fit-content', minHeight: '38px', flexShrink: 0 }}
-                    onMouseOver={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; }}
-                    onMouseOut={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
+                    style={{ background: 'var(--card-hover)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-full)', padding: isNarrow ? '0.62rem 0.9rem' : '0.5rem 1rem', color: 'var(--text-primary)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.2s', width: isNarrow ? '100%' : 'fit-content', minHeight: '38px', flexShrink: 0 }}
+                    onMouseOver={e => { e.currentTarget.style.background = 'var(--card-border)'; }}
+                    onMouseOut={e => { e.currentTarget.style.background = 'var(--card-hover)'; }}
                   >
                     <Pencil size={14} /> Edit Profile
                   </button>
@@ -984,10 +984,10 @@ export default function Profile() {
                   </div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--secondary)', fontSize: '0.85rem', fontFamily: 'var(--font-body)' }}>
-                  <Globe size={13} /> <strong style={{ color: 'white' }}>{sharedDecks.length}</strong> shared decks
+                  <Globe size={13} /> <strong style={{ color: 'var(--text-primary)' }}>{sharedDecks.length}</strong> shared decks
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--secondary)', fontSize: '0.85rem', fontFamily: 'var(--font-body)' }}>
-                  <Bookmark size={13} /> <strong style={{ color: 'white' }}>{totalSaves}</strong> total saves
+                  <Bookmark size={13} /> <strong style={{ color: 'var(--text-primary)' }}>{totalSaves}</strong> total saves
                 </div>
               </div>
             </div>
@@ -995,7 +995,7 @@ export default function Profile() {
 
           {/* Shared Decks */}
           <div style={{ marginBottom: '1.5rem' }}>
-            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', margin: '0 0 1.25rem 0', color: 'white', letterSpacing: '-0.02em' }}>Shared Decks</h3>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', margin: '0 0 1.25rem 0', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Shared Decks</h3>
           </div>
 
           {sharedDecks.length === 0 ? (
@@ -1039,16 +1039,16 @@ export default function Profile() {
         {editingProfile && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)', zIndex: 3000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}
+            style={{ position: 'fixed', inset: 0, background: 'var(--shadow-color)', backdropFilter: 'blur(8px)', zIndex: 3000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}
             onClick={() => setEditingProfile(false)}
           >
             <motion.div
               initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
               onClick={e => e.stopPropagation()}
-              style={{ background: 'rgba(15,15,15,0.98)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.5rem', padding: '2.5rem', width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxShadow: '0 30px 60px rgba(0,0,0,0.8)' }}
+              style={{ background: 'var(--glass-surface-solid)', border: '1px solid var(--card-border)', borderRadius: '1.5rem', padding: '2.5rem', width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxShadow: '0 30px 60px rgba(0,0,0,0.8)' }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'white' }}>Edit Profile</h3>
+                <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--text-primary)' }}>Edit Profile</h3>
                 <button onClick={() => setEditingProfile(false)} style={{ background: 'none', border: 'none', color: 'var(--secondary)', cursor: 'pointer', padding: 0 }}><X size={20} /></button>
               </div>
 
@@ -1060,29 +1060,29 @@ export default function Profile() {
                   onChange={e => setNameInput(e.target.value)}
                   maxLength={40}
                   placeholder="John Doe"
-                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-md)', padding: '0.9rem', color: 'white', fontFamily: 'var(--font-body)', fontSize: '1rem', outline: 'none' }}
+                  style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-md)', padding: '0.9rem', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: '1rem', outline: 'none' }}
                   onFocus={e => e.target.style.borderColor = 'rgba(99,179,237,0.5)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--card-border)'}
                 />
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <label style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Username Handle</label>
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ position: 'absolute', left: '1rem', color: 'rgba(255,255,255,0.3)', fontFamily: 'var(--font-body)', fontSize: '1rem' }}>@</span>
+                  <span style={{ position: 'absolute', left: '1rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-body)', fontSize: '1rem' }}>@</span>
                   <input
                     type="text"
                     value={usernameInput}
                     onChange={e => setUsernameInput(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                     maxLength={20}
                     placeholder="johndoe"
-                    style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-md)', padding: '0.9rem 0.9rem 0.9rem 2.2rem', color: 'white', fontFamily: 'var(--font-body)', fontSize: '1rem', outline: 'none' }}
+                    style={{ width: '100%', background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-md)', padding: '0.9rem 0.9rem 0.9rem 2.2rem', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: '1rem', outline: 'none' }}
                     onFocus={e => e.target.style.borderColor = 'rgba(99,179,237,0.5)'}
-                    onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                    onBlur={e => e.target.style.borderColor = 'var(--card-border)'}
                     onKeyDown={e => { if (e.key === 'Enter') updateProfile(); }}
                   />
                 </div>
-                <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-body)' }}>3-20 characters, letters, numbers, and underscores only.</span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }}>3-20 characters, letters, numbers, and underscores only.</span>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -1093,23 +1093,23 @@ export default function Profile() {
                   maxLength={240}
                   placeholder="Tell others what you study..."
                   rows={3}
-                  style={{ width: '100%', resize: 'vertical', minHeight: '88px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-md)', padding: '0.9rem', color: 'white', fontFamily: 'var(--font-body)', fontSize: '0.92rem', outline: 'none', lineHeight: 1.5 }}
+                  style={{ width: '100%', resize: 'vertical', minHeight: '88px', background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-md)', padding: '0.9rem', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.92rem', outline: 'none', lineHeight: 1.5 }}
                   onFocus={e => e.target.style.borderColor = 'rgba(99,179,237,0.5)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--card-border)'}
                 />
-                <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-body)' }}>{bioInput.length}/240</span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }}>{bioInput.length}/240</span>
               </div>
 
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                 <button
                   onClick={() => setEditingProfile(false)}
-                  style={{ flex: 1, padding: '0.85rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontWeight: 600, cursor: 'pointer' }}
+                  style={{ flex: 1, padding: '0.85rem', background: 'transparent', border: '1px solid var(--card-border)', color: 'var(--text-primary)', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontWeight: 600, cursor: 'pointer' }}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={updateProfile}
-                  style={{ flex: 1, padding: '0.85rem', background: 'rgba(99,179,237,0.15)', border: '1px solid rgba(99,179,237,0.4)', color: '#63b3ed', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontWeight: 700, cursor: 'pointer' }}
+                  style={{ flex: 1, padding: '0.85rem', background: 'var(--badge-bg)', border: '1px solid var(--accent-primary)', color: 'var(--accent-primary)', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontWeight: 700, cursor: 'pointer' }}
                 >
                   Save Changes
                 </button>
@@ -1122,7 +1122,7 @@ export default function Profile() {
       {/* Toast */}
       <AnimatePresence>
         {toast && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} style={{ position: 'fixed', bottom: '2rem', right: '2rem', background: toast.type === 'error' ? 'rgba(239,68,68,0.9)' : 'rgba(20,20,20,0.95)', border: `1px solid ${toast.type === 'error' ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.1)'}`, color: 'white', padding: '0.9rem 1.5rem', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontWeight: 600, backdropFilter: 'blur(8px)', zIndex: 9999, boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} style={{ position: 'fixed', bottom: '2rem', right: '2rem', background: toast.type === 'error' ? 'rgba(239,68,68,0.9)' : 'rgba(20,20,20,0.95)', border: `1px solid ${toast.type === 'error' ? 'rgba(239,68,68,0.5)' : 'var(--card-border)'}`, color: 'var(--text-primary)', padding: '0.9rem 1.5rem', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontWeight: 600, backdropFilter: 'blur(8px)', zIndex: 9999, boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
             {toast.msg}
           </motion.div>
         )}

@@ -1,8 +1,9 @@
 
 :root {
   --app-font-scale: 1;
-  /* Silver & Black Theme */
+  /* Default Theme: Midnight (Silver & Black) */
   --bg-color: #000000;
+  --bg-secondary: #0a0a14;
 
   --glass-surface: rgba(20, 20, 20, 0.6);
   --glass-surface-solid: #111111;
@@ -17,14 +18,34 @@
   --text-inverse: #000000;
   --text-secondary: #9ca3af;
 
+  --accent-primary: #a78bfa;
+  --accent-secondary: #7dd3fc;
+
   --outline: rgba(255, 255, 255, 0.15);
   --outline-inverse: rgba(0, 0, 0, 0.8);
+
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --danger: #f87171;
+  --success: #4ade80;
+  --warning: #fbbf24;
+
+  --bg-gradient: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 75%);
+  --starfield-opacity: 0.08;
+
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --card-border: rgba(255, 255, 255, 0.06);
+  --card-hover: rgba(255, 255, 255, 0.06);
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --badge-bg: rgba(167, 139, 250, 0.15);
+  --badge-text: #c4b5fd;
+  --focus-ring: rgba(125, 211, 252, 0.95);
 
   --font-display: 'Syne', sans-serif;
   --font-body: 'Geist', sans-serif;
   --font-notes: var(--font-body);
   --font-accessible: 'Atkinson Hyperlegible', 'Geist', sans-serif;
-  --font-sidebar: var(--font-display);
+  --font-sidebar: 'Inter', sans-serif;
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
@@ -134,7 +155,7 @@ html.a11y-high-contrast a {
 }
 
 *:focus-visible {
-  outline: 2px solid rgba(125, 211, 252, 0.95);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -147,8 +168,7 @@ body {
   margin: 0;
   font-family: var(--font-body);
   background-color: var(--bg-color);
-  background-image:
-    radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 75%);
+  background-image: var(--bg-gradient);
   background-attachment: fixed;
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
@@ -156,6 +176,7 @@ body {
   min-height: 100dvh;
   position: relative;
   overflow-x: hidden;
+  transition: background-color 0.35s ease, color 0.35s ease;
 }
 
 #root {
@@ -182,9 +203,10 @@ body::before {
     radial-gradient(1px 1px at 160px 120px, #ddd, rgba(0, 0, 0, 0));
   background-repeat: repeat;
   background-size: 200px 200px;
-  opacity: 0.08;
+  opacity: var(--starfield-opacity);
   z-index: -2;
   pointer-events: none;
+  transition: opacity 0.35s ease;
 }
 
 h1,

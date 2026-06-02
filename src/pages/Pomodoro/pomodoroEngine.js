@@ -116,7 +116,6 @@ export function reducer(state, action) {
 function _reducer(state, action) {
   switch (action.type) {
     case 'LOAD_STATE': {
-      console.log('[REDUCER] LOAD_STATE Payload:', action.payload?.session?.status, 'UpdatedAt:', action.payload?.updatedAt);
       if (!action.payload) return state;
       
       const incomingSeq = Number(action.payload.seq || 0);
@@ -184,7 +183,6 @@ function _reducer(state, action) {
     }
 
     case 'START_FOCUS': {
-      console.log('[REDUCER] START_FOCUS triggered');
       const selectedTask = state.tasks.find((task) => task.id === state.selectedTaskId);
       if (!selectedTask) {
         console.warn('Cannot start focus without a selected task.');

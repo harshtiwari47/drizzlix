@@ -4,7 +4,18 @@ import {
   Sparkles,
   Accessibility,
   Type,
+  Palette,
 } from 'lucide-react';
+import {
+  THEMES,
+  THEME_IDS,
+  getStoredTheme,
+  persistTheme,
+  applyTheme,
+  getStoredAccentColor,
+  persistAccentColor,
+  applyAccentColor,
+} from '../services/themeService';
 import {
   STORAGE_KEYS,
   getAccessibilitySettings,
@@ -164,6 +175,20 @@ export default function Settings() {
     parseDashboardOverlaySpeed(safeReadLocalStorage(OVERLAY_SPEED_KEY))
   );
 
+  // Theme state
+  const [activeTheme, setActiveTheme] = React.useState(() => getStoredTheme());
+  const [accentColor, setAccentColor] = React.useState(() => getStoredAccentColor());
+
+  const ACCENT_OPTIONS = [
+    { label: 'Default', value: null },
+    { label: 'Violet', value: '#a78bfa' },
+    { label: 'Rose', value: '#fb7185' },
+    { label: 'Cyan', value: '#22d3ee' },
+    { label: 'Emerald', value: '#34d399' },
+    { label: 'Amber', value: '#fbbf24' },
+    { label: 'Sky', value: '#38bdf8' },
+  ];
+
   const handleOverlayEffectChange = React.useCallback((effect) => {
     const safeEffect = parseDashboardOverlayEffect(effect);
     markDashboardOverlayEffectAsUserSet();
@@ -177,6 +202,19 @@ export default function Settings() {
         detail: { key, value },
       })
     );
+  }, []);
+
+  // Theme effects
+  const handleThemeChange = React.useCallback((themeId) => {
+    setActiveTheme(themeId);
+    persistTheme(themeId);
+    applyTheme(themeId);
+  }, []);
+
+  const handleAccentChange = React.useCallback((color) => {
+    setAccentColor(color);
+    persistAccentColor(color);
+    applyAccentColor(color);
   }, []);
 
   React.useEffect(() => {
@@ -231,12 +269,79 @@ export default function Settings() {
   return (
     <div className="settings-container">
       <header className="settings-header">
-        <h2 className="settings-title title-sparkle-effect">
+        <h2 className="title-sparkle-effect">
           <SlidersHorizontal size={26} className="settings-title-icon" />
           Global Settings
         </h2>
         <p className="settings-subtitle">Control app-wide behavior and preferences for your entire workspace.</p>
       </header>
+
+      {/* ── Appearance ── */}
+      <section className="settings-card">
+        <div className="settings-card-head">
+          <Palette size={16} />
+          <h3>Appearance</h3>
+        </div>
+
+        <div className="settings-row settings-row-column">
+          <div className="settings-row-copy">
+            <h4>Theme</h4>
+            <p>Choose a visual theme for the entire application.</p>
+          </div>
+          <div className="settings-theme-grid">
+            {THEME_IDS.map((id) => {
+              const theme = THEMES[id];
+              const isActive = activeTheme === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  className={`settings-theme-card${isActive ? ' is-active' : ''}`}
+                  onClick={() => handleThemeChange(id)}
+                  aria-pressed={isActive}
+                  title={theme.label}
+                >
+                  <div className="settings-theme-card-swatches">
+                    {theme.preview.map((color, i) => (
+                      <span
+                        key={i}
+                        className="settings-theme-swatch"
+                        style={{ background: color }}
+                      />
+                    ))}
+                  </div>
+                  <span className="settings-theme-card-label">
+                    <span className="settings-theme-card-emoji">{theme.emoji}</span>
+                    {theme.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="settings-row settings-row-column">
+          <div className="settings-row-copy">
+            <h4>Accent Color</h4>
+            <p>Override the primary accent color used across buttons, highlights, and links.</p>
+          </div>
+          <div className="settings-accent-group">
+            {ACCENT_OPTIONS.map((opt) => (
+              <button
+                key={opt.label}
+                type="button"
+                className={`settings-accent-dot${(accentColor === opt.value || (!accentColor && !opt.value)) ? ' is-active' : ''}`}
+                style={opt.value ? { '--dot-color': opt.value } : {}}
+                onClick={() => handleAccentChange(opt.value)}
+                aria-label={opt.label}
+                title={opt.label}
+              >
+                {!opt.value && <span className="settings-accent-dot-auto">A</span>}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="settings-card">
         <div className="settings-card-head">

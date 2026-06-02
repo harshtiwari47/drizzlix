@@ -11,7 +11,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(15, 15, 15, 0.85);
+  background: var(--outline-inverse);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-top: 1px solid var(--glass-border);
@@ -52,7 +52,7 @@
 }
 
 .close-btn:hover {
-  color: white;
+  color: var(--text-primary);
 }
 
 .user-profile-header {
@@ -94,8 +94,8 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius-lg);
   color: var(--text-primary);
   font-family: var(--font-body);
@@ -105,8 +105,8 @@
 }
 
 .menu-item-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--card-hover);
+  border-color: var(--accent-primary);
   transform: translateY(-2px);
 }
 
@@ -116,42 +116,44 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-hover);
   border-radius: var(--radius-md);
   color: var(--secondary);
 }
 
 .menu-item-btn:hover .menu-icon-wrap {
-  color: white;
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--badge-bg);
+  color: var(--accent-primary);
 }
 
 .logout-btn {
   width: 100%;
   margin-top: 1rem;
-  border-color: rgba(255, 50, 50, 0.1);
+  border-color: var(--danger);
+  opacity: 0.8;
 }
 
 .logout-btn:hover {
-  background: rgba(255, 50, 50, 0.05);
-  border-color: rgba(255, 50, 50, 0.3);
-  color: #ff4d4d;
+  background: var(--card-hover);
+  border-color: var(--danger);
+  color: var(--danger);
+  opacity: 1;
 }
 
 .logout-btn:hover .menu-icon-wrap {
-    color: #ff4d4d;
+    color: var(--danger);
 }
 
 .install-btn {
   width: 100%;
   margin-top: 0.75rem;
-  border-color: rgba(148, 163, 184, 0.25);
-  background: rgba(148, 163, 184, 0.1);
+  border-color: var(--card-border);
+  background: var(--card-bg);
 }
 
 .install-btn:hover {
-  border-color: rgba(148, 163, 184, 0.45);
-  background: rgba(148, 163, 184, 0.18);
+  border-color: var(--accent-primary);
+  background: var(--card-hover);
 }
 
 .install-icon-wrap {

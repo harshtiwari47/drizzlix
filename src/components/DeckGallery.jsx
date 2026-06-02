@@ -64,7 +64,7 @@ const DeckGallery = React.memo(function DeckGallery() {
           ))}
         </div>
       ) : (
-        <div style={{ border: '1px dashed rgba(255,255,255,0.16)', borderRadius: 'var(--radius-lg)', padding: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.8rem', background: 'rgba(255,255,255,0.02)' }}>
+        <div style={{ border: '1px dashed var(--card-border)', borderRadius: 'var(--radius-lg)', padding: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.8rem', background: 'var(--card-bg)' }}>
           <p style={{ margin: 0, color: 'var(--secondary)', fontFamily: 'var(--font-body)', fontSize: '0.88rem' }}>
             Your library is empty. Generate a deck or explore Discover.
           </p>

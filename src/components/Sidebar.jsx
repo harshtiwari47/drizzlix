@@ -2,17 +2,18 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { prefetchRoute } from '../services/routePrefetch';
+import { LayoutDashboard, Compass, Library, PlusSquare, TrendingUp, CheckSquare, FileText, Timer } from 'lucide-react';
 import './Sidebar.css';
 
 const NAV_ITEMS = [
-  { to: '/', label: 'Dashboard' },
-  { to: '/discover', label: 'Discover' },
-  { to: '/decks', label: 'Library' },
-  { to: '/create', label: 'Create' },
-  { to: '/stats', label: 'Mastery' },
-  { to: '/tasks', label: 'Tasks' },
-  { to: '/notes', label: 'Notes' },
-  { to: '/pomodoro', label: 'Pomodoro' },
+  { to: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/discover', label: 'Discover', icon: Compass },
+  { to: '/decks', label: 'Library', icon: Library },
+  { to: '/create', label: 'Create', icon: PlusSquare },
+  { to: '/stats', label: 'Mastery', icon: TrendingUp },
+  { to: '/tasks', label: 'Tasks', icon: CheckSquare },
+  { to: '/notes', label: 'Notes', icon: FileText },
+  { to: '/pomodoro', label: 'Pomodoro', icon: Timer },
 ];
 
 const navItemClassName = ({ isActive }) => `nav-item ${isActive ? 'active' : ''}`;
@@ -44,7 +45,7 @@ const Sidebar = React.memo(function Sidebar({ onMenuOpen }) {
     <header className="floating-header">
       <div className="logo-text">
         <img
-          src="/favicon.svg"
+          src="/logo.png"
           alt="Drizzlix"
           width="36"
           height="36"
@@ -66,7 +67,15 @@ const Sidebar = React.memo(function Sidebar({ onMenuOpen }) {
             onFocus={intentHandlers.onFocus}
             onTouchStart={intentHandlers.onTouchStart}
           >
-            {item.label}
+            {({ isActive }) => {
+              const Icon = item.icon;
+              return (
+                <>
+                  {isActive && <span className="nav-item-active-icon"><Icon size={14} strokeWidth={2.5} /></span>}
+                  {item.label}
+                </>
+              );
+            }}
           </NavLink>
           );
         })}

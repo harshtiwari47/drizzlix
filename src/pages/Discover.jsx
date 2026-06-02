@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Search, Bookmark, BookmarkCheck, Layers, Globe, X, Eye, ChevronLeft, ChevronRight, Link2, Check } from 'lucide-react';
+import { Search, Bookmark, BookmarkCheck, Layers, Globe, X, Eye, ChevronLeft, ChevronRight, Link2, Check, Flame, Sparkles } from 'lucide-react';
 import { useDeck } from '../context/DeckContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -240,10 +240,10 @@ const AuthorChip = React.memo(function AuthorChip({ name, username, picture, use
       style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: isClickable ? 'pointer' : 'default', width: 'fit-content' }}
     >
       {picture
-        ? <img loading="lazy" decoding="async" src={picture} alt={name} style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.15)' }} />
-        : <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(99,179,237,0.2)', border: '1px solid rgba(99,179,237,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 700, color: '#63b3ed' }}>{name?.[0]?.toUpperCase()}</div>
+        ? <img loading="lazy" decoding="async" src={picture} alt={name} style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--card-border)' }} />
+        : <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--badge-bg)', border: '1px solid var(--accent-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 700, color: 'var(--accent-primary)' }}>{name?.[0]?.toUpperCase()}</div>
       }
-      <span style={{ fontSize: '0.78rem', color: isClickable ? '#63b3ed' : 'var(--secondary)', fontFamily: 'var(--font-body)', fontWeight: 500, textDecoration: isClickable ? 'underline' : 'none', textDecorationColor: 'rgba(99,179,237,0.4)' }}>{displayName}</span>
+      <span style={{ fontSize: '0.78rem', color: isClickable ? 'var(--accent-primary)' : 'var(--secondary)', fontFamily: 'var(--font-body)', fontWeight: 500, textDecorationColor: 'var(--accent-primary)' }}>{displayName}</span>
     </div>
   );
 });
@@ -267,8 +267,8 @@ const UserSearchResultCard = React.memo(function UserSearchResultCard({ user, on
         alignItems: 'center',
         gap: '0.65rem',
         padding: '0.62rem 0.72rem',
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: 'var(--card-bg)',
+        border: '1px solid var(--card-border)',
         borderRadius: '0.75rem',
         cursor: canOpen ? 'pointer' : 'default',
         textAlign: 'left',
@@ -282,25 +282,25 @@ const UserSearchResultCard = React.memo(function UserSearchResultCard({ user, on
           decoding="async"
           src={user.picture}
           alt={user.name}
-          style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.16)' }}
+          style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--card-border)' }}
         />
       ) : (
-        <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'rgba(99,179,237,0.18)', border: '1px solid rgba(99,179,237,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#63b3ed', fontSize: '0.74rem', fontWeight: 800 }}>
+        <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--badge-bg)', border: '1px solid var(--accent-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-primary)', fontSize: '0.74rem', fontWeight: 800 }}>
           {(user.name || 'U').slice(0, 1).toUpperCase()}
         </div>
       )}
       <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, flex: 1 }}>
-        <span style={{ color: 'white', fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <span style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {user.name || 'Unknown user'}
         </span>
-        <span style={{ color: '#93c5fd', fontFamily: 'var(--font-body)', fontSize: '0.73rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <span style={{ color: 'var(--accent-primary)', fontFamily: 'var(--font-body)', fontSize: '0.73rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {user.username ? `@${user.username}` : 'No username'}
         </span>
-        <span style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'var(--font-body)', fontSize: '0.68rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <span style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-body)', fontSize: '0.68rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {user.userId ? `ID: ${user.userId}` : 'ID unavailable'}
         </span>
       </div>
-      <span style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
+      <span style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
         {user.deckCount} {user.deckCount === 1 ? 'deck' : 'decks'}
       </span>
     </button>
@@ -358,7 +358,7 @@ function DeckPreviewOverlay({ deck, onClose, onSave, isSaved, isSaving, canSave 
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 2000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}
+      style={{ position: 'fixed', inset: 0, background: 'var(--shadow-color)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 2000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.94, y: 20 }}
@@ -366,20 +366,20 @@ function DeckPreviewOverlay({ deck, onClose, onSave, isSaved, isSaving, canSave 
         exit={{ opacity: 0, scale: 0.94, y: 20 }}
         transition={{ type: 'spring', stiffness: 300, damping: 28 }}
         onClick={e => e.stopPropagation()}
-        style={{ background: 'rgba(12,12,12,0.97)', border: '1px solid rgba(255,255,255,0.09)', borderRadius: '1.5rem', width: '100%', maxWidth: '680px', boxShadow: '0 40px 100px rgba(0,0,0,0.9)', display: 'flex', flexDirection: 'column', overflow: 'hidden', maxHeight: '90vh' }}
+        style={{ background: 'var(--glass-surface-solid)', border: '1px solid var(--card-hover)', borderRadius: '1.5rem', width: '100%', maxWidth: '680px', boxShadow: '0 40px 100px rgba(0,0,0,0.9)', display: 'flex', flexDirection: 'column', overflow: 'hidden', maxHeight: '90vh' }}
       >
         {/* Header */}
-        <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid var(--card-hover)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-            <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', color: 'white', fontSize: '1.35rem', letterSpacing: '-0.02em' }}>{deck.title}</h3>
+            <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontSize: '1.35rem', letterSpacing: '-0.02em' }}>{deck.title}</h3>
             {deck.publishedBy?.name && <AuthorChip name={deck.publishedBy.name} username={deck.publishedBy.username} picture={deck.publishedBy.picture} />}
           </div>
           <button
             onClick={onClose}
             aria-label="Close deck preview"
             style={{
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--card-hover)',
+              border: '1px solid var(--card-border)',
               color: 'var(--secondary)',
               cursor: 'pointer',
               padding: '0.5rem',
@@ -393,20 +393,20 @@ function DeckPreviewOverlay({ deck, onClose, onSave, isSaved, isSaving, canSave 
         </div>
 
         {/* Progress bar */}
-        <div style={{ height: '2px', background: 'rgba(255,255,255,0.05)', flexShrink: 0 }}>
+        <div style={{ height: '2px', background: 'var(--card-bg)', flexShrink: 0 }}>
           <motion.div
             animate={{ width: hasCards ? `${((safeIndex + 1) / safeCardCount) * 100}%` : '0%' }}
             transition={{ ease: 'easeOut', duration: 0.3 }}
-            style={{ height: '100%', background: 'linear-gradient(90deg, rgba(99,179,237,0.8), rgba(99,179,237,0.4))' }}
+            style={{ height: '100%', background: 'linear-gradient(90deg, rgba(99,179,237,0.8), var(--accent-primary))' }}
           />
         </div>
 
         {/* Card counter */}
         <div style={{ padding: '0.75rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', color: 'var(--secondary)' }}>
-            Card <strong style={{ color: 'white' }}>{hasCards ? safeIndex + 1 : 0}</strong> of <strong style={{ color: 'white' }}>{cards.length}</strong>
+            Card <strong style={{ color: 'var(--text-primary)' }}>{hasCards ? safeIndex + 1 : 0}</strong> of <strong style={{ color: 'var(--text-primary)' }}>{cards.length}</strong>
           </span>
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'rgba(255,255,255,0.3)' }}>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
             Space to flip · ← → to navigate
           </span>
         </div>
@@ -424,9 +424,9 @@ function DeckPreviewOverlay({ deck, onClose, onSave, isSaved, isSaving, canSave 
                 style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
               >
                 {/* Front — always visible */}
-                <div style={{ background: 'rgba(99,179,237,0.05)', border: '1px solid rgba(99,179,237,0.15)', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}>
-                  <p style={{ margin: '0 0 0.5rem 0', fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#63b3ed' }}>Concept</p>
-                  <div className="markdown-card-content" style={{ fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'white', lineHeight: 1.6 }}>
+                <div style={{ background: 'var(--badge-bg)', border: '1px solid var(--badge-bg)', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}>
+                  <p style={{ margin: '0 0 0.5rem 0', fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-primary)' }}>Concept</p>
+                  <div className="markdown-card-content" style={{ fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'var(--text-primary)', lineHeight: 1.6 }}>
                     <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>
                       {card?.front || ''}
                     </ReactMarkdown>
@@ -439,7 +439,7 @@ function DeckPreviewOverlay({ deck, onClose, onSave, isSaved, isSaving, canSave 
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}
+                      style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}
                     >
                       <p style={{ margin: '0 0 0.5rem 0', fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--secondary)' }}>Synthesis</p>
                       <div className="markdown-card-content" style={{ fontFamily: 'var(--font-body)', fontSize: '0.95rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.7 }}>
@@ -452,7 +452,7 @@ function DeckPreviewOverlay({ deck, onClose, onSave, isSaved, isSaving, canSave 
                     <button
                       onClick={() => setFlipped(true)}
                       aria-label="Reveal synthesis answer"
-                      style={{ width: '100%', padding: '1rem', background: 'transparent', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '1rem', color: 'var(--secondary)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 600, transition: 'border-color 200ms ease-out, color 200ms ease-out', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                      style={{ width: '100%', padding: '1rem', background: 'transparent', border: '1px dashed var(--card-border)', borderRadius: '1rem', color: 'var(--secondary)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 600, transition: 'border-color 200ms ease-out, color 200ms ease-out', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
                     >
                       <Eye size={15} /> Reveal Synthesis
                     </button>
@@ -461,18 +461,18 @@ function DeckPreviewOverlay({ deck, onClose, onSave, isSaved, isSaving, canSave 
               </motion.div>
             </AnimatePresence>
           ) : (
-            <div style={{ border: '1px dashed rgba(255,255,255,0.16)', borderRadius: '1rem', padding: '1.25rem', color: 'var(--secondary)', fontFamily: 'var(--font-body)', fontSize: '0.9rem' }}>
+            <div style={{ border: '1px dashed var(--card-border)', borderRadius: '1rem', padding: '1.25rem', color: 'var(--secondary)', fontFamily: 'var(--font-body)', fontSize: '0.9rem' }}>
               No preview cards available for this deck.
             </div>
           )}
         </div>
 
         {/* Footer nav + save */}
-        <div style={{ padding: '1rem 2rem 1.5rem', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
-          <button onClick={prev} aria-label="Previous card" disabled={!hasCards || safeIndex === 0} style={{ padding: '0.6rem 0.9rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: !hasCards || safeIndex === 0 ? 'rgba(255,255,255,0.2)' : 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: !hasCards || safeIndex === 0 ? 'default' : 'pointer', display: 'flex', transition: 'border-color 150ms ease-out, color 150ms ease-out, transform 150ms ease-out' }}>
+        <div style={{ padding: '1rem 2rem 1.5rem', borderTop: '1px solid var(--card-hover)', display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
+          <button onClick={prev} aria-label="Previous card" disabled={!hasCards || safeIndex === 0} style={{ padding: '0.6rem 0.9rem', background: 'transparent', border: '1px solid var(--card-border)', color: !hasCards || safeIndex === 0 ? 'var(--text-secondary)' : 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: !hasCards || safeIndex === 0 ? 'default' : 'pointer', display: 'flex', transition: 'border-color 150ms ease-out, color 150ms ease-out, transform 150ms ease-out' }}>
             <ChevronLeft size={16} />
           </button>
-          <button onClick={next} aria-label="Next card" disabled={!hasCards || safeIndex === cards.length - 1} style={{ padding: '0.6rem 0.9rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: !hasCards || safeIndex === cards.length - 1 ? 'rgba(255,255,255,0.2)' : 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: !hasCards || safeIndex === cards.length - 1 ? 'default' : 'pointer', display: 'flex', transition: 'border-color 150ms ease-out, color 150ms ease-out, transform 150ms ease-out' }}>
+          <button onClick={next} aria-label="Next card" disabled={!hasCards || safeIndex === cards.length - 1} style={{ padding: '0.6rem 0.9rem', background: 'transparent', border: '1px solid var(--card-border)', color: !hasCards || safeIndex === cards.length - 1 ? 'var(--text-secondary)' : 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: !hasCards || safeIndex === cards.length - 1 ? 'default' : 'pointer', display: 'flex', transition: 'border-color 150ms ease-out, color 150ms ease-out, transform 150ms ease-out' }}>
             <ChevronRight size={16} />
           </button>
           <div style={{ flex: 1 }} />
@@ -480,7 +480,7 @@ function DeckPreviewOverlay({ deck, onClose, onSave, isSaved, isSaving, canSave 
             onClick={onSave}
             disabled={!canSave || isSaved || isSaving}
             aria-label="Save deck to library"
-            style={{ padding: '0.65rem 1.5rem', background: isSaved ? 'rgba(34,197,94,0.12)' : 'rgba(99,179,237,0.15)', border: `1px solid ${isSaved ? 'rgba(34,197,94,0.4)' : 'rgba(99,179,237,0.4)'}`, color: isSaved ? '#4ade80' : '#63b3ed', borderRadius: 'var(--radius-md)', cursor: !canSave || isSaved ? 'default' : 'pointer', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, opacity 200ms ease-out', opacity: isSaving ? 0.6 : 1 }}
+            style={{ padding: '0.65rem 1.5rem', background: isSaved ? 'var(--success)' : 'var(--badge-bg)', border: `1px solid ${isSaved ? 'var(--success)' : 'var(--accent-primary)'}`, color: isSaved ? 'var(--success)' : 'var(--accent-primary)', borderRadius: 'var(--radius-md)', cursor: !canSave || isSaved ? 'default' : 'pointer', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, opacity 200ms ease-out', opacity: isSaving ? 0.6 : 1 }}
           >
             {isSaved ? <><BookmarkCheck size={15} /> Saved</> : isSaving ? <>Saving…</> : <><Bookmark size={15} /> Save to Library</>}
           </button>
@@ -508,16 +508,16 @@ function DiscoverDeckSkeletonGrid({ isCompact, prefersReducedMotion }) {
             initial={{ opacity: 0.54 }}
             animate={prefersReducedMotion ? { opacity: 0.62 } : { opacity: [0.5, 0.76, 0.5] }}
             transition={prefersReducedMotion ? { duration: 0 } : { duration: 1.25, repeat: Infinity, ease: 'easeInOut', delay: panelIndex * 0.08 }}
-            style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-lg)', background: 'rgba(255,255,255,0.03)', padding: isCompact ? '0.7rem' : '0.85rem' }}
+            style={{ border: '1px solid var(--card-border)', borderRadius: 'var(--radius-lg)', background: 'var(--card-bg)', padding: isCompact ? '0.7rem' : '0.85rem' }}
             aria-hidden="true"
           >
-            <div style={{ width: '44%', height: '16px', borderRadius: '999px', background: 'rgba(255,255,255,0.12)', marginBottom: '0.55rem' }} />
+            <div style={{ width: '44%', height: '16px', borderRadius: '999px', background: 'var(--card-border)', marginBottom: '0.55rem' }} />
             <div style={{ display: 'grid', gap: '0.42rem' }}>
               {[0, 1, 2, 3].map((rowIndex) => (
-                <div key={`discover-skeleton-panel-row-${panelIndex}-${rowIndex}`} style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(0,0,0,0.2)', borderRadius: '0.62rem', padding: '0.38rem 0.42rem' }}>
-                  <div style={{ flex: 1, height: '10px', borderRadius: '999px', background: 'rgba(255,255,255,0.1)' }} />
-                  <div style={{ width: '24px', height: '24px', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.12)' }} />
-                  <div style={{ width: '24px', height: '24px', borderRadius: '0.5rem', background: 'rgba(99,179,237,0.2)' }} />
+                <div key={`discover-skeleton-panel-row-${panelIndex}-${rowIndex}`} style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', border: '1px solid var(--card-border)', background: 'var(--card-hover)', borderRadius: '0.62rem', padding: '0.38rem 0.42rem' }}>
+                  <div style={{ flex: 1, height: '10px', borderRadius: '999px', background: 'var(--card-hover)' }} />
+                  <div style={{ width: '24px', height: '24px', borderRadius: '0.5rem', background: 'var(--card-border)' }} />
+                  <div style={{ width: '24px', height: '24px', borderRadius: '0.5rem', background: 'var(--badge-bg)' }} />
                 </div>
               ))}
             </div>
@@ -542,16 +542,16 @@ function DiscoverDeckSkeletonGrid({ isCompact, prefersReducedMotion }) {
             }}
             aria-hidden="true"
           >
-            <div style={{ height: '130px', background: 'linear-gradient(110deg, rgba(99,179,237,0.08), rgba(255,255,255,0.11), rgba(99,179,237,0.08))' }} />
+            <div style={{ height: '130px', background: 'linear-gradient(110deg, rgba(99,179,237,0.08), var(--card-border), rgba(99,179,237,0.08))' }} />
             <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
-              <div style={{ width: '50%', height: '10px', borderRadius: '999px', background: 'rgba(255,255,255,0.13)' }} />
-              <div style={{ width: '78%', height: '16px', borderRadius: '999px', background: 'rgba(255,255,255,0.11)' }} />
-              <div style={{ width: '64%', height: '16px', borderRadius: '999px', background: 'rgba(255,255,255,0.09)' }} />
-              <div style={{ width: '88%', height: '10px', borderRadius: '999px', background: 'rgba(255,255,255,0.08)' }} />
+              <div style={{ width: '50%', height: '10px', borderRadius: '999px', background: 'var(--card-border)' }} />
+              <div style={{ width: '78%', height: '16px', borderRadius: '999px', background: 'var(--card-border)' }} />
+              <div style={{ width: '64%', height: '16px', borderRadius: '999px', background: 'var(--card-hover)' }} />
+              <div style={{ width: '88%', height: '10px', borderRadius: '999px', background: 'var(--card-hover)' }} />
               <div style={{ marginTop: '0.45rem', display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.45rem' }}>
-                <div style={{ height: '36px', borderRadius: 'var(--radius-sm)', background: 'rgba(99,179,237,0.18)' }} />
-                <div style={{ height: '36px', borderRadius: 'var(--radius-sm)', background: 'rgba(255,255,255,0.11)' }} />
-                <div style={{ width: '42px', height: '36px', borderRadius: 'var(--radius-sm)', background: 'rgba(255,255,255,0.09)' }} />
+                <div style={{ height: '36px', borderRadius: 'var(--radius-sm)', background: 'var(--badge-bg)' }} />
+                <div style={{ height: '36px', borderRadius: 'var(--radius-sm)', background: 'var(--card-border)' }} />
+                <div style={{ width: '42px', height: '36px', borderRadius: 'var(--radius-sm)', background: 'var(--card-hover)' }} />
               </div>
             </div>
           </MotionDiv>
@@ -645,7 +645,7 @@ export default function Discover() {
   const fetchDiscover = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${BASE_URL}/discover`);
+      const res = await fetch(`${BASE_URL}/discover?t=${Date.now()}`);
       const data = await res.json();
       if (Array.isArray(data)) setPublicDecks(data);
     } catch {
@@ -906,10 +906,22 @@ export default function Discover() {
       trendingRows.map((row) => row.deck.id || `${row.deck.title}-${row.order}`)
     );
 
-    const freshPool = [...rankedDeckRows]
+    let freshPool = [...rankedDeckRows]
       .filter((row) => !trendingKeys.has(row.deck.id || `${row.deck.title}-${row.order}`))
-      .sort((a, b) => b.freshScore - a.freshScore || b.timestamp - a.timestamp || b.rankScore - a.rankScore)
-      .slice(0, sectionDeckLimit);
+      .sort((a, b) => b.freshScore - a.freshScore || b.timestamp - a.timestamp || b.rankScore - a.rankScore);
+
+    if (freshPool.length < sectionDeckLimit) {
+      const allFreshest = [...rankedDeckRows]
+        .sort((a, b) => b.freshScore - a.freshScore || b.timestamp - a.timestamp || b.rankScore - a.rankScore);
+      for (const row of allFreshest) {
+        if (freshPool.length >= sectionDeckLimit) break;
+        if (!freshPool.find(r => (r.deck.id || `${r.deck.title}-${r.order}`) === (row.deck.id || `${row.deck.title}-${row.order}`))) {
+          freshPool.push(row);
+        }
+      }
+    }
+
+    freshPool = freshPool.slice(0, sectionDeckLimit);
 
     return {
       trendingDecks: trendingRows.map((row) => row.deck),
@@ -970,27 +982,27 @@ export default function Discover() {
   }, [hasMoreDecks, discoverBatchSize, rankedDecks.length]);
 
   return (
-    <div className="discover-root-shell" style={{ padding: isCompact ? '0.9rem 1rem 3rem' : '0.9rem 3rem 4rem', width: '100%', maxWidth: '1200px', margin: '0 auto', color: 'white' }}>
+    <div className="discover-root-shell" style={{ padding: isCompact ? '0.9rem 1rem 3rem' : '0.9rem 3rem 4rem', width: '100%', maxWidth: '1200px', margin: '0 auto', color: 'var(--text-primary)' }}>
 
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isCompact ? 'stretch' : 'flex-end', flexDirection: isCompact ? 'column' : 'row', gap: isCompact ? '0.9rem' : 0, marginBottom: '2.5rem', marginTop: 0, borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isCompact ? 'stretch' : 'flex-end', flexDirection: isCompact ? 'column' : 'row', gap: isCompact ? '0.9rem' : 0, marginBottom: '2.5rem', marginTop: 0, borderBottom: '1px solid var(--card-bg)', paddingBottom: '1.5rem' }}>
         <div>
-          <h2 className="title-sparkle-effect" style={{ fontFamily: 'var(--font-display)', fontSize: isCompact ? '2rem' : '2.4rem', margin: 0, background: 'linear-gradient(180deg, #fff 0%, #9ca3af 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <Globe size={isCompact ? 24 : 28} color="rgba(147,197,253,0.95)" style={{ filter: 'drop-shadow(0 0 10px rgba(147,197,253,0.5))' }} />
+          <h2 className="title-sparkle-effect">
+            <Globe size={isCompact ? 24 : 28} color="var(--accent-primary)" style={{}} />
             Discover
           </h2>
-          <p style={{ color: 'var(--secondary)', margin: '0.4rem 0 0 0', fontWeight: 500, fontSize: '1rem' }}>Explore cognitive payloads synthesized by the community.</p>
+          <p style={{ color: 'var(--secondary)', margin: '0.4rem 0 0 0', fontWeight: 500, fontSize: '1rem' }}>Discover study decks shared by other learners.</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-full)', padding: '0.6rem 1.1rem', width: isCompact ? '100%' : 'auto', boxSizing: 'border-box' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-full)', padding: '0.6rem 1.1rem', width: isCompact ? '100%' : 'auto', boxSizing: 'border-box' }}>
           <Search size={15} color="var(--secondary)" />
-          <input aria-label="Search public decks and users" type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search decks, user name, @username, or user ID..." style={{ background: 'transparent', border: 'none', color: 'white', outline: 'none', fontFamily: 'var(--font-body)', fontSize: '0.9rem', width: isCompact ? '100%' : '240px', minWidth: 0 }} />
+          <input aria-label="Search public decks and users" type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search decks, user name, @username, or user ID..." style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'var(--font-body)', fontSize: '0.9rem', width: isCompact ? '100%' : '240px', minWidth: 0 }} />
           {searchQuery && <button aria-label="Clear search" title="Clear search" onClick={() => setSearchQuery('')} style={{ background: 'none', border: 'none', color: 'var(--secondary)', cursor: 'pointer', padding: 0, display: 'flex' }}><X size={14} /></button>}
         </div>
       </div>
 
       {normalizedSearchQuery && mergedMatchedUsers.length > 0 && (
         <div style={{ marginBottom: '1rem' }}>
-          <p style={{ margin: '0 0 0.5rem 0', color: 'rgba(255,255,255,0.62)', fontFamily: 'var(--font-body)', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+          <p style={{ margin: '0 0 0.5rem 0', color: 'var(--text-secondary)', fontFamily: 'var(--font-body)', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
             Matching users
           </p>
           <div className="app-content-visibility-list" style={{ display: 'grid', gap: '0.55rem', gridTemplateColumns: isCompact ? '1fr' : 'repeat(2, minmax(0, 1fr))' }}>
@@ -1002,13 +1014,13 @@ export default function Discover() {
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.5rem' }}>
+      <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginBottom: '1rem', borderBottom: '1px solid var(--card-border)', paddingBottom: '0.5rem' }}>
         <button
           onClick={() => setActiveCategoryKeys([])}
           style={{
             padding: '0.42rem 0.7rem',
             borderRadius: 'var(--radius-full)',
-            border: '1px solid rgba(255,255,255,0.12)',
+            border: '1px solid var(--card-border)',
             background: activeCategoryKeys.length === 0 ? 'rgba(147,197,253,0.14)' : 'transparent',
             color: activeCategoryKeys.length === 0 ? '#dbeafe' : 'var(--secondary)',
             cursor: 'pointer',
@@ -1020,8 +1032,7 @@ export default function Discover() {
             gap: '0.38rem',
           }}
         >
-          All
-          <span style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>{indexedDecks.length}</span>
+          <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>All {indexedDecks.length}</span>
         </button>
 
         {categories.map((category) => {
@@ -1033,9 +1044,9 @@ export default function Discover() {
               style={{
                 padding: '0.42rem 0.7rem',
                 borderRadius: 'var(--radius-full)',
-                border: `1px solid ${active ? 'rgba(147,197,253,0.45)' : 'rgba(255,255,255,0.12)'}`,
+                border: `1px solid ${active ? 'rgba(147,197,253,0.45)' : 'var(--card-border)'}`,
                 background: active ? 'rgba(147,197,253,0.14)' : 'transparent',
-                color: active ? '#dbeafe' : 'var(--secondary)',
+                color: active ? 'var(--text-primary)' : 'var(--secondary)',
                 cursor: 'pointer',
                 fontFamily: 'var(--font-body)',
                 fontSize: '0.74rem',
@@ -1047,7 +1058,7 @@ export default function Discover() {
               }}
             >
               {category.label}
-              {!isCompact && <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>{category.count}</span>}
+              {!isCompact && <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>{category.count}</span>}
             </button>
           );
         })}
@@ -1058,9 +1069,8 @@ export default function Discover() {
             style={{
               padding: '0.42rem 0.72rem',
               borderRadius: 'var(--radius-full)',
-              border: '1px solid rgba(248,113,113,0.45)',
-              background: 'rgba(248,113,113,0.08)',
-              color: '#fca5a5',
+              border: '1px solid var(--danger)',
+              color: 'var(--danger)',
               cursor: 'pointer',
               fontFamily: 'var(--font-body)',
               fontSize: '0.74rem',
@@ -1073,31 +1083,33 @@ export default function Discover() {
       </div>
 
       {!loading && !error && rankedDecks.length > 0 && (
-        <div className="app-content-visibility-section" style={{ marginBottom: '1.25rem', display: 'grid', gridTemplateColumns: isCompact ? '1fr' : 'repeat(2, minmax(0, 1fr))', gap: isCompact ? '0.65rem' : '0.8rem' }}>
-          <div style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-lg)', background: 'rgba(255,255,255,0.03)', padding: isCompact ? '0.7rem' : '0.85rem' }}>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1rem', color: 'white', letterSpacing: '-0.01em' }}>Trending Now</h3>
+        <div className="app-content-visibility-section" style={{ marginBottom: '1.25rem', display: 'grid', gridTemplateColumns: isCompact ? '1fr' : 'repeat(2, minmax(0, 1fr))', gap: isCompact ? '0.85rem' : '1.25rem' }}>
+          
+          <div style={{ border: '1px solid color-mix(in srgb, var(--warning) 25%, var(--card-border))', borderRadius: '1.25rem', background: 'linear-gradient(135deg, color-mix(in srgb, var(--warning) 6%, var(--card-bg)), var(--card-bg))', padding: isCompact ? '1rem' : '1.25rem' }}>
+            <div style={{ marginBottom: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <Flame size={18} color="var(--warning)" style={{ filter: 'drop-shadow(0 0 8px var(--warning))' }} />
+              <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.15rem', color: 'var(--text-primary)', letterSpacing: '-0.02em', textShadow: '0 0 10px rgba(255,255,255,0.1)' }}>Trending Now</h3>
             </div>
-            <div style={{ display: 'grid', gap: '0.42rem' }}>
+            <div style={{ display: 'grid', gap: '0.6rem' }}>
               {trendingDecks.map((deck, idx) => {
                 const rowKey = deck.id || `${deck.title || 'deck'}-trend-${idx}`;
                 const isSaved = isDeckAlreadySaved(deck.id);
                 return (
-                  <div key={rowKey} style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(0,0,0,0.2)', borderRadius: '0.62rem', padding: '0.38rem 0.42rem' }}>
-                    <button onClick={() => setPreviewDeck(deck)} style={{ flex: 1, minWidth: 0, border: 'none', background: 'transparent', color: 'white', textAlign: 'left', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.79rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div key={rowKey} onClick={() => setPreviewDeck(deck)} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', border: '1px solid color-mix(in srgb, var(--card-border) 80%, transparent)', background: 'var(--glass-surface)', borderRadius: '0.75rem', padding: '0.5rem 0.6rem', cursor: 'pointer', transition: 'background 0.2s ease, transform 0.2s ease' }}>
+                    <button style={{ flex: 1, minWidth: 0, border: 'none', background: 'transparent', color: 'var(--text-primary)', textAlign: 'left', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {deck.title || 'Untitled deck'}
                     </button>
-                    <button aria-label={`Preview ${deck.title || 'deck'}`} title="Preview deck" onClick={() => setPreviewDeck(deck)} style={{ border: '1px solid rgba(255,255,255,0.14)', background: 'transparent', color: 'var(--secondary)', borderRadius: '0.5rem', padding: '0.3rem', display: 'flex', cursor: 'pointer' }}>
-                      <Eye size={13} />
+                    <button aria-label={`Preview ${deck.title || 'deck'}`} title="Preview deck" style={{ border: '1px solid var(--card-border)', background: 'transparent', color: 'var(--secondary)', borderRadius: '0.5rem', padding: '0.35rem', display: 'flex', cursor: 'pointer' }}>
+                      <Eye size={14} />
                     </button>
                     <button
-                      onClick={() => handleSave(deck.id)}
+                      onClick={(e) => { e.stopPropagation(); handleSave(deck.id); }}
                       aria-label={`Save ${deck.title || 'deck'}`}
                       title="Save deck"
                       disabled={!deck.id || isSaved || savingId === deck.id}
-                      style={{ border: `1px solid ${isSaved ? 'rgba(34,197,94,0.35)' : 'rgba(99,179,237,0.35)'}`, background: isSaved ? 'rgba(34,197,94,0.1)' : 'rgba(99,179,237,0.1)', color: isSaved ? '#4ade80' : '#63b3ed', borderRadius: '0.5rem', padding: '0.3rem', display: 'flex', cursor: (!deck.id || isSaved) ? 'default' : 'pointer', opacity: savingId === deck.id ? 0.65 : 1 }}
+                      style={{ border: `1px solid ${isSaved ? 'var(--success)' : 'rgba(99,179,237,0.35)'}`, background: isSaved ? 'var(--success)' : 'rgba(99,179,237,0.1)', color: isSaved ? 'var(--text-inverse)' : 'var(--accent-primary)', borderRadius: '0.5rem', padding: '0.35rem', display: 'flex', cursor: (!deck.id || isSaved) ? 'default' : 'pointer', opacity: savingId === deck.id ? 0.65 : 1 }}
                     >
-                      {isSaved ? <BookmarkCheck size={13} /> : <Bookmark size={13} />}
+                      {isSaved ? <BookmarkCheck size={14} /> : <Bookmark size={14} />}
                     </button>
                   </div>
                 );
@@ -1105,30 +1117,31 @@ export default function Discover() {
             </div>
           </div>
 
-          <div style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-lg)', background: 'rgba(255,255,255,0.03)', padding: isCompact ? '0.7rem' : '0.85rem' }}>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1rem', color: 'white', letterSpacing: '-0.01em' }}>Fresh Picks</h3>
+          <div style={{ border: '1px solid color-mix(in srgb, var(--success) 25%, var(--card-border))', borderRadius: '1.25rem', background: 'linear-gradient(135deg, color-mix(in srgb, var(--success) 6%, var(--card-bg)), var(--card-bg))', padding: isCompact ? '1rem' : '1.25rem' }}>
+            <div style={{ marginBottom: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <Sparkles size={18} color="var(--success)" style={{ filter: 'drop-shadow(0 0 8px var(--success))' }} />
+              <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.15rem', color: 'var(--text-primary)', letterSpacing: '-0.02em', textShadow: '0 0 10px rgba(255,255,255,0.1)' }}>Fresh Picks</h3>
             </div>
-            <div style={{ display: 'grid', gap: '0.42rem' }}>
+            <div style={{ display: 'grid', gap: '0.6rem' }}>
               {freshDecks.map((deck, idx) => {
                 const rowKey = deck.id || `${deck.title || 'deck'}-fresh-${idx}`;
                 const isSaved = isDeckAlreadySaved(deck.id);
                 return (
-                  <div key={rowKey} style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(0,0,0,0.2)', borderRadius: '0.62rem', padding: '0.38rem 0.42rem' }}>
-                    <button onClick={() => setPreviewDeck(deck)} style={{ flex: 1, minWidth: 0, border: 'none', background: 'transparent', color: 'white', textAlign: 'left', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.79rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div key={rowKey} onClick={() => setPreviewDeck(deck)} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', border: '1px solid color-mix(in srgb, var(--card-border) 80%, transparent)', background: 'var(--glass-surface)', borderRadius: '0.75rem', padding: '0.5rem 0.6rem', cursor: 'pointer', transition: 'background 0.2s ease, transform 0.2s ease' }}>
+                    <button style={{ flex: 1, minWidth: 0, border: 'none', background: 'transparent', color: 'var(--text-primary)', textAlign: 'left', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {deck.title || 'Untitled deck'}
                     </button>
-                    <button aria-label={`Preview ${deck.title || 'deck'}`} title="Preview deck" onClick={() => setPreviewDeck(deck)} style={{ border: '1px solid rgba(255,255,255,0.14)', background: 'transparent', color: 'var(--secondary)', borderRadius: '0.5rem', padding: '0.3rem', display: 'flex', cursor: 'pointer' }}>
-                      <Eye size={13} />
+                    <button aria-label={`Preview ${deck.title || 'deck'}`} title="Preview deck" style={{ border: '1px solid var(--card-border)', background: 'transparent', color: 'var(--secondary)', borderRadius: '0.5rem', padding: '0.35rem', display: 'flex', cursor: 'pointer' }}>
+                      <Eye size={14} />
                     </button>
                     <button
-                      onClick={() => handleSave(deck.id)}
+                      onClick={(e) => { e.stopPropagation(); handleSave(deck.id); }}
                       aria-label={`Save ${deck.title || 'deck'}`}
                       title="Save deck"
                       disabled={!deck.id || isSaved || savingId === deck.id}
-                      style={{ border: `1px solid ${isSaved ? 'rgba(34,197,94,0.35)' : 'rgba(99,179,237,0.35)'}`, background: isSaved ? 'rgba(34,197,94,0.1)' : 'rgba(99,179,237,0.1)', color: isSaved ? '#4ade80' : '#63b3ed', borderRadius: '0.5rem', padding: '0.3rem', display: 'flex', cursor: (!deck.id || isSaved) ? 'default' : 'pointer', opacity: savingId === deck.id ? 0.65 : 1 }}
+                      style={{ border: `1px solid ${isSaved ? 'var(--success)' : 'rgba(99,179,237,0.35)'}`, background: isSaved ? 'var(--success)' : 'rgba(99,179,237,0.1)', color: isSaved ? 'var(--text-inverse)' : 'var(--accent-primary)', borderRadius: '0.5rem', padding: '0.35rem', display: 'flex', cursor: (!deck.id || isSaved) ? 'default' : 'pointer', opacity: savingId === deck.id ? 0.65 : 1 }}
                     >
-                      {isSaved ? <BookmarkCheck size={13} /> : <Bookmark size={13} />}
+                      {isSaved ? <BookmarkCheck size={14} /> : <Bookmark size={14} />}
                     </button>
                   </div>
                 );
@@ -1142,7 +1155,7 @@ export default function Discover() {
       {loading ? (
         <DiscoverDeckSkeletonGrid isCompact={isCompact} prefersReducedMotion={prefersReducedMotion} />
       ) : error ? (
-        <div style={{ textAlign: 'center', padding: '4rem', color: '#f87171', fontFamily: 'var(--font-body)' }}>⚠️ {error}</div>
+        <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--danger)', fontFamily: 'var(--font-body)' }}>⚠️ {error}</div>
       ) : rankedDecks.length === 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: isCompact ? '2.5rem 1.25rem' : '5rem', border: '1px dashed var(--glass-border)', borderRadius: 'var(--radius-xl)', background: 'var(--glass-surface)' }}>
           <Globe size={48} color="var(--secondary)" style={{ marginBottom: '1rem', opacity: 0.5 }} />
@@ -1171,7 +1184,7 @@ export default function Discover() {
                   exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
                   transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.16, ease: EASE_OUT_CURVE }}
                   whileHover={!isCompact && canHoverPointer && !prefersReducedMotion ? { scale: 1.01 } : undefined}
-                  style={{ background: 'var(--glass-surface)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative', boxShadow: '0 8px 30px rgba(0,0,0,0.4)' }}
+                  style={{ background: 'var(--glass-surface)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative', boxShadow: 'var(--shadow-color) 0px 4px 10px -5px' }}
                 >
                   {/* Thumbnail */}
                   {deck.thumbnail ? (
@@ -1180,23 +1193,23 @@ export default function Discover() {
                     </div>
                   ) : (
                     <div style={{ width: '100%', height: '130px', background: 'linear-gradient(135deg, rgba(99,179,237,0.08) 0%, rgba(0,0,0,0) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Globe size={36} color="rgba(99,179,237,0.25)" />
+                      <Globe size={36} color="var(--badge-bg)" />
                     </div>
                   )}
 
                   {/* Save badge */}
-                  <div style={{ position: 'absolute', top: '0.6rem', right: '0.6rem', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)', padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)', fontSize: '0.7rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: deck.saves > 0 ? '#63b3ed' : 'var(--secondary)', border: '1px solid rgba(99,179,237,0.2)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <div style={{ position: 'absolute', top: '0.6rem', right: '0.6rem', background: 'var(--shadow-color)', backdropFilter: 'blur(8px)', padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)', fontSize: '0.7rem', fontFamily: 'var(--font-body)', fontWeight: 700, color: deck.saves > 0 ? 'var(--accent-primary)' : 'var(--secondary)', border: '1px solid var(--badge-bg)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                     <Bookmark size={10} /> {deck.saves || 0}
                   </div>
 
                   <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1, gap: '0.7rem' }}>
                     {deck.publishedBy?.name && <AuthorChip name={deck.publishedBy.name} username={deck.publishedBy.username} picture={deck.publishedBy.picture} userId={deck.publishedBy.userId} onClick={() => { if (deck.publishedBy?.username) navigate(`/u/${deck.publishedBy.username}`); }} />}
-                    <h4 style={{ margin: 0, fontFamily: 'var(--font-display)', color: 'white', fontSize: '1.2rem', lineHeight: 1.25, letterSpacing: '-0.02em', display: '-webkit-box', WebkitLineClamp: DISCOVER_TITLE_MAX_LINES, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: `${titleMetrics?.height || DISCOVER_TITLE_LINE_HEIGHT}px` }}>{deck.title}</h4>
+                    <h4 style={{ margin: 0, fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontSize: '1.2rem', lineHeight: 1.25, letterSpacing: '-0.02em', display: '-webkit-box', WebkitLineClamp: DISCOVER_TITLE_MAX_LINES, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: `${titleMetrics?.height || DISCOVER_TITLE_LINE_HEIGHT}px` }}>{deck.title}</h4>
 
                     {deck.labels?.length > 0 && (
                       <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
                         {deck.labels.map((lbl, idx) => (
-                          <span key={idx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.68rem', color: 'var(--secondary)', fontFamily: 'var(--font-body)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{lbl}</span>
+                          <span key={idx} style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.68rem', color: 'var(--secondary)', fontFamily: 'var(--font-body)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{lbl}</span>
                         ))}
                       </div>
                     )}
@@ -1210,7 +1223,7 @@ export default function Discover() {
                       <button
                         onClick={() => handleSave(deck.id)}
                         disabled={!deck.id || isSaved || savingId === deck.id}
-                        style={{ flex: 1, padding: '0.65rem', background: isSaved ? 'rgba(34,197,94,0.1)' : 'rgba(99,179,237,0.1)', border: `1px solid ${isSaved ? 'rgba(34,197,94,0.35)' : 'rgba(99,179,237,0.35)'}`, color: isSaved ? '#4ade80' : '#63b3ed', borderRadius: 'var(--radius-sm)', cursor: isSaved ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontWeight: 700, fontFamily: 'var(--font-body)', fontSize: '0.82rem', transition: 'background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, opacity 200ms ease-out', opacity: savingId === deck.id ? 0.6 : 1 }}
+                        style={{ flex: 1, padding: '0.65rem', background: isSaved ? 'var(--success)' : 'rgba(99,179,237,0.1)', border: `1px solid ${isSaved ? 'var(--success)' : 'rgba(99,179,237,0.35)'}`, color: isSaved ? 'var(--success)' : 'var(--accent-primary)', borderRadius: 'var(--radius-sm)', cursor: isSaved ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontWeight: 700, fontFamily: 'var(--font-body)', fontSize: '0.82rem', transition: 'background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, opacity 200ms ease-out', opacity: savingId === deck.id ? 0.6 : 1 }}
                       >
                         {isSaved ? <><BookmarkCheck size={14} /> Saved</> : savingId === deck.id ? <>Saving…</> : <><Bookmark size={14} /> Save</>}
                       </button>
@@ -1218,7 +1231,7 @@ export default function Discover() {
                       <button
                         onClick={() => setPreviewDeck(deck)}
                         title="Preview deck"
-                        style={{ padding: '0.65rem 0.7rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.12)', color: 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.8rem' }}
+                        style={{ padding: '0.65rem 0.7rem', background: 'transparent', border: '1px solid var(--card-border)', color: 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.8rem' }}
                       >
                         <Eye size={14} /> Preview
                       </button>
@@ -1228,7 +1241,7 @@ export default function Discover() {
                         aria-label={canShareDeck ? `Copy share URL for ${deck.title || 'deck'}` : 'Share URL unavailable'}
                         title={canShareDeck ? 'Copy share URL' : 'Share URL unavailable'}
                         disabled={!canShareDeck}
-                        style={{ padding: '0.65rem 0.58rem', background: copiedDeckId === deck.id ? 'rgba(34,197,94,0.12)' : 'transparent', border: `1px solid ${copiedDeckId === deck.id ? 'rgba(34,197,94,0.45)' : 'rgba(255,255,255,0.12)'}`, color: copiedDeckId === deck.id ? '#4ade80' : (canShareDeck ? 'var(--secondary)' : 'rgba(255,255,255,0.3)'), borderRadius: 'var(--radius-sm)', cursor: canShareDeck ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        style={{ padding: '0.65rem 0.58rem', background: copiedDeckId === deck.id ? 'var(--success)' : 'transparent', border: `1px solid ${copiedDeckId === deck.id ? 'var(--success)' : 'var(--card-border)'}`, color: copiedDeckId === deck.id ? 'var(--success)' : (canShareDeck ? 'var(--secondary)' : 'var(--text-secondary)'), borderRadius: 'var(--radius-sm)', cursor: canShareDeck ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       >
                         {copiedDeckId === deck.id ? <Check size={14} /> : <Link2 size={14} />}
                       </button>
@@ -1264,7 +1277,7 @@ export default function Discover() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            style={{ position: 'fixed', bottom: isCompact ? '1rem' : '2rem', right: isCompact ? '1rem' : '2rem', left: isCompact ? '1rem' : 'auto', background: toast.type === 'error' ? 'rgba(239,68,68,0.9)' : 'rgba(20,20,20,0.95)', border: `1px solid ${toast.type === 'error' ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.1)'}`, color: 'white', padding: '0.9rem 1.5rem', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontWeight: 600, backdropFilter: 'blur(8px)', zIndex: 9999, boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
+            style={{ position: 'fixed', bottom: isCompact ? '1rem' : '2rem', right: isCompact ? '1rem' : '2rem', left: isCompact ? '1rem' : 'auto', background: toast.type === 'error' ? 'rgba(239,68,68,0.9)' : 'rgba(20,20,20,0.95)', border: `1px solid ${toast.type === 'error' ? 'rgba(239,68,68,0.5)' : 'var(--card-border)'}`, color: 'var(--text-primary)', padding: '0.9rem 1.5rem', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontWeight: 600, backdropFilter: 'blur(8px)', zIndex: 9999, boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
           >
             {toast.msg}
           </motion.div>

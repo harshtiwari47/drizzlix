@@ -28,10 +28,10 @@ const getTaskDeleteDedupeKey = (id) => `tasks:delete:${id}`;
 
 /* ── Design Tokens ─────────────────────────────────────────────────── */
 const PRIORITY = {
-  urgent: { label: 'Urgent', color: '#f87171', bg: 'rgba(248,113,113,0.1)', border: 'rgba(248,113,113,0.2)' },
-  high: { label: 'High', color: '#fb923c', bg: 'rgba(251,146,60,0.1)', border: 'rgba(251,146,60,0.2)' },
-  medium: { label: 'Medium', color: '#facc15', bg: 'rgba(250,204,21,0.08)', border: 'rgba(250,204,21,0.2)' },
-  low: { label: 'Low', color: '#4ade80', bg: 'rgba(74,222,128,0.08)', border: 'rgba(74,222,128,0.2)' },
+  urgent: { label: 'Urgent', color: 'var(--danger)', bg: 'var(--danger)', border: 'var(--danger)' },
+  high: { label: 'High', color: 'var(--warning)', bg: 'var(--warning)', border: 'var(--warning)' },
+  medium: { label: 'Medium', color: 'var(--warning)', bg: 'var(--warning)', border: 'var(--warning)' },
+  low: { label: 'Low', color: 'var(--success)', bg: 'var(--success)', border: 'var(--success)' },
 };
 
 /* ── Helpers ───────────────────────────────────────────────────────── */
@@ -47,10 +47,10 @@ const getRelativeTime = (date) => {
   const diffTime = due - now;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  if (diffDays < 0) return { text: `${Math.abs(diffDays)}d overdue`, color: '#f87171' };
-  if (diffDays === 0) return { text: 'Due today', color: '#fb923c' };
-  if (diffDays === 1) return { text: 'Due tomorrow', color: '#facc15' };
-  return { text: due.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }), color: 'rgba(255,255,255,0.4)' };
+  if (diffDays < 0) return { text: `${Math.abs(diffDays)}d overdue`, color: 'var(--danger)' };
+  if (diffDays === 0) return { text: 'Due today', color: 'var(--warning)' };
+  if (diffDays === 1) return { text: 'Due tomorrow', color: 'var(--warning)' };
+  return { text: due.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }), color: 'var(--text-secondary)' };
 };
 
 const getViewportWidth = () => {
@@ -85,7 +85,7 @@ const useViewportWidth = () => {
 
 /* ── Components ────────────────────────────────────────────────────── */
 
-const IconButton = ({ children, onClick, color = 'rgba(255,255,255,0.4)', hoverColor = 'white', size = 'medium' }) => {
+const IconButton = ({ children, onClick, color = 'var(--text-secondary)', hoverColor = 'white', size = 'medium' }) => {
   const s = size === 'small' ? '28px' : '32px';
   const r = size === 'small' ? '0.6rem' : '0.75rem';
 
@@ -93,7 +93,7 @@ const IconButton = ({ children, onClick, color = 'rgba(255,255,255,0.4)', hoverC
     <button
       onClick={onClick}
       style={{
-        background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)',
+        background: 'var(--card-bg)', border: '1px solid var(--card-border)',
         cursor: 'pointer', color, width: s, height: s,
         borderRadius: r, display: 'flex', alignItems: 'center', justifyContent: 'center',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -102,14 +102,14 @@ const IconButton = ({ children, onClick, color = 'rgba(255,255,255,0.4)', hoverC
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.color = hoverColor;
-        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        e.currentTarget.style.background = 'var(--text-secondary)';
+        e.currentTarget.style.borderColor = 'var(--text-secondary)';
         e.currentTarget.style.transform = 'translateY(-2px)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.color = color;
-        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+        e.currentTarget.style.background = 'var(--card-bg)';
+        e.currentTarget.style.borderColor = 'var(--text-secondary)';
         e.currentTarget.style.transform = 'translateY(0)';
       }}
     >
@@ -144,7 +144,7 @@ const DateRibbon = ({ selectedDate, onSelectDate, compact = false }) => {
   const isSelected = (d) => formatDateKey(d) === formatDateKey(selectedDate);
 
   return (
-    <div style={{ position: 'relative', width: compact ? 'clamp(14rem, 86vw, 22rem)' : '100%', maxWidth: '100%', margin: compact ? '0 auto 1.75rem' : '0 0 2.5rem', background: 'rgba(255,255,255,0.01)', borderRadius: compact ? '1rem' : '1.5rem', padding: compact ? '0.3rem' : '0.5rem', border: '1px solid rgba(255,255,255,0.03)' }}>
+    <div style={{ position: 'relative', width: compact ? 'clamp(14rem, 86vw, 22rem)' : '100%', maxWidth: '100%', margin: compact ? '0 auto 1.75rem' : '0 0 2.5rem', background: 'var(--card-bg)', borderRadius: compact ? '1rem' : '1.5rem', padding: compact ? '0.3rem' : '0.5rem', border: '1px solid var(--card-bg)' }}>
       <div
         ref={scrollRef}
         style={{
@@ -161,21 +161,21 @@ const DateRibbon = ({ selectedDate, onSelectDate, compact = false }) => {
               flexShrink: 0, width: compact ? compactCardWidth : '64px', height: compact ? compactCardHeight : '84px', borderRadius: compact ? '1rem' : '1.25rem',
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', transition: 'all 0.4s',
-              background: isSelected(d) ? 'rgba(255,255,255,0.08)' : 'transparent',
-              border: `1px solid ${isSelected(d) ? 'rgba(255,255,255,0.2)' : 'transparent'}`,
-              boxShadow: isSelected(d) ? '0 0 20px rgba(167, 139, 250, 0.15)' : 'none',
+              background: isSelected(d) ? 'var(--card-hover)' : 'transparent',
+              border: `1px solid ${isSelected(d) ? 'var(--text-secondary)' : 'transparent'}`,
+              boxShadow: isSelected(d) ? '0 0 20px var(--badge-bg)' : 'none',
               scale: isSelected(d) ? 1.05 : 1
             }}
-            whileHover={compact ? undefined : { background: 'rgba(255,255,255,0.05)', scale: isSelected(d) ? 1.05 : 1.02 }}
+            whileHover={compact ? undefined : { background: 'var(--card-bg)', scale: isSelected(d) ? 1.05 : 1.02 }}
           >
-            <span style={{ fontSize: compact ? '0.52rem' : '0.65rem', color: isSelected(d) ? 'white' : 'rgba(255,255,255,0.3)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: compact ? '0.52rem' : '0.65rem', color: isSelected(d) ? 'var(--text-primary)' : 'var(--text-secondary)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {d.toLocaleDateString(undefined, { weekday: 'short' })}
             </span>
-            <span style={{ fontSize: compact ? '0.95rem' : '1.15rem', color: isSelected(d) ? 'white' : 'rgba(255,255,255,0.5)', fontWeight: 800 }}>
+            <span style={{ fontSize: compact ? '0.95rem' : '1.15rem', color: isSelected(d) ? 'var(--text-primary)' : 'var(--text-secondary)', fontWeight: 800 }}>
               {d.getDate()}
             </span>
             {isToday(d) && (
-              <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#a78bfa', marginTop: '0.2rem', boxShadow: '0 0 8px #a78bfa' }} />
+              <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--accent-primary)', marginTop: '0.2rem', boxShadow: '0 0 8px var(--accent-primary)' }} />
             )}
           </motion.div>
         ))}
@@ -184,11 +184,11 @@ const DateRibbon = ({ selectedDate, onSelectDate, compact = false }) => {
   );
 };
 
-const StatCard = ({ label, value, icon: Icon, color = '#a78bfa', compact = false }) => (
+const StatCard = ({ label, value, icon: Icon, color = 'var(--accent-primary)', compact = false }) => (
   <motion.div
-    whileHover={{ y: -2, background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)' }}
+    whileHover={{ y: -2, background: 'var(--card-bg)', borderColor: 'var(--text-secondary)' }}
     style={{
-      background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+      background: 'var(--card-bg)', border: '1px solid var(--card-bg)',
       padding: compact ? '0.75rem 0.9rem' : '0.75rem 1.25rem', borderRadius: compact ? '1rem' : '1.25rem', display: 'flex', alignItems: 'center', gap: compact ? '0.75rem' : '1rem',
       backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', minWidth: compact ? '100%' : '160px', flex: compact ? '1 1 100%' : 1, transition: 'all 0.3s'
     }}
@@ -200,19 +200,19 @@ const StatCard = ({ label, value, icon: Icon, color = '#a78bfa', compact = false
       <Icon size={compact ? 16 : 18} strokeWidth={2.5} />
     </div>
     <div style={{ minWidth: 0 }}>
-      <div style={{ fontSize: '0.6rem', fontWeight: 800, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.12em', whiteSpace: 'nowrap' }}>{label}</div>
-      <div style={{ fontSize: compact ? '1.05rem' : '1.25rem', fontWeight: 900, color: 'white' }}>{value}</div>
+      <div style={{ fontSize: '0.6rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.12em', whiteSpace: 'nowrap' }}>{label}</div>
+      <div style={{ fontSize: compact ? '1.05rem' : '1.25rem', fontWeight: 900, color: 'var(--text-primary)' }}>{value}</div>
     </div>
   </motion.div>
 );
 
-const SuccessProgress = ({ value, color = '#facc15' }) => (
+const SuccessProgress = ({ value, color = 'var(--warning)' }) => (
   <div style={{ marginTop: '0.5rem', marginBottom: '1.5rem', flex: '1 1 100%' }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem', padding: '0 0.25rem' }}>
-      <div style={{ fontSize: '0.6rem', fontWeight: 800, color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>Success Rate</div>
+      <div style={{ fontSize: '0.6rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>Success Rate</div>
       <div style={{ fontSize: '0.85rem', fontWeight: 900, color, filter: `drop-shadow(0 0 5px ${color}40)` }}>{value}%</div>
     </div>
-    <div style={{ height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.03)', position: 'relative' }}>
+    <div style={{ height: '6px', background: 'var(--card-bg)', borderRadius: '3px', overflow: 'hidden', border: '1px solid var(--card-bg)', position: 'relative' }}>
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: `${value}%` }}
@@ -246,7 +246,7 @@ const PriorityBars = ({ priority }) => {
             width: '4px',
             height: `${idx * 25}%`,
             borderRadius: '1px',
-            background: idx <= count ? p.color : 'rgba(255,255,255,0.05)',
+            background: idx <= count ? p.color : 'var(--card-bg)',
             boxShadow: idx <= count ? `0 0 8px ${p.color}80` : 'none',
             transition: 'all 0.3s ease'
           }}
@@ -286,13 +286,13 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
         background: 'rgba(15, 15, 25, 0.4)',
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
-        border: `1px solid ${isDone ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.1)'}`,
+        border: `1px solid ${isDone ? 'var(--card-bg)' : 'var(--text-secondary)'}`,
         borderRadius: compact ? '1.1rem' : '1.5rem',
-        boxShadow: isDone ? 'none' : '0 10px 40px rgba(0,0,0,0.4)',
+        boxShadow: isDone ? 'none' : '0 10px 40px var(--shadow-color)',
         transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
         contain: 'layout paint',
       }}
-      whileHover={compact ? undefined : { y: -5, borderColor: isDone ? 'rgba(255,255,255,0.1)' : 'rgba(167, 139, 250, 0.4)' }}
+      whileHover={compact ? undefined : { y: -5, borderColor: isDone ? 'var(--text-secondary)' : 'var(--badge-bg)' }}
     >
       {/* Background Nebula & Stars */}
       <div style={{
@@ -301,7 +301,7 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
       }}>
         <div style={{
           position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
-          background: `radial-gradient(circle at center, ${p.color}15 0%, transparent 40%)`,
+          background: `var(--bg-gradient)`,
           animation: 'nebula-pulse 8s infinite ease-in-out',
         }} />
         {stars.map(s => (
@@ -320,8 +320,8 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
           <button
             onClick={() => onToggleStatus(task)}
             style={{
-              background: isDone ? p.color : 'rgba(255, 255, 255, 0.05)',
-              border: `1.5px solid ${isDone ? p.color : 'rgba(255, 255, 255, 0.1)'}`,
+              background: isDone ? p.color : 'var(--card-bg)',
+              border: `1.5px solid ${isDone ? p.color : 'var(--text-secondary)'}`,
               borderRadius: '50%', width: compact ? 24 : 22, height: compact ? 24 : 22,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', flexShrink: 0, marginTop: '0.2rem',
@@ -336,7 +336,7 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
           <div style={{ flex: 1, minWidth: 0, paddingRight: compact ? 0 : '4.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.25rem' }}>
               <h4 style={{
-                margin: 0, fontSize: compact ? '1rem' : '1.1rem', color: 'white', fontWeight: 700,
+                margin: 0, fontSize: compact ? '1rem' : '1.1rem', color: 'var(--text-primary)', fontWeight: 700,
                 textDecoration: isDone ? 'line-through' : 'none',
                 letterSpacing: '-0.02em',
                 wordBreak: 'break-word'
@@ -358,7 +358,7 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   style={{
-                    margin: '0.25rem 0 0', fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)',
+                    margin: '0.25rem 0 0', fontSize: '0.85rem', color: 'var(--text-secondary)',
                     lineHeight: 1.5, overflow: 'hidden', wordBreak: 'break-word'
                   }}>
                   {task.description}
@@ -370,13 +370,13 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
               <PriorityBars priority={task.priority} />
 
               {task.subtasks?.length > 0 && (
-                <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.45)', display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(255,255,255,0.05)', padding: '0.25rem 0.6rem', borderRadius: '0.6rem' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'var(--card-bg)', padding: '0.25rem 0.6rem', borderRadius: '0.6rem' }}>
                   <CheckSquare size={18} strokeWidth={3} style={{ flexShrink: 0 }} /> {task.subtasks.filter(s => s.done).length}/{task.subtasks.length}
                 </span>
               )}
 
               {relativeTime && (
-                <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.45)', display: 'flex', alignItems: 'center', gap: '0.4rem', whiteSpace: compact ? 'normal' : 'nowrap' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.4rem', whiteSpace: compact ? 'normal' : 'nowrap' }}>
                   <Clock size={18} strokeWidth={3} style={{ flexShrink: 0 }} /> {relativeTime.text}
                 </span>
               )}
@@ -390,11 +390,11 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
                 {/* Subtasks List */}
                 {task.subtasks?.length > 0 && (
                   <div style={{
-                    padding: compact ? '0.9rem' : '1.25rem', background: 'rgba(255,255,255,0.02)', borderRadius: compact ? '1rem' : '1.25rem',
-                    border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden'
+                    padding: compact ? '0.9rem' : '1.25rem', background: 'var(--card-bg)', borderRadius: compact ? '1rem' : '1.25rem',
+                    border: '1px solid var(--card-bg)', position: 'relative', overflow: 'hidden'
                   }}>
                     {/* Mission Progress Pipe */}
-                    <div style={{ height: '2px', width: '100%', background: 'rgba(255,255,255,0.05)', position: 'absolute', top: 0, left: 0 }}>
+                    <div style={{ height: '2px', width: '100%', background: 'var(--card-bg)', position: 'absolute', top: 0, left: 0 }}>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${(task.subtasks.filter(s => s.done).length / task.subtasks.length) * 100}%` }}
@@ -403,7 +403,7 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      <div style={{ fontSize: '0.6rem', fontWeight: 800, color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase', letterSpacing: '0.12em', whiteSpace: 'nowrap' }}>Mission Sequence</div>
+                      <div style={{ fontSize: '0.6rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.12em', whiteSpace: 'nowrap' }}>Mission Sequence</div>
                       <div style={{ fontSize: '0.6rem', fontWeight: 800, color: p.color, opacity: 0.8, whiteSpace: 'nowrap' }}>{Math.round((task.subtasks.filter(s => s.done).length / task.subtasks.length) * 100)}% COMPLETE</div>
                     </div>
 
@@ -411,19 +411,19 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
                       {task.subtasks.map((st, i) => (
                         <motion.div
                           key={i}
-                          whileHover={{ x: 4, background: 'rgba(255,255,255,0.04)' }}
+                          whileHover={{ x: 4, background: 'var(--card-bg)' }}
                           onClick={(e) => { e.stopPropagation(); onToggleSubtask(task, i); }}
                           style={{
                             display: 'flex', alignItems: 'flex-start', gap: '0.6rem', cursor: 'pointer',
                             padding: '0.5rem 0.6rem', borderRadius: '0.75rem',
-                            background: st.done ? 'rgba(255,255,255,0.01)' : 'transparent',
+                            background: st.done ? 'var(--card-bg)' : 'transparent',
                             transition: 'all 0.2s',
-                            border: `1px solid ${st.done ? 'transparent' : 'rgba(255,255,255,0.03)'}`
+                            border: `1px solid ${st.done ? 'transparent' : 'var(--card-bg)'}`
                           }}
                         >
                           <div style={{
                             width: 14, height: 14, borderRadius: '4px', marginTop: '2px', flexShrink: 0,
-                            border: `1.5px solid ${st.done ? p.color : 'rgba(255,255,255,0.15)'}`,
+                            border: `1.5px solid ${st.done ? p.color : 'var(--text-secondary)'}`,
                             background: st.done ? p.color : 'transparent',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             boxShadow: st.done ? `0 0 8px ${p.color}40` : 'none',
@@ -432,7 +432,7 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
                             {st.done && <Check size={10} color="#000" strokeWidth={5} />}
                           </div>
                           <span style={{
-                            fontSize: '0.8rem', color: st.done ? 'rgba(255,255,255,0.3)' : 'white',
+                            fontSize: '0.8rem', color: st.done ? 'var(--text-secondary)' : 'white',
                             textDecoration: st.done ? 'line-through' : 'none',
                             fontWeight: st.done ? 400 : 500,
                             transition: 'all 0.3s',
@@ -450,7 +450,7 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
                 {task.tags?.length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '0.25rem' }}>
                     {task.tags.map(t => (
-                      <span key={t} style={{ fontSize: '0.65rem', color: 'rgba(167, 139, 250, 0.8)', background: 'rgba(167, 139, 250, 0.1)', padding: '0.2rem 0.5rem', borderRadius: '0.5rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', border: '1px solid rgba(167, 139, 250, 0.1)' }}>
+                      <span key={t} style={{ fontSize: '0.65rem', color: 'var(--badge-bg)', background: 'var(--badge-bg)', padding: '0.2rem 0.5rem', borderRadius: '0.5rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', border: '1px solid var(--badge-bg)' }}>
                         #{t}
                       </span>
                     ))}
@@ -467,18 +467,18 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleStatus, onTogglePin, onToggl
             background: 'rgba(25, 25, 40, 0.7)',
             backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
             padding: '0.2rem', borderRadius: '0.8rem',
-            border: '1px solid rgba(255,255,255,0.15)',
-            boxShadow: '0 8px 20px rgba(0,0,0,0.5)',
+            border: '1px solid var(--text-secondary)',
+            boxShadow: '0 8px 20px var(--shadow-color)',
             marginLeft: compact ? 'auto' : 0,
             marginTop: compact ? '0.5rem' : 0,
             width: compact ? '100%' : 'auto',
             justifyContent: compact ? 'flex-end' : 'flex-start'
           }}>
-            <IconButton onClick={() => onTogglePin(task)} color={task.pinned ? '#facc15' : undefined} size="small">
-              {task.pinned ? <Pin size={15} fill="#facc15" /> : <Pin size={15} />}
+            <IconButton onClick={() => onTogglePin(task)} color={task.pinned ? 'var(--warning)' : undefined} size="small">
+              {task.pinned ? <Pin size={15} fill="var(--warning)" /> : <Pin size={15} />}
             </IconButton>
             <IconButton onClick={() => onEdit(task)} size="small"><Edit3 size={15} /></IconButton>
-            <IconButton onClick={() => onDelete(task._id)} hoverColor="#f87171" size="small"><Trash2 size={15} /></IconButton>
+            <IconButton onClick={() => onDelete(task._id)} hoverColor="var(--danger)" size="small"><Trash2 size={15} /></IconButton>
           </div>
         </div>
       </div>
@@ -541,7 +541,7 @@ const TaskModal = ({ task, onClose, onSave, compact = false }) => {
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         onClick={onClose}
-        style={{ position: 'absolute', inset: 0, background: 'rgba(5, 5, 10, 0.8)', backdropFilter: 'blur(6px)' }}
+        style={{ position: 'absolute', inset: 0, background: 'var(--shadow-color)', backdropFilter: 'blur(6px)' }}
       />
 
       <motion.div
@@ -551,17 +551,17 @@ const TaskModal = ({ task, onClose, onSave, compact = false }) => {
         onClick={e => e.stopPropagation()}
         style={{
           position: 'relative', width: compact ? '100%' : '95%', maxWidth: '650px', maxHeight: compact ? '92dvh' : '90vh', overflowY: 'auto', overflowX: 'hidden',
-          background: 'rgba(15, 15, 25, 0.4)', backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(255,255,255,0.1)', borderRadius: compact ? '1.4rem' : '2rem',
-          padding: compact ? '1rem' : 'clamp(1.5rem, 5vw, 3rem)', color: 'white',
-          boxShadow: '0 30px 60px rgba(0,0,0,0.6)',
+          background: 'var(--glass-surface-solid)', backdropFilter: 'blur(8px)',
+          border: '1px solid var(--card-border)', borderRadius: compact ? '1.4rem' : '2rem',
+          padding: compact ? '1rem' : 'clamp(1.5rem, 5vw, 3rem)', color: 'var(--text-primary)',
+          boxShadow: '0 30px 60px var(--shadow-color)',
           scrollbarWidth: 'none'
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: compact ? '1.25rem' : '2.5rem', gap: '0.75rem' }}>
           <h2 style={{
             margin: 0, fontSize: compact ? '1.2rem' : '1.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '-0.02em',
-            background: 'linear-gradient(90deg, #FFFFFF, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
+            background: 'linear-gradient(90deg, var(--text-primary), var(--accent-primary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
           }}>
             {isEdit ? 'Edit Mission' : 'New Protocol'}
           </h2>
@@ -575,7 +575,7 @@ const TaskModal = ({ task, onClose, onSave, compact = false }) => {
               autoFocus value={form.title}
               onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
               placeholder="Primary directive..."
-              style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: compact ? '0.95rem' : '1.25rem', borderRadius: '1.25rem', color: 'white', fontSize: compact ? '1rem' : '1.2rem', outline: 'none' }}
+              style={{ width: '100%', background: 'var(--card-bg)', border: '1px solid var(--card-border)', padding: compact ? '0.95rem' : '1.25rem', borderRadius: '1.25rem', color: 'var(--text-primary)', fontSize: compact ? '1rem' : '1.2rem', outline: 'none' }}
             />
           </div>
 
@@ -585,20 +585,20 @@ const TaskModal = ({ task, onClose, onSave, compact = false }) => {
               value={form.description}
               onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
               placeholder="Detailed parameters..." rows={3}
-              style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: compact ? '0.95rem' : '1.25rem', borderRadius: '1.25rem', color: 'white', fontSize: '1rem', outline: 'none', resize: 'vertical', minHeight: compact ? '88px' : '108px' }}
+              style={{ width: '100%', background: 'var(--card-bg)', border: '1px solid var(--card-border)', padding: compact ? '0.95rem' : '1.25rem', borderRadius: '1.25rem', color: 'var(--text-primary)', fontSize: '1rem', outline: 'none', resize: 'vertical', minHeight: compact ? '88px' : '108px' }}
             />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: compact ? '1fr' : '1fr 1.2fr', gap: compact ? '1rem' : '2rem' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 800, opacity: 0.4, textTransform: 'uppercase', marginBottom: '0.75rem', letterSpacing: '0.1em' }}>Priority</label>
-              <div style={{ display: 'flex', background: 'rgba(255,255,255,0.03)', borderRadius: '1.25rem', padding: '0.4rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ display: 'flex', background: 'var(--card-bg)', borderRadius: '1.25rem', padding: '0.4rem', border: '1px solid var(--card-bg)' }}>
                 {Object.keys(PRIORITY).map(p => (
                   <button key={p} onClick={() => setForm(f => ({ ...f, priority: p }))}
                     style={{
                       flex: 1, height: '40px', borderRadius: '1rem', border: 'none',
-                      background: form.priority === p ? 'rgba(255,255,255,0.1)' : 'transparent',
-                      color: form.priority === p ? PRIORITY[p].color : 'rgba(255,255,255,0.2)',
+                      background: form.priority === p ? 'var(--card-hover)' : 'transparent',
+                      color: form.priority === p ? PRIORITY[p].color : 'var(--text-secondary)',
                       cursor: 'pointer', transition: 'all 0.3s', fontWeight: 800, fontSize: '0.8rem'
                     }}
                   >
@@ -610,7 +610,7 @@ const TaskModal = ({ task, onClose, onSave, compact = false }) => {
             <div>
               <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 800, opacity: 0.4, textTransform: 'uppercase', marginBottom: '0.75rem', letterSpacing: '0.1em' }}>Temporal Coordinate</label>
               <input type="date" value={form.dueDate} onChange={e => setForm(f => ({ ...f, dueDate: e.target.value }))}
-                style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.8rem 1.25rem', borderRadius: '1.25rem', color: 'white', colorScheme: 'dark', outline: 'none' }}
+                style={{ width: '100%', background: 'var(--card-bg)', border: '1px solid var(--card-border)', padding: '0.8rem 1.25rem', borderRadius: '1.25rem', color: 'var(--text-primary)', outline: 'none' }}
               />
             </div>
           </div>
@@ -621,14 +621,14 @@ const TaskModal = ({ task, onClose, onSave, compact = false }) => {
               <button
                 onClick={addSubtask}
                 style={{
-                  background: 'rgba(167, 139, 250, 0.1)', border: '1px solid rgba(167, 139, 250, 0.2)',
-                  color: '#a78bfa', fontSize: '0.7rem', fontWeight: 800, cursor: 'pointer',
+                  background: 'var(--badge-bg)', border: '1px solid var(--badge-bg)',
+                  color: 'var(--accent-primary)', fontSize: '0.7rem', fontWeight: 800, cursor: 'pointer',
                   display: 'flex', alignItems: 'center', gap: '0.5rem', padding: compact ? '0.45rem 0.75rem' : '0.5rem 1.2rem',
                   borderRadius: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em',
                   transition: 'all 0.3s'
                 }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(167, 139, 250, 0.2)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(167, 139, 250, 0.1)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--badge-bg)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--badge-bg)'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
                 <Plus size={14} strokeWidth={3} /> Add Mission Step
               </button>
@@ -638,19 +638,19 @@ const TaskModal = ({ task, onClose, onSave, compact = false }) => {
                 <motion.div
                   initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                   key={i}
-                  style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: compact ? '0.35rem' : '0.5rem', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.03)' }}
+                  style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', background: 'var(--card-bg)', padding: compact ? '0.35rem' : '0.5rem', borderRadius: '1rem', border: '1px solid var(--card-bg)' }}
                 >
-                  <div style={{ width: compact ? '26px' : '30px', height: compact ? '26px' : '30px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, color: 'rgba(255,255,255,0.3)' }}>{i + 1}</div>
+                  <div style={{ width: compact ? '26px' : '30px', height: compact ? '26px' : '30px', borderRadius: '50%', background: 'var(--card-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-secondary)' }}>{i + 1}</div>
                   <input
                     value={st.title} onChange={e => updateSubtask(i, e.target.value)}
                     placeholder="Refine directive..."
-                    style={{ flex: 1, background: 'none', border: 'none', color: 'white', fontSize: '0.95rem', outline: 'none', padding: '0.5rem' }}
+                    style={{ flex: 1, background: 'none', border: 'none', color: 'var(--text-primary)', fontSize: '0.95rem', outline: 'none', padding: '0.5rem' }}
                   />
-                  <IconButton onClick={() => removeSubtask(i)} hoverColor="#f87171" size="small"><Trash2 size={16} /></IconButton>
+                  <IconButton onClick={() => removeSubtask(i)} hoverColor="var(--danger)" size="small"><Trash2 size={16} /></IconButton>
                 </motion.div>
               ))}
               {form.subtasks.length === 0 && (
-                <div style={{ textAlign: 'center', padding: '2.5rem', border: '1px dashed rgba(255,255,255,0.05)', borderRadius: '1.25rem', color: 'rgba(255,255,255,0.2)', fontSize: '0.8rem', letterSpacing: '0.02em' }}>
+                <div style={{ textAlign: 'center', padding: '2.5rem', border: '1px dashed var(--card-bg)', borderRadius: '1.25rem', color: 'var(--text-secondary)', fontSize: '0.8rem', letterSpacing: '0.02em' }}>
                   No extra steps defined for this protocol.
                 </div>
               )}
@@ -659,16 +659,16 @@ const TaskModal = ({ task, onClose, onSave, compact = false }) => {
 
           <div>
             <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 800, opacity: 0.4, textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '0.1em' }}>Classification Tags</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '1.25rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', background: 'var(--card-bg)', padding: '1rem', borderRadius: '1.25rem', border: '1px solid var(--card-bg)' }}>
               {form.tags.map(t => (
-                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem', background: 'rgba(255,255,255,0.08)', borderRadius: '0.75rem', fontSize: '0.8rem', fontWeight: 700, border: '1px solid rgba(255,255,255,0.1)' }}>
+                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem', background: 'var(--card-hover)', borderRadius: '0.75rem', fontSize: '0.8rem', fontWeight: 700, border: '1px solid var(--card-border)' }}>
                   {t} <X size={14} style={{ cursor: 'pointer', opacity: 0.5 }} onClick={() => removeTag(t)} />
                 </div>
               ))}
               <input
                 value={newTag} onChange={e => setNewTag(e.target.value)}
                 onKeyDown={handleTagKey} placeholder="New tag + Enter..."
-                style={{ flex: 1, minWidth: '120px', background: 'none', border: 'none', color: 'white', fontSize: '0.85rem', outline: 'none' }}
+                style={{ flex: 1, minWidth: '120px', background: 'none', border: 'none', color: 'var(--text-primary)', fontSize: '0.85rem', outline: 'none' }}
               />
             </div>
           </div>
@@ -677,13 +677,13 @@ const TaskModal = ({ task, onClose, onSave, compact = false }) => {
             onClick={handleSave}
             style={{
               marginTop: compact ? '0.75rem' : '1.5rem', padding: compact ? '1rem' : '1.25rem', borderRadius: '1.5rem',
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: 'white', fontWeight: 900, fontSize: compact ? '0.95rem' : '1.1rem', cursor: 'pointer',
+              background: 'var(--card-bg)',
+              border: '1px solid var(--card-border)',
+              color: 'var(--text-primary)', fontWeight: 900, fontSize: compact ? '0.95rem' : '1.1rem', cursor: 'pointer',
               textTransform: 'uppercase', letterSpacing: '0.1em', transition: 'all 0.3s'
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(167, 139, 250, 0.4)'; e.currentTarget.style.borderColor = '#a78bfa80'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--badge-bg)'; e.currentTarget.style.borderColor = 'var(--accent-primary)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--card-bg)'; e.currentTarget.style.borderColor = 'var(--card-border)'; }}
           >
             {isEdit ? 'Archive Updates' : 'Authorize Protocol'}
           </button>
@@ -1054,12 +1054,12 @@ export default function TasksPage() {
   };
 
   return (
-    <div style={{ padding: isCompact ? '1rem 0.8rem 1.5rem' : 'clamp(1rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem)', maxWidth: '1280px', margin: '0 auto', color: 'white' }}>
+    <div style={{ padding: isCompact ? '1rem 0.8rem 1.5rem' : 'clamp(1rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem)', maxWidth: '1280px', margin: '0 auto', color: 'var(--text-primary)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isCompact ? 'stretch' : 'center', marginBottom: isCompact ? '2rem' : '3rem', gap: isCompact ? '1rem' : '2.5rem', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', gap: '0.75rem', flex: 1, minWidth: 'min(320px, 100%)', flexWrap: 'wrap' }}>
-          <StatCard label="Total Tasks" value={stats.total} icon={CheckSquare} color="#a78bfa" compact={isCompact} />
-          <StatCard label="Completed" value={stats.done} icon={Check} color="#4ade80" compact={isCompact} />
-          <StatCard label="Important" value={stats.highCount} icon={AlertTriangle} color="#f87171" compact={isCompact} />
+          <StatCard label="Total Tasks" value={stats.total} icon={CheckSquare} color="var(--accent-primary)" compact={isCompact} />
+          <StatCard label="Completed" value={stats.done} icon={Check} color="var(--success)" compact={isCompact} />
+          <StatCard label="Important" value={stats.highCount} icon={AlertTriangle} color="var(--danger)" compact={isCompact} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: isCompact ? 'stretch' : 'flex-end', gap: '0.45rem', width: isCompact ? '100%' : 'auto' }}>
           {tasksPendingSyncCount > 0 && (
@@ -1069,11 +1069,11 @@ export default function TasksPage() {
               fontWeight: 700,
               letterSpacing: '0.05em',
               textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.9)',
-              border: '1px solid rgba(255,255,255,0.22)',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--text-secondary)',
               borderRadius: '999px',
               padding: '0.16rem 0.5rem',
-              background: 'rgba(255,255,255,0.08)'
+              background: 'var(--card-hover)'
             }}>
               {tasksPendingSyncCount} pending sync
             </span>
@@ -1084,22 +1084,22 @@ export default function TasksPage() {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem',
               width: isCompact ? '100%' : 'auto',
               padding: isCompact ? '0.8rem 1rem' : '0.8rem 1.8rem', borderRadius: 'var(--radius-full)',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              color: 'white', fontWeight: 700, fontSize: isCompact ? '0.9rem' : '1rem', cursor: 'pointer',
+              background: 'var(--card-bg)',
+              border: '1px solid var(--card-border)',
+              color: 'var(--text-primary)', fontWeight: 700, fontSize: isCompact ? '0.9rem' : '1rem', cursor: 'pointer',
               backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+              boxShadow: '0 4px 20px var(--shadow-color)',
               textTransform: 'uppercase', letterSpacing: '0.05em'
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+              e.currentTarget.style.background = 'var(--text-secondary)';
+              e.currentTarget.style.borderColor = 'var(--text-secondary)';
               e.currentTarget.style.transform = 'translateY(-2px)';
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+              e.currentTarget.style.background = 'var(--card-bg)';
+              e.currentTarget.style.borderColor = 'var(--text-secondary)';
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
@@ -1110,7 +1110,7 @@ export default function TasksPage() {
 
       <DateRibbon selectedDate={selectedDate} onSelectDate={setSelectedDate} compact={isCompact} />
 
-      <SuccessProgress value={stats.efficiency} color="#facc15" />
+      <SuccessProgress value={stats.efficiency} color="var(--warning)" />
 
       {/* Plain div — list items animate individually via TaskCard's own motion.div */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -1122,11 +1122,11 @@ export default function TasksPage() {
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: isCompact ? '3rem 1rem' : '5rem', color: 'rgba(255,255,255,0.2)', fontFamily: 'var(--font-body)' }}>Synchronizing missions...</div>
+          <div style={{ textAlign: 'center', padding: isCompact ? '3rem 1rem' : '5rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }}>Synchronizing missions...</div>
         ) : filteredTasks.length === 0 ? (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: 'center', padding: isCompact ? '3rem 1.2rem' : '6rem 2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '1.5rem', border: '1px dashed rgba(255,255,255,0.1)' }}>
-            <CalendarIcon size={40} style={{ color: 'rgba(255,255,255,0.05)', marginBottom: '1.25rem' }} />
-            <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '1rem', fontWeight: 500 }}>No protocols active for this sequence.</p>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: 'center', padding: isCompact ? '3rem 1.2rem' : '6rem 2rem', background: 'var(--card-bg)', borderRadius: '1.5rem', border: '1px dashed var(--card-border)' }}>
+            <CalendarIcon size={40} style={{ color: 'var(--primary)', marginBottom: '1.25rem' }} />
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', fontWeight: 500 }}>No protocols active for this sequence.</p>
           </motion.div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: isCompact ? '1fr' : 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))', gap: isCompact ? '1rem' : '1.25rem' }}>

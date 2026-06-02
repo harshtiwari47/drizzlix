@@ -361,7 +361,7 @@ export default function StudySession() {
   const radius = 18;
   const circumference = 2 * Math.PI * radius;
   const cardTimerProgress = timerEnabled ? (cardTimeLeft / CARD_TIMER_DURATION) * circumference : 0;
-  const cardTimerColor = cardTimeLeft > 10 ? 'var(--primary)' : cardTimeLeft > 5 ? '#f59e0b' : '#ef4444';
+  const cardTimerColor = cardTimeLeft > 10 ? 'var(--primary)' : cardTimeLeft > 5 ? 'var(--warning)' : 'var(--danger)';
 
   const totalCards = sessionQueue.length;
   const requeuedCount = hardRequeuedIds.size;
@@ -467,20 +467,20 @@ export default function StudySession() {
   if (!deck) {
     if (accessWarning) {
       return (
-        <div className="app-container" style={{ minHeight: '100dvh', background: '#0a0a0a', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+        <div className="app-container" style={{ minHeight: '100dvh', background: 'var(--glass-surface-solid)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            style={{ maxWidth: '620px', width: '100%', textAlign: 'center', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(239,68,68,0.35)', borderRadius: 'var(--radius-xl)', padding: '1.6rem' }}
+            style={{ maxWidth: '620px', width: '100%', textAlign: 'center', background: 'var(--card-bg)', border: '1px solid var(--danger)', borderRadius: 'var(--radius-xl)', padding: '1.6rem' }}
           >
-            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '58px', height: '58px', borderRadius: '50%', background: 'rgba(239,68,68,0.14)', border: '1px solid rgba(239,68,68,0.45)', marginBottom: '0.9rem' }}>
-              <Ban size={24} color="#fca5a5" />
+            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '58px', height: '58px', borderRadius: '50%', background: 'var(--danger)', border: '1px solid var(--danger)', marginBottom: '0.9rem' }}>
+              <Ban size={24} color="var(--danger)" />
             </div>
             <h2 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.6rem' }}>Access Restricted</h2>
             <p style={{ marginTop: '0.7rem', color: 'var(--secondary)', fontFamily: 'var(--font-body)', lineHeight: 1.7 }}>{accessWarning}</p>
             <button
               onClick={() => navigate('/decks')}
-              style={{ marginTop: '1rem', padding: '0.75rem 1.2rem', borderRadius: 'var(--radius-full)', border: '1px solid rgba(255,255,255,0.14)', background: 'rgba(255,255,255,0.06)', color: 'white', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600 }}
+              style={{ marginTop: '1rem', padding: '0.75rem 1.2rem', borderRadius: 'var(--radius-full)', border: '1px solid var(--text-secondary)', background: 'var(--card-hover)', color: 'var(--text-primary)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600 }}
             >
               Go to Library
             </button>
@@ -490,7 +490,7 @@ export default function StudySession() {
     }
 
     return (
-      <div className="app-container" style={{ minHeight: '100dvh', background: '#0a0a0a', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="app-container" style={{ minHeight: '100dvh', background: 'var(--glass-surface-solid)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         Connecting to Cloud Grid...
       </div>
     );
@@ -498,10 +498,10 @@ export default function StudySession() {
 
   if (isLoaded && sessionQueue.length === 0) {
     return (
-      <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', flexDirection: 'column', color: 'white', background: '#0a0a0a' }}>
+      <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', flexDirection: 'column', color: 'var(--text-primary)', background: 'var(--glass-surface-solid)' }}>
         <GridBackground />
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', zIndex: 10, textAlign: 'center', padding: '2rem' }}>
-          <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem' }}>
+          <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'var(--card-bg)', border: '1px solid var(--card-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem' }}>
             <Sparkles size={32} color="var(--primary)" />
           </div>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', marginBottom: '0.25rem', color: 'var(--text-primary)' }}>Vector Exhausted</h2>
@@ -509,10 +509,10 @@ export default function StudySession() {
             All cognitive nodes are in their refractory periods — no cards are due today. The SM-2 scheduler will surface them at the optimal time for maximum retention.
           </p>
           <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <button onClick={() => navigate('/decks')} style={{ padding: '0.85rem 1.6rem', borderRadius: 'var(--radius-full)', background: 'rgba(255,255,255,0.06)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', fontWeight: 600, fontFamily: 'var(--font-body)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s ease' }} onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'} onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}>
+            <button onClick={() => navigate('/decks')} style={{ padding: '0.85rem 1.6rem', borderRadius: 'var(--radius-full)', background: 'var(--card-hover)', color: 'var(--text-primary)', border: '1px solid var(--card-border)', fontWeight: 600, fontFamily: 'var(--font-body)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s ease' }} onMouseOver={e => e.currentTarget.style.background = 'var(--text-secondary)'} onMouseOut={e => e.currentTarget.style.background = 'var(--card-hover)'}>
               <ArrowLeft size={16} /> Retreat to Library
             </button>
-            <button onClick={handleForceAll} style={{ padding: '0.85rem 1.6rem', borderRadius: 'var(--radius-full)', background: 'var(--primary)', color: 'black', border: 'none', fontWeight: 700, fontFamily: 'var(--font-body)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s ease', boxShadow: '0 4px 15px rgba(217,119,6,0.3)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
+            <button onClick={handleForceAll} style={{ padding: '0.85rem 1.6rem', borderRadius: 'var(--radius-full)', background: 'var(--primary)', color: 'var(--text-inverse)', border: 'none', fontWeight: 700, fontFamily: 'var(--font-body)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s ease', boxShadow: '0 4px 15px var(--shadow-color)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
               <RefreshCw size={16} /> Study All Cards Anyway
             </button>
           </div>
@@ -537,7 +537,7 @@ export default function StudySession() {
           </button>
 
           {/* Session Elapsed Timer */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--secondary)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.4rem 0.9rem', borderRadius: 'var(--radius-full)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--secondary)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1rem', background: 'var(--card-bg)', border: '1px solid var(--card-border)', padding: '0.4rem 0.9rem', borderRadius: 'var(--radius-full)' }}>
             <Clock size={14} />
             {formatSessionTime(sessionSeconds)}
           </div>
@@ -545,9 +545,9 @@ export default function StudySession() {
 
         {/* Center: Session label (Glassy Pill) */}
         <div style={{ 
-          background: 'rgba(255, 255, 255, 0.03)',
+          background: 'var(--card-bg)',
           backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
+          border: '1px solid var(--card-border)',
           padding: isNarrow ? '0.42rem 0.8rem' : '0.5rem 1.4rem',
           borderRadius: 'var(--radius-full)',
           display: 'flex',
@@ -555,7 +555,7 @@ export default function StudySession() {
           gap: isNarrow ? '0.45rem' : '0.8rem',
           width: isNarrow ? '100%' : 'auto',
           justifyContent: isNarrow ? 'space-between' : 'center',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.2)'
+          boxShadow: '0 4px 24px var(--shadow-color)'
         }}>
           <span style={{ 
             fontFamily: 'var(--font-body)', 
@@ -563,7 +563,7 @@ export default function StudySession() {
             letterSpacing: '0.05em', 
             textTransform: 'uppercase',
             fontSize: isNarrow ? '0.75rem' : '0.85rem',
-            background: 'linear-gradient(90deg, #FFFFFF 0%, var(--primary) 100%)',
+            background: 'linear-gradient(90deg, var(--text-primary) 0%, var(--primary) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             maxWidth: isNarrow ? '58vw' : 'unset',
@@ -589,8 +589,8 @@ export default function StudySession() {
               onClick={() => setShowGeneralSettings(!showGeneralSettings)}
               title="General settings"
               style={{ 
-                background: showGeneralSettings ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)', 
-                border: '1px solid rgba(255,255,255,0.1)', 
+                background: showGeneralSettings ? 'var(--text-secondary)' : 'var(--card-bg)', 
+                border: '1px solid var(--card-border)', 
                 color: 'var(--secondary)', 
                 width: '36px', height: '36px', 
                 borderRadius: '50%', cursor: 'pointer', 
@@ -608,19 +608,19 @@ export default function StudySession() {
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   style={{
                     position: 'absolute', top: '100%', right: isNarrow ? 'auto' : 0, left: isNarrow ? 0 : 'auto', marginTop: '1rem',
-                    width: isNarrow ? 'min(280px, calc(100vw - 1.8rem))' : '280px', background: 'rgba(15,15,25,0.95)', 
-                    backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.12)',
+                    width: isNarrow ? 'min(280px, calc(100vw - 1.8rem))' : '280px', background: 'var(--glass-surface-solid)', 
+                    backdropFilter: 'blur(8px)', border: '1px solid var(--card-border)',
                     borderRadius: 'var(--radius-xl)', padding: '1.25rem',
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.4)', zIndex: 110
+                    boxShadow: '0 20px 40px var(--shadow-color)', zIndex: 110
                   }}
                 >
-                  <div style={{ marginBottom: '0.9rem', paddingBottom: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                    <p style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: 700, color: 'white', letterSpacing: '0.02em' }}>General Settings</p>
-                    <p style={{ margin: '0.25rem 0 0 0', color: 'rgba(255,255,255,0.55)', fontSize: '0.75rem' }}>Typography and read-aloud preferences</p>
+                  <div style={{ marginBottom: '0.9rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--card-hover)' }}>
+                    <p style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>General Settings</p>
+                    <p style={{ margin: '0.25rem 0 0 0', color: 'var(--text-secondary)', fontSize: '0.75rem' }}>Typography and read-aloud preferences</p>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                      <label style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Front Size (rem)</label>
+                      <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Front Size (rem)</label>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
                         <input 
                           type="range" min="1" max="3.5" step="0.1" 
@@ -632,7 +632,7 @@ export default function StudySession() {
                     </div>
                     
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                      <label style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Back Size (rem)</label>
+                      <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Back Size (rem)</label>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
                         <input 
                           type="range" min="0.8" max="2.5" step="0.1" 
@@ -644,7 +644,7 @@ export default function StudySession() {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                      <label style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Read Speed (x)</label>
+                      <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Read Speed (x)</label>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
                         <input
                           type="range" min="0.6" max="1.8" step="0.1"
@@ -655,12 +655,12 @@ export default function StudySession() {
                       </div>
                     </div>
 
-                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '0.85rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
-                      <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(255,255,255,0.45)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Keyboard Shortcuts</p>
-                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255,255,255,0.72)' }}><strong>Space:</strong> Flip card</p>
-                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255,255,255,0.72)' }}><strong>1 / 2 / 3:</strong> Hard / Good / Easy</p>
-                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255,255,255,0.72)' }}><strong>H:</strong> Toggle hint</p>
-                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255,255,255,0.72)' }}><strong>R:</strong> Read aloud toggle</p>
+                    <div style={{ borderTop: '1px solid var(--card-hover)', paddingTop: '0.85rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                      <p style={{ margin: 0, fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Keyboard Shortcuts</p>
+                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)' }}><strong>Space:</strong> Flip card</p>
+                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)' }}><strong>1 / 2 / 3:</strong> Hard / Good / Easy</p>
+                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)' }}><strong>H:</strong> Toggle hint</p>
+                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)' }}><strong>R:</strong> Read aloud toggle</p>
                     </div>
                   </div>
                 </motion.div>
@@ -672,9 +672,9 @@ export default function StudySession() {
             onClick={() => setShowHint(prev => !prev)}
             title={showHint ? 'Hide hint' : 'Show hint'}
             style={{
-              background: showHint ? 'rgba(245,158,11,0.14)' : 'rgba(255,255,255,0.05)',
-              border: `1px solid ${showHint ? 'rgba(245,158,11,0.45)' : 'rgba(255,255,255,0.1)'}`,
-              color: showHint ? '#fbbf24' : 'var(--secondary)',
+              background: showHint ? 'var(--card-hover)' : 'var(--card-bg)',
+              border: `1px solid ${showHint ? 'var(--warning)' : 'var(--card-border)'}`,
+              color: showHint ? 'var(--warning)' : 'var(--secondary)',
               width: '36px',
               height: '36px',
               borderRadius: '50%',
@@ -692,8 +692,8 @@ export default function StudySession() {
             title="Generate AI quiz from current card"
             disabled={isGeneratingQuiz}
             style={{
-              background: isGeneratingQuiz ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.1)',
+              background: isGeneratingQuiz ? 'var(--card-hover)' : 'var(--card-bg)',
+              border: '1px solid var(--card-border)',
               color: 'var(--secondary)',
               width: '36px',
               height: '36px',
@@ -711,7 +711,7 @@ export default function StudySession() {
           <button
             onClick={() => setTimerEnabled(prev => !prev)}
             title={timerEnabled ? 'Disable card timer' : 'Enable 30s per-card timer'}
-            style={{ background: timerEnabled ? 'rgba(217,119,6,0.12)' : 'rgba(255,255,255,0.05)', border: `1px solid ${timerEnabled ? 'rgba(217,119,6,0.4)' : 'rgba(255,255,255,0.1)'}`, color: timerEnabled ? 'var(--primary)' : 'var(--secondary)', padding: isNarrow ? '0.38rem 0.72rem' : '0.45rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: isNarrow ? '0.75rem' : '0.82rem', display: 'flex', alignItems: 'center', gap: '0.45rem', transition: 'all 0.2s ease' }}
+            style={{ background: timerEnabled ? 'var(--card-hover)' : 'var(--card-bg)', border: `1px solid ${timerEnabled ? 'var(--primary)' : 'var(--card-border)'}`, color: timerEnabled ? 'var(--primary)' : 'var(--secondary)', padding: isNarrow ? '0.38rem 0.72rem' : '0.45rem 1rem', borderRadius: 'var(--radius-full)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: isNarrow ? '0.75rem' : '0.82rem', display: 'flex', alignItems: 'center', gap: '0.45rem', transition: 'all 0.2s ease' }}
           >
             {timerEnabled ? <Timer size={14} /> : <TimerOff size={14} />}
             {timerEnabled ? (isNarrow ? '30s' : '30s/card') : (isNarrow ? 'Timer' : 'Card Timer')}
@@ -722,7 +722,7 @@ export default function StudySession() {
             {timerEnabled && (
               <motion.div initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.7 }} style={{ position: 'relative', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <svg width="44" height="44" style={{ position: 'absolute', transform: 'rotate(-90deg)' }}>
-                  <circle cx="22" cy="22" r={radius} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="3" />
+                  <circle cx="22" cy="22" r={radius} fill="none" stroke="var(--card-hover)" strokeWidth="3" />
                   <circle
                     cx="22" cy="22" r={radius} fill="none"
                     stroke={cardTimerColor}
@@ -780,7 +780,7 @@ export default function StudySession() {
                         className={`study-beam-star ${isCurrent ? 'active' : 'dim'}`}
                         style={{ 
                           left: `${pos}%`,
-                          color: isCurrent ? 'var(--primary)' : isCompleted ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.15)'
+                          color: isCurrent ? 'var(--primary)' : isCompleted ? 'var(--text-primary)' : 'var(--text-secondary)'
                         }}
                       >
                         {isCurrent ? (
@@ -848,21 +848,21 @@ export default function StudySession() {
                 alignItems: 'center',
                 gap: '0.6rem',
                 background: 'rgba(15,15,25,0.92)',
-                border: '1px solid rgba(255,255,255,0.12)',
+                border: '1px solid var(--text-secondary)',
                 borderRadius: 'var(--radius-full)',
                 padding: '0.5rem 0.65rem 0.5rem 0.8rem',
-                boxShadow: '0 12px 40px rgba(0,0,0,0.5)'
+                boxShadow: '0 12px 40px var(--shadow-color)'
               }}
             >
               <Loader2 size={14} color="var(--primary)" style={{ animation: 'spin 1s linear infinite' }} />
-              <span style={{ color: 'white', fontSize: '0.82rem', fontWeight: 600 }}>Generating AI quiz...</span>
+              <span style={{ color: 'var(--text-primary)', fontSize: '0.82rem', fontWeight: 600 }}>Generating AI quiz...</span>
               <button
                 type="button"
                 onClick={handleCancelQuizGeneration}
                 style={{
-                  border: '1px solid rgba(239,68,68,0.35)',
-                  background: 'rgba(239,68,68,0.15)',
-                  color: '#fca5a5',
+                  border: '1px solid var(--danger)',
+                  background: 'var(--danger)',
+                  color: 'var(--danger)',
                   borderRadius: '999px',
                   height: '28px',
                   padding: '0 0.55rem',
@@ -883,16 +883,11 @@ export default function StudySession() {
         <AnimatePresence>
           {showQuizModal && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowQuizModal(false)}
+            onClick={() => setShowQuizModal(false)}
               style={{
-                position: 'fixed',
-                inset: 0,
-                background: 'rgba(0,0,0,0.72)',
-                backdropFilter: 'blur(6px)',
-                zIndex: 2147483646,
+                position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                background: 'var(--glass-surface-solid)',
+                backdropFilter: 'blur(8px)', border: '1px solid var(--card-border)', zIndex: 2147483646,
                 padding: isNarrow ? '0.7rem' : '1rem',
                 boxSizing: 'border-box'
               }}
@@ -903,24 +898,23 @@ export default function StudySession() {
                 exit={{ opacity: 0, y: 20, scale: 0.96 }}
                 onClick={e => e.stopPropagation()}
                 style={{
-                  maxWidth: isNarrow ? '100%' : '760px',
-                  width: isNarrow ? '100%' : 'calc(100% - 2rem)',
+                  width: isNarrow ? '100%' : '520px', maxWidth: '100%',
                   maxHeight: isNarrow ? 'calc(100dvh - 1.4rem)' : '82vh',
                   overflowY: 'auto',
                   margin: isNarrow ? '0 auto' : '7vh auto 0',
-                  background: 'rgba(15,15,25,0.95)',
-                  border: '1px solid rgba(255,255,255,0.12)',
+                  background: 'var(--glass-surface-solid)',
+                  border: '1px solid var(--card-border)',
                   borderRadius: 'var(--radius-xl)',
                   padding: isNarrow ? '0.95rem 0.88rem 0.85rem' : '1.25rem 1.25rem 1rem',
-                  boxShadow: '0 20px 50px rgba(0,0,0,0.45)',
+                  boxShadow: '0 20px 50px var(--shadow-color)',
                   position: 'relative',
                   zIndex: 2147483647
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: isNarrow ? '0.75rem' : '0.9rem', gap: '0.6rem' }}>
                   <div>
-                    <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: isNarrow ? '1.02rem' : '1.15rem', color: 'white' }}>Quiz</h3>
-                    <p style={{ margin: '0.3rem 0 0 0', color: 'rgba(255,255,255,0.58)', fontSize: '0.82rem' }}>Test mode</p>
+                    <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: isNarrow ? '1.02rem' : '1.15rem', color: 'var(--text-primary)' }}>Quiz</h3>
+                    <p style={{ margin: '0.3rem 0 0 0', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>Test mode</p>
                   </div>
                   <button
                     type="button"
@@ -929,8 +923,8 @@ export default function StudySession() {
                       width: '32px',
                       height: '32px',
                       borderRadius: '50%',
-                      border: '1px solid rgba(255,255,255,0.14)',
-                      background: 'rgba(255,255,255,0.03)',
+                      border: '1px solid var(--text-secondary)',
+                      background: 'var(--card-bg)',
                       color: 'var(--secondary)',
                       display: 'flex',
                       alignItems: 'center',
@@ -945,39 +939,39 @@ export default function StudySession() {
                 </div>
 
                 {quizError ? (
-                  <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-md)', padding: '0.8rem 0.9rem', color: '#fca5a5', fontSize: '0.9rem', lineHeight: 1.55, overflowWrap: 'anywhere', wordBreak: 'break-word', maxHeight: isNarrow ? '28vh' : '32vh', overflowY: 'auto' }}>
-                    {quizError}
+                <div style={{ background: 'var(--card-hover)', border: '1px solid var(--danger)', borderRadius: 'var(--radius-md)', padding: '0.8rem 0.9rem', color: 'var(--danger)', fontSize: '0.9rem', lineHeight: 1.55, overflowWrap: 'anywhere', wordBreak: 'break-word', maxHeight: isNarrow ? '28vh' : '32vh', overflowY: 'auto' }}>
+                  {quizError}
                   </div>
                 ) : quizItems.length === 0 ? (
                   <p style={{ color: 'var(--secondary)', fontSize: '0.9rem' }}>No quiz items generated yet.</p>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: isNarrow ? '0.7rem' : '0.9rem' }}>
-                    <div style={{ display: 'flex', alignItems: isNarrow ? 'flex-start' : 'center', flexDirection: isNarrow ? 'column' : 'row', gap: isNarrow ? '0.45rem' : 0, justifyContent: 'space-between', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 'var(--radius-md)', padding: isNarrow ? '0.62rem 0.7rem' : '0.65rem 0.8rem' }}>
-                      <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.65)' }}>Question {Math.min(quizCurrentIndex + 1, quizItems.length)} / {quizItems.length}</span>
+                    <div style={{ display: 'flex', alignItems: isNarrow ? 'flex-start' : 'center', flexDirection: isNarrow ? 'column' : 'row', gap: isNarrow ? '0.45rem' : 0, justifyContent: 'space-between', background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-md)', padding: isNarrow ? '0.62rem 0.7rem' : '0.65rem 0.8rem' }}>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Question {Math.min(quizCurrentIndex + 1, quizItems.length)} / {quizItems.length}</span>
                       <div style={{ display: 'flex', gap: '0.65rem', fontSize: '0.82rem', flexWrap: 'wrap' }}>
-                        <span style={{ color: '#22c55e', fontWeight: 700 }}>Correct: {quizScore.correct}</span>
-                        <span style={{ color: '#ef4444', fontWeight: 700 }}>Wrong: {quizScore.wrong}</span>
+                        <span style={{ color: 'var(--success)', fontWeight: 700 }}>Correct: {quizScore.correct}</span>
+                        <span style={{ color: 'var(--danger)', fontWeight: 700 }}>Wrong: {quizScore.wrong}</span>
                       </div>
                     </div>
 
                     {currentQuizItem && (
                       <article
                         style={{
-                          border: '1px solid rgba(255,255,255,0.09)',
+                          border: '1px solid var(--card-hover)',
                           borderRadius: 'var(--radius-lg)',
-                          background: 'rgba(255,255,255,0.02)',
+                          background: 'var(--card-bg)',
                           padding: isNarrow ? '0.78rem 0.82rem' : '0.95rem 1rem'
                         }}
                       >
                         <div>
-                          <p style={{ margin: 0, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.45)' }}>Question</p>
-                          <p style={{ margin: '0.35rem 0 0 0', color: 'white', fontSize: isNarrow ? '0.92rem' : '0.98rem', fontWeight: 600, lineHeight: 1.5 }}>{currentQuizItem.question}</p>
+                          <p style={{ margin: 0, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Question</p>
+                          <p style={{ margin: '0.35rem 0 0 0', color: 'var(--text-primary)', fontSize: isNarrow ? '0.92rem' : '0.98rem', fontWeight: 600, lineHeight: 1.5 }}>{currentQuizItem.question}</p>
                         </div>
 
                         {quizShowAnswer && (
-                          <div style={{ marginTop: '0.9rem', padding: '0.65rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(34,197,94,0.35)', background: 'rgba(34,197,94,0.08)' }}>
-                            <p style={{ margin: 0, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(187,247,208,0.9)' }}>Answer</p>
-                            <p style={{ margin: '0.35rem 0 0 0', color: '#bbf7d0', fontSize: '0.92rem', lineHeight: 1.6 }}>{currentQuizItem.answer}</p>
+                          <div style={{ marginTop: '0.9rem', padding: '0.65rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--success)', background: 'var(--card-hover)' }}>
+                            <p style={{ margin: 0, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--success)' }}>Answer</p>
+                            <p style={{ margin: '0.35rem 0 0 0', color: 'var(--success)', fontSize: '0.92rem', lineHeight: 1.6 }}>{currentQuizItem.answer}</p>
                           </div>
                         )}
 
@@ -985,7 +979,7 @@ export default function StudySession() {
                           <button
                             type="button"
                             onClick={() => setQuizShowAnswer(prev => !prev)}
-                            style={{ padding: '0.52rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)', color: 'white', fontSize: '0.82rem', cursor: 'pointer', minHeight: '38px', minWidth: isNarrow ? 'calc(50% - 0.25rem)' : 'unset', flex: isNarrow ? '1 1 calc(50% - 0.25rem)' : 'unset' }}
+                            style={{ padding: '0.52rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--text-secondary)', background: 'var(--card-bg)', color: 'var(--text-primary)', fontSize: '0.82rem', cursor: 'pointer', minHeight: '38px', minWidth: isNarrow ? 'calc(50% - 0.25rem)' : 'unset', flex: isNarrow ? '1 1 calc(50% - 0.25rem)' : 'unset' }}
                           >
                             {quizShowAnswer ? 'Hide Answer' : 'Show Answer'}
                           </button>
@@ -994,7 +988,7 @@ export default function StudySession() {
                             type="button"
                             disabled={!quizShowAnswer || Boolean(quizResultMap[currentQuizItem.id])}
                             onClick={() => handleMarkQuiz('correct')}
-                            style={{ padding: '0.52rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(34,197,94,0.45)', background: 'rgba(34,197,94,0.12)', color: '#86efac', fontSize: '0.82rem', cursor: !quizShowAnswer || quizResultMap[currentQuizItem.id] ? 'not-allowed' : 'pointer', opacity: !quizShowAnswer || quizResultMap[currentQuizItem.id] ? 0.5 : 1, minHeight: '38px', minWidth: isNarrow ? 'calc(50% - 0.25rem)' : 'unset', flex: isNarrow ? '1 1 calc(50% - 0.25rem)' : 'unset' }}
+                            style={{ padding: '0.52rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--success)', background: 'var(--card-hover)', color: 'var(--success)', fontSize: '0.82rem', cursor: !quizShowAnswer || quizResultMap[currentQuizItem.id] ? 'not-allowed' : 'pointer', opacity: !quizShowAnswer || quizResultMap[currentQuizItem.id] ? 0.5 : 1, minHeight: '38px', minWidth: isNarrow ? 'calc(50% - 0.25rem)' : 'unset', flex: isNarrow ? '1 1 calc(50% - 0.25rem)' : 'unset' }}
                           >
                             Mark Correct
                           </button>
@@ -1003,7 +997,7 @@ export default function StudySession() {
                             type="button"
                             disabled={!quizShowAnswer || Boolean(quizResultMap[currentQuizItem.id])}
                             onClick={() => handleMarkQuiz('wrong')}
-                            style={{ padding: '0.52rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(239,68,68,0.45)', background: 'rgba(239,68,68,0.12)', color: '#fca5a5', fontSize: '0.82rem', cursor: !quizShowAnswer || quizResultMap[currentQuizItem.id] ? 'not-allowed' : 'pointer', opacity: !quizShowAnswer || quizResultMap[currentQuizItem.id] ? 0.5 : 1, minHeight: '38px', minWidth: isNarrow ? 'calc(50% - 0.25rem)' : 'unset', flex: isNarrow ? '1 1 calc(50% - 0.25rem)' : 'unset' }}
+                            style={{ padding: '0.52rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--danger)', background: 'var(--card-hover)', color: 'var(--danger)', fontSize: '0.82rem', cursor: !quizShowAnswer || quizResultMap[currentQuizItem.id] ? 'not-allowed' : 'pointer', opacity: !quizShowAnswer || quizResultMap[currentQuizItem.id] ? 0.5 : 1, minHeight: '38px', minWidth: isNarrow ? 'calc(50% - 0.25rem)' : 'unset', flex: isNarrow ? '1 1 calc(50% - 0.25rem)' : 'unset' }}
                           >
                             Mark Wrong
                           </button>
@@ -1012,7 +1006,7 @@ export default function StudySession() {
                             type="button"
                             disabled={quizCurrentIndex >= quizItems.length - 1}
                             onClick={handleNextQuizItem}
-                            style={{ padding: '0.52rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)', color: 'white', fontSize: '0.82rem', cursor: quizCurrentIndex >= quizItems.length - 1 ? 'not-allowed' : 'pointer', opacity: quizCurrentIndex >= quizItems.length - 1 ? 0.5 : 1, minHeight: '38px', width: isNarrow ? '100%' : 'unset' }}
+                            style={{ padding: '0.52rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--text-secondary)', background: 'var(--card-bg)', color: 'var(--text-primary)', fontSize: '0.82rem', cursor: quizCurrentIndex >= quizItems.length - 1 ? 'not-allowed' : 'pointer', opacity: quizCurrentIndex >= quizItems.length - 1 ? 0.5 : 1, minHeight: '38px', width: isNarrow ? '100%' : 'unset' }}
                           >
                             Next Question
                           </button>
@@ -1021,15 +1015,15 @@ export default function StudySession() {
                     )}
 
                     {isQuizComplete && (
-                      <div style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.03)', padding: '0.8rem 0.9rem' }}>
-                        <p style={{ margin: 0, color: 'white', fontWeight: 700, fontSize: '0.95rem' }}>Test Complete</p>
-                        <p style={{ margin: '0.3rem 0 0 0', color: 'rgba(255,255,255,0.65)', fontSize: '0.85rem' }}>
+                      <div style={{ border: '1px solid var(--card-border)', borderRadius: 'var(--radius-md)', background: 'var(--card-bg)', padding: '0.8rem 0.9rem' }}>
+                        <p style={{ margin: 0, color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.95rem' }}>Test Complete</p>
+                        <p style={{ margin: '0.3rem 0 0 0', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
                           Score: {quizScore.correct} correct / {quizItems.length} total
                         </p>
                         <button
                           type="button"
                           onClick={handleRestartQuiz}
-                          style={{ marginTop: '0.55rem', padding: '0.45rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)', color: 'white', fontSize: '0.82rem', cursor: 'pointer' }}
+                          style={{ marginTop: '0.55rem', padding: '0.45rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--text-secondary)', background: 'var(--card-bg)', color: 'var(--text-primary)', fontSize: '0.82rem', cursor: 'pointer' }}
                         >
                           Restart Test
                         </button>

@@ -28,6 +28,11 @@ const Starfield = () => {
     let mouseY = 0;
     let isPaused = false;
 
+    const getThemeColor = () => {
+      return getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() || '#ffffff';
+    };
+    let themeColor = getThemeColor();
+
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       w = window.innerWidth;
@@ -35,6 +40,7 @@ const Starfield = () => {
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      themeColor = getThemeColor();
     };
 
     const initStars = () => {
@@ -57,6 +63,7 @@ const Starfield = () => {
       }
 
       ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = themeColor;
       
       stars.forEach(star => {
         // Calculate interactive position
@@ -65,7 +72,7 @@ const Starfield = () => {
 
         ctx.beginPath();
         ctx.arc(targetX, targetY, star.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+        ctx.globalAlpha = star.opacity;
         ctx.fill();
         
         // Twinkle effect

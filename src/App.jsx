@@ -6,6 +6,7 @@ import SEOMeta from './components/SEOMeta';
 import RouteErrorBoundary from './components/RouteErrorBoundary';
 import SingletonRouteLoader from './components/SingletonRouteLoader';
 import { applyAccessibilitySettingsFromStorage } from './services/accessibilitySettings';
+import { applyThemeFromStorage, applyTheme, STORAGE_KEY as THEME_STORAGE_KEY } from './services/themeService';
 import { prefetchFromNavigationHistory, prefetchInitialRoutes } from './services/routePrefetch';
 import {
   flushOfflineSyncQueue,
@@ -416,10 +417,14 @@ function App() {
     if (typeof window === 'undefined') return;
 
     applyAccessibilitySettingsFromStorage();
+    applyThemeFromStorage();
 
     const onStorage = (event) => {
       if (!event.key || event.key.startsWith('settings.')) {
         applyAccessibilitySettingsFromStorage();
+      }
+      if (event.key === THEME_STORAGE_KEY) {
+        applyTheme(event.newValue);
       }
     };
 

@@ -17,4 +17,6 @@ const taskSchema = new mongoose.Schema({
   pinned:      { type: Boolean, default: false },
 }, { timestamps: true });
 
+taskSchema.index({ userId: 1, pinned: -1, createdAt: -1 });
+
 module.exports = mongoose.model('Task', taskSchema);

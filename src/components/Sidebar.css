@@ -42,16 +42,26 @@
   padding: 0.54rem 1.28rem;
   border-radius: var(--radius-full);
   font-size: 0.98rem;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  letter-spacing: 0.03em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
+  gap: 0.35rem;
+  letter-spacing: 0.03em;
+}
+
+.nav-item-active-icon {
+  display: flex;
+  color: inherit;
 }
 
 .nav-item.active {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 700;
 }
 
 .nav-item.active::after {
@@ -61,8 +71,8 @@
   left: 20%;
   right: 20%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #fff, transparent);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 5px rgba(255, 255, 255, 0.4);
+  background: linear-gradient(90deg, transparent, var(--text-primary), transparent);
+  box-shadow: 0 0 10px var(--text-secondary), 0 0 5px var(--card-border);
   animation: shimmer-ray 3s infinite ease-in-out;
 }
 
@@ -107,13 +117,14 @@
   gap: 0.8rem;
   padding: 0.4rem 0.8rem;
   border-radius: var(--radius-full);
-  background: rgba(255,255,255,0.03);
+  background: var(--input-bg);
   border: 1px solid var(--glass-border);
   transition: all 0.2s ease;
 }
 
 .user-trigger:hover {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--card-border);
+  background: var(--card-hover);
 }
 
 .user-avatar {
@@ -132,12 +143,20 @@
 .menu-burger-line {
   width: 16px;
   height: 1.5px;
-  background: white;
+  background: var(--text-primary);
+  transition: all 0.2s ease;
 }
 
 .menu-burger-line.short {
   width: 12px;
   opacity: 0.6;
+}
+
+.user-trigger:hover .menu-burger-line {
+  background: var(--accent-primary);
+}
+.user-trigger:hover .menu-burger-line.short {
+  opacity: 1;
 }
 
 @media (max-width: 1100px) {

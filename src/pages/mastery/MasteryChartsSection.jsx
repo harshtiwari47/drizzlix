@@ -135,7 +135,7 @@ const MasteryChartsSection = React.memo(function MasteryChartsSection({
                   return [Math.round(Number(value)), seriesName];
                 }}
                 contentStyle={{
-                  backgroundColor: 'rgba(10,10,10,0.9)',
+                  backgroundColor: 'var(--glass-surface-solid)',
                   border: '1px solid var(--glass-border)',
                   borderRadius: '8px',
                   color: 'var(--primary)',
@@ -198,7 +198,7 @@ const MasteryChartsSection = React.memo(function MasteryChartsSection({
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'rgba(10,10,10,0.9)',
+                  backgroundColor: 'var(--glass-surface-solid)',
                   border: '1px solid var(--glass-border)',
                   borderRadius: '8px',
                 }}

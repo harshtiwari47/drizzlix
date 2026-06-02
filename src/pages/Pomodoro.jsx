@@ -189,7 +189,6 @@ export default function Pomodoro() {
   const lastLocalVersionRef = useRef(0);
 
   const safeDispatch = (action) => {
-    console.log('[POMODORO] safeDispatch triggered:', action.type);
     dispatch(action);
   };
 
@@ -243,13 +242,11 @@ export default function Pomodoro() {
 
     // [ANTI PING-PONG] Do not echo network loads back to the network.
     if (state.__localMutation === false) {
-      console.log('[POMODORO] Skipping push because state was a pure network load.');
       return;
     }
 
     // Cloud Debounce Write
     cloudSyncDebounceTimerRef.current = window.setTimeout(() => {
-      console.log('[POMODORO] Debounce timer firing performCloudPush. Current Local State UpdatedAt:', state.updatedAt);
       performCloudPush(state, token, ownerKey, dispatch);
     }, CLOUD_SYNC_DEBOUNCE_MS);
 
@@ -281,8 +278,6 @@ export default function Pomodoro() {
       if (isPollingRef.current) return;
       isPollingRef.current = true;
       const pollId = ++pollIdRef.current;
-      
-      console.log("Polling...");
 
       try {
         const url = `${import.meta.env.VITE_API_URL || '/api'}/pomodoro-state`;
@@ -298,19 +293,13 @@ export default function Pomodoro() {
             const serverUpAt = Number(serverState.updatedAt);
             const localUpAt = Number(stateRef.current.updatedAt || 0);
 
-            console.log("LOCAL:", localUpAt);
-            console.log("SERVER:", serverUpAt);
-
             if (serverUpAt > localUpAt) {
-              console.log("[POLL] Server state is technically newer. Checking local version bounds...");
               // BLOCK stale server overwrite
               if (serverUpAt <= lastLocalVersionRef.current) {
-                console.warn("[POLL] Rejecting overwrite because serverUpAt is within locally tracked version limit.");
                 return;
               }
 
               if (pollId !== pollIdRef.current) return;
-              console.log("[POLL] dispatching LOAD_STATE from polling loop.");
               dispatch({ type: 'LOAD_STATE', payload: normalizePomodoroState(serverState) });
             }
           }
@@ -416,7 +405,7 @@ export default function Pomodoro() {
     <>
       <section className="pomodoro-page">
         <header className="pomodoro-header">
-          <h1>Pomodoro</h1>
+          <h1 className="title-sparkle-effect">Pomodoro</h1>
         </header>
 
         <div className="pomodoro-grid">

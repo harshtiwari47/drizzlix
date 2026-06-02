@@ -3,12 +3,14 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
   Plus, Search, Pin, PinOff, Trash2, FileText, Eye, Edit3, Check,
   Bold, Italic, List, Code, Link, Image, Hash, ChevronRight,
-  Save, X, AlignLeft, Heading1, Heading2, Quote, PanelLeftClose, PanelLeftOpen, ChevronDown, Sparkles
+  Save, X, AlignLeft, Heading1, Heading2, Quote, ChevronLeft, Menu, ChevronDown, Box,
+  ListChecks, Circle, CheckCircle2, GripVertical
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { measureTextBlock } from '../services/textMetrics';
+import AuthoringToast from '../components/AuthoringToast';
 import {
   enqueueOfflineSyncRequest,
   getOfflineSyncPendingCountByDedupePrefix,
@@ -26,7 +28,7 @@ const NOTES_KEEP_ALIVE_TTL_MS = 3 * 60 * 1000;
 const OFFLINE_NOTE_ID_PREFIX = 'offline-note-';
 const MOTION_EASE_OUT = [0.23, 1, 0.32, 1];
 const MOTION_EASE_IN_OUT = [0.77, 0, 0.175, 1];
-const FOCUS_RING = '0 0 0 2px rgba(167, 139, 250, 0.45)';
+const FOCUS_RING = '0 0 0 2px var(--badge-bg)';
 
 const isClientOffline = () => (typeof navigator !== 'undefined' ? !navigator.onLine : false);
 const createOfflineNoteId = () => `${OFFLINE_NOTE_ID_PREFIX}${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -45,8 +47,8 @@ const getNotesKeepAliveSnapshot = (token) => {
 };
 
 const ACCENT_COLORS = {
-  violet: '#a78bfa', blue: '#63b3ed', green: '#4ade80',
-  amber: '#facc15', rose: '#f87171', cyan: '#22d3ee',
+  violet: 'var(--accent-primary)', blue: 'var(--accent-primary)', green: 'var(--success)',
+  amber: 'var(--warning)', rose: 'var(--danger)', cyan: 'var(--accent-secondary)',
 };
 
 const _MOTION = motion;
@@ -59,6 +61,303 @@ const formatTime = (d) => {
 };
 
 const wordCount = (text = '') => text.trim().split(/\s+/).filter(Boolean).length;
+
+/* ── Checklist helpers ──────────────────────────────────────────────── */
+const CHECKLIST_RE = /^(\s*)-\s\[([ xX])\]\s(.*)$/;
+
+const parseChecklistItems = (bodyText) => {
+  const lines = (bodyText || '').split('\n');
+  const items = [];
+  for (let i = 0; i < lines.length; i++) {
+    const match = lines[i].match(CHECKLIST_RE);
+    if (match) {
+      items.push({
+        lineIndex: i,
+        indent: match[1],
+        checked: match[2] !== ' ',
+        text: match[3],
+      });
+    }
+  }
+  return items;
+};
+
+const toggleChecklistLine = (bodyText, lineIndex) => {
+  const lines = (bodyText || '').split('\n');
+  if (lineIndex < 0 || lineIndex >= lines.length) return bodyText;
+  const line = lines[lineIndex];
+  const match = line.match(CHECKLIST_RE);
+  if (!match) return bodyText;
+  const wasChecked = match[2] !== ' ';
+  lines[lineIndex] = `${match[1]}- [${wasChecked ? ' ' : 'x'}] ${match[3]}`;
+  return lines.join('\n');
+};
+
+const removeChecklistLine = (bodyText, lineIndex) => {
+  const lines = (bodyText || '').split('\n');
+  if (lineIndex < 0 || lineIndex >= lines.length) return bodyText;
+  lines.splice(lineIndex, 1);
+  return lines.join('\n');
+};
+
+const appendChecklistItem = (bodyText, text) => {
+  const trimmed = (text || '').trim();
+  if (!trimmed) return bodyText;
+  const newLine = `- [ ] ${trimmed}`;
+  const current = bodyText || '';
+  if (!current) return newLine;
+  const endsWithNewline = current.endsWith('\n');
+  return current + (endsWithNewline ? '' : '\n') + newLine;
+};
+
+/* ── Inline Checklist Panel ─────────────────────────────────────────── */
+const ChecklistPanel = React.memo(function ChecklistPanel({ body, setBody, setDirty, isPhone }) {
+  const shouldReduceMotion = useReducedMotion();
+  const [newItemText, setNewItemText] = useState('');
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const inputRef = useRef(null);
+
+  const items = useMemo(() => parseChecklistItems(body), [body]);
+  const totalCount = items.length;
+  const checkedCount = items.filter(i => i.checked).length;
+  const progress = totalCount > 0 ? (checkedCount / totalCount) * 100 : 0;
+
+  const handleToggle = useCallback((lineIndex) => {
+    setBody(prev => toggleChecklistLine(prev, lineIndex));
+    setDirty(true);
+  }, [setBody, setDirty]);
+
+  const handleRemove = useCallback((lineIndex) => {
+    setBody(prev => removeChecklistLine(prev, lineIndex));
+    setDirty(true);
+  }, [setBody, setDirty]);
+
+  const handleAdd = useCallback(() => {
+    const trimmed = newItemText.trim();
+    if (!trimmed) return;
+    setBody(prev => appendChecklistItem(prev, trimmed));
+    setDirty(true);
+    setNewItemText('');
+    setTimeout(() => inputRef.current?.focus(), 30);
+  }, [newItemText, setBody, setDirty]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAdd();
+    }
+  }, [handleAdd]);
+
+  const progressColor = progress === 100
+    ? 'var(--success)'
+    : progress > 50
+      ? 'var(--warning)'
+      : 'var(--accent-primary)';
+
+  return (
+    <motion.div
+      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
+      animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, height: 'auto' }}
+      exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
+      transition={{ duration: 0.22, ease: MOTION_EASE_OUT }}
+      style={{
+        borderBottom: '1px solid var(--card-hover)',
+        background: 'var(--card-bg)',
+        overflow: 'hidden',
+      }}
+    >
+      <div style={{ padding: isPhone ? '0.7rem 0.85rem' : '0.85rem 1.5rem' }}>
+        {/* Header with progress */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          marginBottom: '0.65rem', gap: '0.75rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <ListChecks size={15} color="var(--badge-bg)" />
+            <span style={{
+              fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)',
+              fontFamily: 'var(--font-display)', letterSpacing: '-0.01em'
+            }}>
+              Checklist
+            </span>
+            {totalCount > 0 && (
+              <span style={{
+                fontSize: '0.65rem', fontWeight: 700, color: progressColor,
+                background: `${progressColor}18`, border: `1px solid ${progressColor}35`,
+                borderRadius: '999px', padding: '0.12rem 0.42rem',
+                transition: 'all 0.2s ease'
+              }}>
+                {checkedCount}/{totalCount}
+              </span>
+            )}
+          </div>
+          {totalCount > 0 && (
+            <div style={{ flex: 1, maxWidth: '140px' }}>
+              <div style={{
+                height: '4px', borderRadius: '999px',
+                background: 'var(--card-hover)', overflow: 'hidden'
+              }}>
+                <motion.div
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.35, ease: MOTION_EASE_OUT }}
+                  style={{
+                    height: '100%', borderRadius: '999px',
+                    background: `linear-gradient(90deg, ${progressColor}88, ${progressColor})`,
+                    boxShadow: `0 0 8px ${progressColor}44`,
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Checklist Items */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', marginBottom: '0.55rem' }}>
+          <AnimatePresence initial={false}>
+            {items.map((item, idx) => (
+              <motion.div
+                key={`cl-${item.lineIndex}-${idx}`}
+                initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -8 }}
+                animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, x: 0 }}
+                exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 8, height: 0, marginBottom: 0 }}
+                transition={{ duration: 0.18, ease: MOTION_EASE_OUT }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.45rem',
+                  padding: '0.38rem 0.5rem',
+                  borderRadius: '0.55rem',
+                  background: item.checked ? 'var(--success)' : 'rgba(255,255,255,0.025)',
+                  border: `1px solid ${item.checked ? 'var(--success)' : 'var(--card-hover)'}`,
+                  transition: 'background 0.2s ease, border-color 0.2s ease',
+                  cursor: 'default',
+                }}
+              >
+                <motion.button
+                  type="button"
+                  onClick={() => handleToggle(item.lineIndex)}
+                  whileHover={shouldReduceMotion ? undefined : { scale: 1.15 }}
+                  whileTap={shouldReduceMotion ? undefined : { scale: 0.9 }}
+                  transition={{ duration: 0.12, ease: MOTION_EASE_OUT }}
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    padding: '0.1rem', display: 'flex', alignItems: 'center',
+                    color: item.checked ? 'var(--success)' : 'var(--text-secondary)',
+                    transition: 'color 0.16s ease', flexShrink: 0,
+                  }}
+                  aria-label={item.checked ? 'Uncheck item' : 'Check item'}
+                >
+                  {item.checked
+                    ? <CheckCircle2 size={18} />
+                    : <Circle size={18} />}
+                </motion.button>
+                <span style={{
+                  flex: 1, fontSize: '0.84rem', fontWeight: 500,
+                  color: item.checked ? 'var(--text-secondary)' : 'var(--text-primary)',
+                  textDecoration: item.checked ? 'line-through' : 'none',
+                  textDecorationColor: 'var(--text-secondary)',
+                  transition: 'color 0.2s ease, text-decoration 0.2s ease',
+                  lineHeight: 1.4, wordBreak: 'break-word',
+                }}>
+                  {item.text}
+                </span>
+                <motion.button
+                  type="button"
+                  onClick={() => handleRemove(item.lineIndex)}
+                  whileHover={shouldReduceMotion ? undefined : { scale: 1.1 }}
+                  whileTap={shouldReduceMotion ? undefined : { scale: 0.9 }}
+                  transition={{ duration: 0.12, ease: MOTION_EASE_OUT }}
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    padding: '0.15rem', display: 'flex', alignItems: 'center',
+                    color: 'var(--text-secondary)',
+                    transition: 'color 0.16s ease', flexShrink: 0,
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = 'var(--danger)'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+                  aria-label="Remove item"
+                >
+                  <X size={14} />
+                </motion.button>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+
+        {/* Add New Item Input */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.45rem',
+        }}>
+          <div style={{
+            flex: 1, display: 'flex', alignItems: 'center', gap: '0.45rem',
+            padding: '0.4rem 0.55rem',
+            borderRadius: '0.55rem',
+            border: `1px solid ${isInputFocused ? 'var(--badge-bg)' : 'var(--text-secondary)'}`,
+            background: 'var(--card-bg)',
+            boxShadow: isInputFocused ? FOCUS_RING : 'none',
+            transition: 'border-color 0.16s ease, box-shadow 0.16s ease',
+          }}>
+            <Plus size={14} color="var(--text-secondary)" style={{ flexShrink: 0 }} />
+            <input
+              ref={inputRef}
+              type="text"
+              value={newItemText}
+              onChange={(e) => setNewItemText(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
+              placeholder="Add a to-do item..."
+              style={{
+                flex: 1, background: 'none', border: 'none', outline: 'none',
+                color: 'var(--text-primary)', fontSize: '0.82rem', fontWeight: 500,
+              }}
+            />
+          </div>
+          <motion.button
+            type="button"
+            onClick={handleAdd}
+            disabled={!newItemText.trim()}
+            whileHover={shouldReduceMotion || !newItemText.trim() ? undefined : { scale: 1.04 }}
+            whileTap={shouldReduceMotion || !newItemText.trim() ? undefined : { scale: 0.96 }}
+            transition={{ duration: 0.12, ease: MOTION_EASE_OUT }}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: '32px', height: '32px', borderRadius: '0.5rem', flexShrink: 0,
+              background: newItemText.trim() ? 'var(--badge-bg)' : 'var(--card-bg)',
+              border: `1px solid ${newItemText.trim() ? 'var(--badge-bg)' : 'var(--card-hover)'}`,
+              color: newItemText.trim() ? 'var(--accent-primary)' : 'var(--text-secondary)',
+              cursor: newItemText.trim() ? 'pointer' : 'not-allowed',
+              transition: 'all 0.16s ease',
+            }}
+            aria-label="Add item"
+          >
+            <Plus size={15} />
+          </motion.button>
+        </div>
+
+        {/* Completed celebration */}
+        <AnimatePresence>
+          {totalCount > 0 && checkedCount === totalCount && (
+            <motion.div
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.25, ease: MOTION_EASE_OUT }}
+              style={{
+                marginTop: '0.55rem',
+                textAlign: 'center',
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                color: 'var(--success)',
+                letterSpacing: '0.03em',
+              }}
+            >
+              ✨ All done! Great job.
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+});
 
 /* ── Toolbar ─────────────────────────────────────────────────────────── */
 const ToolbarBtn = ({ icon, label, shortcut, onClick }) => {
@@ -73,18 +372,18 @@ const ToolbarBtn = ({ icon, label, shortcut, onClick }) => {
       onClick={onClick}
       whileHover={shouldReduceMotion
         ? {
-          color: 'rgba(255,255,255,0.95)',
-          backgroundColor: 'rgba(255,255,255,0.06)',
+          color: 'var(--text-primary)',
+          backgroundColor: 'var(--card-hover)',
         }
         : {
           y: -1,
-          color: 'rgba(255,255,255,0.95)',
-          backgroundColor: 'rgba(255,255,255,0.06)',
+          color: 'var(--text-primary)',
+          backgroundColor: 'var(--card-hover)',
         }}
       whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
       transition={{ duration: 0.16, ease: MOTION_EASE_OUT }}
       style={{
-        background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer',
+        background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer',
         padding: '0.35rem', borderRadius: '0.4rem', display: 'flex', alignItems: 'center',
         transition: 'color 0.16s ease, background-color 0.16s ease'
       }}
@@ -96,44 +395,49 @@ const ToolbarBtn = ({ icon, label, shortcut, onClick }) => {
 
 const ACTION_TONES = {
   neutral: {
-    bg: 'rgba(255,255,255,0.05)',
-    border: 'rgba(255,255,255,0.14)',
-    color: 'rgba(255,255,255,0.75)',
-    hoverBg: 'rgba(255,255,255,0.1)',
-    hoverBorder: 'rgba(255,255,255,0.2)',
-    hoverColor: 'rgba(255,255,255,0.95)',
+    bg: 'var(--card-bg)',
+    border: 'var(--card-hover)',
+    color: 'var(--text-primary)',
+    hoverBg: 'var(--card-hover)',
+    hoverBorder: 'var(--text-secondary)',
+    hoverColor: 'var(--text-primary)',
+    ring: 'var(--text-secondary)',
   },
   accent: {
-    bg: 'rgba(167,139,250,0.1)',
-    border: 'rgba(255,255,255,0.2)',
-    color: '#a78bfa',
-    hoverBg: 'rgba(167,139,250,0.18)',
-    hoverBorder: 'rgba(167,139,250,0.42)',
-    hoverColor: '#c4b5fd',
+    bg: 'color-mix(in srgb, var(--accent-primary) 10%, transparent)',
+    border: 'color-mix(in srgb, var(--accent-primary) 25%, transparent)',
+    color: 'var(--accent-primary)',
+    hoverBg: 'color-mix(in srgb, var(--accent-primary) 18%, transparent)',
+    hoverBorder: 'var(--accent-primary)',
+    hoverColor: 'var(--accent-primary)',
+    ring: 'var(--accent-primary)',
   },
   success: {
-    bg: 'rgba(74,222,128,0.1)',
-    border: 'rgba(255,255,255,0.2)',
-    color: '#4ade80',
-    hoverBg: 'rgba(74,222,128,0.18)',
-    hoverBorder: 'rgba(74,222,128,0.45)',
-    hoverColor: '#86efac',
+    bg: 'color-mix(in srgb, var(--success) 10%, transparent)',
+    border: 'color-mix(in srgb, var(--success) 25%, transparent)',
+    color: 'var(--success)',
+    hoverBg: 'var(--success)',
+    hoverBorder: 'var(--success)',
+    hoverColor: 'white',
+    ring: 'var(--success)',
   },
   warning: {
-    bg: 'rgba(250,204,21,0.12)',
-    border: 'rgba(250,204,21,0.36)',
-    color: '#facc15',
-    hoverBg: 'rgba(250,204,21,0.2)',
-    hoverBorder: 'rgba(250,204,21,0.5)',
-    hoverColor: '#fde047',
+    bg: 'color-mix(in srgb, var(--warning) 10%, transparent)',
+    border: 'color-mix(in srgb, var(--warning) 25%, transparent)',
+    color: 'var(--warning)',
+    hoverBg: 'var(--warning)',
+    hoverBorder: 'var(--warning)',
+    hoverColor: 'white',
+    ring: 'var(--warning)',
   },
   danger: {
-    bg: 'rgba(248,113,113,0.1)',
-    border: 'rgba(248,113,113,0.28)',
-    color: '#fda4af',
-    hoverBg: 'rgba(248,113,113,0.18)',
-    hoverBorder: 'rgba(248,113,113,0.46)',
-    hoverColor: '#fecdd3',
+    bg: 'color-mix(in srgb, var(--danger) 10%, transparent)',
+    border: 'color-mix(in srgb, var(--danger) 25%, transparent)',
+    color: 'var(--danger)',
+    hoverBg: 'var(--danger)',
+    hoverBorder: 'var(--danger)',
+    hoverColor: 'white',
+    ring: 'var(--danger)',
   },
 };
 
@@ -144,7 +448,7 @@ const IconActionButton = ({
   onClick,
   tone = 'neutral',
   isActive = false,
-  size = 34,
+  size = 36,
   disabled = false,
 }) => {
   const shouldReduceMotion = useReducedMotion();
@@ -157,37 +461,64 @@ const IconActionButton = ({
       title={title || label}
       onClick={onClick}
       disabled={disabled}
-      whileHover={disabled
-        ? undefined
-        : (shouldReduceMotion
+      whileHover={
+        disabled
+          ? undefined
+          : shouldReduceMotion
           ? {
-            backgroundColor: palette.hoverBg,
-            borderColor: palette.hoverBorder,
-            color: palette.hoverColor,
-          }
+              backgroundColor: palette.hoverBg,
+              borderColor: palette.hoverBorder,
+              color: palette.hoverColor,
+            }
           : {
-            scale: 1.04,
-            backgroundColor: palette.hoverBg,
-            borderColor: palette.hoverBorder,
-            color: palette.hoverColor,
-          })}
+              y: -1,
+              scale: 1.03,
+              backgroundColor: palette.hoverBg,
+              borderColor: palette.hoverBorder,
+              color: palette.hoverColor,
+            }
+      }
       whileTap={disabled || shouldReduceMotion ? undefined : { scale: 0.97 }}
       transition={{ duration: 0.16, ease: MOTION_EASE_OUT }}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
+        width: size,
+        height: size,
+        borderRadius: '0.75rem',
+        flexShrink: 0,
+        cursor: disabled ? 'not-allowed' : 'pointer',
         background: palette.bg,
         border: `1px solid ${palette.border}`,
         color: palette.color,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        width: size,
-        height: size,
-        borderRadius: '0.6rem',
-        flexShrink: 0,
-        opacity: disabled ? 0.62 : 1,
-        boxShadow: isActive ? '0 0 0 1px rgba(255,255,255,0.1) inset' : 'none',
-        transition: 'background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease'
+        opacity: disabled ? 0.5 : 1,
+        boxShadow: isActive
+          ? `0 0 0 2px ${palette.ring} inset, 0 6px 18px rgba(0,0,0,0.08)`
+          : '0 1px 2px rgba(0,0,0,0.04)',
+        transition:
+          'background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease',
+        outline: 'none',
+      }}
+      onFocus={(e) => {
+        e.currentTarget.style.boxShadow = `0 0 0 3px color-mix(in srgb, ${palette.ring} 35%, transparent), 0 1px 2px rgba(0,0,0,0.04)`;
+      }}
+      onBlur={(e) => {
+        e.currentTarget.style.boxShadow = isActive
+          ? `0 0 0 2px ${palette.ring} inset, 0 6px 18px rgba(0,0,0,0.08)`
+          : '0 1px 2px rgba(0,0,0,0.04)';
+      }}
+      onMouseEnter={(e) => {
+        if (!disabled && !shouldReduceMotion) {
+          e.currentTarget.style.boxShadow = isActive
+            ? `0 0 0 2px ${palette.ring} inset, 0 10px 24px rgba(0,0,0,0.10)`
+            : '0 6px 16px rgba(0,0,0,0.08)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = isActive
+          ? `0 0 0 2px ${palette.ring} inset, 0 6px 18px rgba(0,0,0,0.08)`
+          : '0 1px 2px rgba(0,0,0,0.04)';
       }}
     >
       {React.createElement(icon, { size: 16 })}
@@ -229,21 +560,21 @@ const NoteListCard = React.memo(function NoteListCard({ note, isActive, onOpen, 
         textAlign: 'left',
         font: 'inherit',
         padding: '1rem', borderRadius: '0.9rem', cursor: 'pointer', marginBottom: '0.8rem',
-        background: isActive ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.03)',
+        background: isActive ? 'var(--card-hover)' : 'var(--card-bg)',
         backdropFilter: 'none',
-        border: `1px solid ${isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)'}`,
+        border: `1px solid ${isActive ? 'var(--text-secondary)' : 'var(--text-secondary)'}`,
         transition: 'background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease',
-        position: 'relative', overflow: 'hidden', height: 'fit-content',
+        position: 'relative', overflow: 'hidden', height: 'min-content',
         willChange: 'transform'
       }}
       whileHover={shouldReduceMotion
         ? {
-          background: 'rgba(255,255,255,0.08)',
-          borderColor: 'rgba(255,255,255,0.24)',
+          background: 'var(--card-hover)',
+          borderColor: 'var(--text-secondary)',
         }
         : {
-          background: 'rgba(255,255,255,0.08)',
-          borderColor: 'rgba(255,255,255,0.24)',
+          background: 'var(--card-hover)',
+          borderColor: 'var(--text-secondary)',
           scale: 1.005,
           y: -1
         }}
@@ -255,8 +586,8 @@ const NoteListCard = React.memo(function NoteListCard({ note, isActive, onOpen, 
           position: 'absolute',
           inset: 0,
           borderRadius: 'inherit',
-          border: `1px solid ${isActive ? 'rgba(255,255,255,0.18)' : 'transparent'}`,
-          boxShadow: '0 10px 30px rgba(0,0,0,0.18)',
+          border: `1px solid ${isActive ? 'var(--text-secondary)' : 'transparent'}`,
+          boxShadow: '0 10px 30px var(--shadow-color)',
           opacity: isActive ? 1 : 0,
           pointerEvents: 'none',
           transition: 'opacity 0.16s ease, border-color 0.16s ease'
@@ -265,10 +596,10 @@ const NoteListCard = React.memo(function NoteListCard({ note, isActive, onOpen, 
 
       <div style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-          {note.pinned && <Pin size={12} color="#facc15" fill="#facc15" style={{ flexShrink: 0 }} />}
+          {note.pinned && <Pin size={12} color="var(--warning)" fill="var(--warning)" style={{ flexShrink: 0 }} />}
           <span style={{
             fontSize: '0.9rem', fontWeight: 700,
-            color: isActive ? 'white' : 'rgba(255,255,255,0.85)',
+            color: isActive ? 'var(--primary)' : 'var(--text-primary)',
             flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
             fontFamily: 'var(--font-display)', letterSpacing: '-0.01em'
             , minHeight: `${titleMetrics?.height || NOTES_CARD_TITLE_LINE_HEIGHT}px`
@@ -277,7 +608,7 @@ const NoteListCard = React.memo(function NoteListCard({ note, isActive, onOpen, 
           </span>
         </div>
         <div style={{
-          fontSize: '0.75rem', color: isActive ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.3)',
+          fontSize: '0.75rem', color: isActive ? 'var(--text-secondary)' : 'var(--text-secondary)',
           lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
           overflow: 'hidden', textOverflow: 'ellipsis', minHeight: `${snippetMetrics?.height || (NOTES_CARD_SNIPPET_LINE_HEIGHT * 2)}px`
         }}>
@@ -285,14 +616,14 @@ const NoteListCard = React.memo(function NoteListCard({ note, isActive, onOpen, 
         </div>
         <div style={{ marginTop: '0.45rem' }}>
           <span style={{
-            fontSize: '0.62rem', color: 'rgba(255,255,255,0.72)', border: '1px solid rgba(255,255,255,0.18)',
+            fontSize: '0.62rem', color: 'var(--text-primary)', background: 'var(--outline)',
             padding: '0.15rem 0.45rem', borderRadius: '999px', textTransform: 'uppercase', letterSpacing: '0.05em'
           }}>
             {note.category || 'General'}
           </span>
         </div>
         <div style={{
-          fontSize: '0.65rem', color: 'rgba(255,255,255,0.15)',
+          fontSize: '0.65rem', color: 'var(--text-secondary)',
           marginTop: '0.5rem', display: 'flex', justifyContent: 'flex-end', alignItems: 'center'
         }}>
           {note.updatedAt ? formatTime(note.updatedAt) : ''}
@@ -399,18 +730,18 @@ const FloatingCategorySelector = ({
           display: 'flex',
           alignItems: 'center',
           gap: compact ? '0.3rem' : '0.45rem',
-          border: '1px solid rgba(255, 255, 255, 0.25)',
+          border: '0',
           borderRadius: compact ? '0.62rem' : '0.78rem',
-          background: 'radial-gradient(circle at 15% 20%, #303030, #101010 40%, #000000)',
-          color: 'rgba(255, 255, 255, 0.95)',
-          padding: compact ? '0.36rem 0.48rem' : '0.5rem 0.65rem',
+          background: 'var(--outline)',
+          color: 'var(--text-primary)',
+          padding: compact ? '0.36rem 0.48rem' : '0.65rem 0.65rem',
           cursor: 'pointer',
           fontSize: compact ? '0.72rem' : '0.78rem',
           fontWeight: 700,
           overflow: 'hidden'
         }}
       >
-        <Sparkles size={compact ? 11 : 13} color="rgba(255, 255, 255, 0.8)" />
+        <Box size={compact ? 11 : 13} color="var(--text-primary)" />
         <span style={{ flex: 1, textAlign: 'left', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
           {shownLabel || 'General'}
         </span>
@@ -419,7 +750,7 @@ const FloatingCategorySelector = ({
           transition={{ duration: 0.16, ease: MOTION_EASE_OUT }}
           style={{ display: 'flex' }}
         >
-          <ChevronDown size={compact ? 12 : 14} color="rgba(255, 255, 255, 0.6)" />
+          <ChevronDown size={compact ? 12 : 14} color="var(--text-secondary)" />
         </motion.span>
       </motion.button>
 
@@ -437,27 +768,27 @@ const FloatingCategorySelector = ({
               right: 0,
               zIndex: 80,
               borderRadius: compact ? '0.8rem' : '1rem',
-              border: '1px solid #444',
-              background: 'radial-gradient(circle at 15% 0%, #2a2a2a, #080808 42%, #000000)',
-              boxShadow: '0 18px 42px rgba(0, 0, 0, 0.95)',
+              border: '1px solid var(--outline)',
+              background: 'var(--bg-gradient)',
+              boxShadow: '0 18px 42px var(--shadow-color)',
               backdropFilter: 'none',
               overflow: 'hidden',
               transformOrigin: 'top left'
             }}
           >
-            <div style={{ padding: compact ? '0.5rem 0.5rem 0.4rem' : '0.65rem 0.65rem 0.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <div style={{ padding: compact ? '0.5rem 0.5rem 0.4rem' : '0.65rem 0.65rem 0.5rem', borderBottom: '1px solid var(--card-hover)' }}>
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem',
                 borderRadius: '0.65rem',
-                border: `1px solid ${isQueryFocused ? 'rgba(167, 139, 250, 0.72)' : '#333'}`,
-                background: '#141414',
+                border: `1px solid ${isQueryFocused ? 'var(--badge-bg)' : '#333'}`,
+                background: 'var(--glass-surface-solid)',
                 padding: compact ? '0.4rem 0.48rem' : '0.48rem 0.58rem',
                 boxShadow: isQueryFocused ? FOCUS_RING : 'none',
                 transition: 'border-color 0.16s ease, box-shadow 0.16s ease'
               }}>
-                <Search size={12} color="rgba(255, 255, 255, 0.5)" />
+                <Search size={12} color="var(--text-secondary)" />
                 <input
                   ref={searchRef}
                   value={query}
@@ -470,7 +801,7 @@ const FloatingCategorySelector = ({
                     border: 'none',
                     outline: 'none',
                     background: 'transparent',
-                    color: 'rgba(231, 246, 255, 0.96)',
+                    color: 'var(--text-primary)',
                     fontSize: '0.76rem',
                     fontWeight: 600
                   }}
@@ -493,17 +824,17 @@ const FloatingCategorySelector = ({
                     initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 4 }}
                     animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                     transition={{ delay: shouldReduceMotion ? 0 : Math.min(idx * 0.015, 0.14), duration: 0.16, ease: MOTION_EASE_OUT }}
-                    whileHover={shouldReduceMotion ? { backgroundColor: '#1a1a1a' } : { x: 1 }}
+                    whileHover={shouldReduceMotion ? { backgroundColor: 'var(--glass-surface-solid)' } : { x: 1 }}
                     whileTap={shouldReduceMotion ? undefined : { scale: 0.995 }}
                     style={{
                       width: '100%',
                       textAlign: 'left',
                       borderRadius: '0.7rem',
-                      border: `1px solid ${active ? '#666' : '#2a2a2a'}`,
+                      border: `1px solid ${active ? '#666' : 'var(--outline)'}`,
                       background: active
-                        ? 'linear-gradient(130deg, #4d4d4d, #262626)'
-                        : '#141414',
-                      color: active ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)',
+                        ? 'var(--bg-gradient)'
+                        : 'var(--glass-surface-solid)',
+                      color: active ? 'var(--text-primary)' : 'var(--text-primary)',
                       padding: compact ? '0.4rem 0.5rem' : '0.48rem 0.62rem',
                       fontSize: compact ? '0.71rem' : '0.75rem',
                       fontWeight: 700,
@@ -531,9 +862,9 @@ const FloatingCategorySelector = ({
                     width: '100%',
                     textAlign: 'left',
                     borderRadius: '0.7rem',
-                    border: '1px solid #555',
-                    background: 'linear-gradient(130deg, #3d3d3d, #1f1f1f)',
-                    color: 'rgba(255, 255, 255, 1)',
+                    border: '1px solid var(--outline)',
+                    background: 'var(--bg-gradient)',
+                    color: 'var(--text-primary)',
                     padding: compact ? '0.42rem 0.5rem' : '0.5rem 0.62rem',
                     fontSize: compact ? '0.71rem' : '0.75rem',
                     fontWeight: 800,
@@ -546,7 +877,7 @@ const FloatingCategorySelector = ({
               )}
 
               {filteredOptions.length === 0 && !canCreate && (
-                <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.74rem', padding: '0.55rem 0.35rem' }}>
+                <div style={{ color: 'var(--text-secondary)', fontSize: '0.74rem', padding: '0.55rem 0.35rem' }}>
                   No category found.
                 </div>
               )}
@@ -578,10 +909,36 @@ export default function NotesPage() {
   const [dirty, setDirty] = useState(() => Boolean(cachedSnapshot?.dirty));
   const [notesLoadError, setNotesLoadError] = useState('');
   const [notesFetchStage, setNotesFetchStage] = useState(() => (!hasWarmCache ? 'loading' : 'idle'));
+  const [showChecklist, setShowChecklist] = useState(false);
+  const [toast, setToast] = useState(null);
+  const toastTimeoutRef = useRef(null);
+
+  const showToast = useCallback((msg, type = 'success') => {
+    if (toastTimeoutRef.current) window.clearTimeout(toastTimeoutRef.current);
+    setToast({ msg, type });
+    toastTimeoutRef.current = window.setTimeout(() => setToast(null), 2800);
+  }, []);
+
+  useEffect(() => () => {
+    if (toastTimeoutRef.current) window.clearTimeout(toastTimeoutRef.current);
+  }, []);
+
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isTitleFocused, setIsTitleFocused] = useState(false);
   const [isEditorFocused, setIsEditorFocused] = useState(false);
   const [showSidebar, setShowSidebar] = useState(() => cachedSnapshot?.showSidebar ?? true);
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if (e.key === '\\' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setShowSidebar(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
+
   const [viewportWidth, setViewportWidth] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1280));
   const [visibleNotesCount, setVisibleNotesCount] = useState(24);
   const [notesPendingSyncCount, setNotesPendingSyncCount] = useState(0);
@@ -1081,6 +1438,7 @@ export default function NotesPage() {
         if (typeof saveIndicatorTimerRef.current === 'number') {
           window.clearTimeout(saveIndicatorTimerRef.current);
         }
+        showToast('Note saved successfully');
         saveIndicatorTimerRef.current = window.setTimeout(() => {
           setSaving(false);
           saveIndicatorTimerRef.current = null;
@@ -1452,7 +1810,7 @@ export default function NotesPage() {
   }, [isEditing, activeNote?._id, ins]);
 
   return (
-    <div style={{ display: 'flex', marginTop: viewportOffset, minHeight: `calc(100svh - 64px - ${viewportOffset})`, height: `calc(100dvh - 64px - ${viewportOffset})`, overflow: 'hidden', color: 'white', position: 'relative', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+    <div style={{ display: 'flex', marginTop: viewportOffset, minHeight: `calc(100svh - 64px - ${viewportOffset})`, height: `calc(100dvh - 64px - ${viewportOffset})`, overflow: 'hidden', color: 'var(--text-primary)', position: 'relative', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
       <AnimatePresence initial={false}>
         {showNotesProgressBar && (
           <motion.div
@@ -1467,7 +1825,7 @@ export default function NotesPage() {
               left: 0,
               right: 0,
               height: '2px',
-              background: 'rgba(255,255,255,0.08)',
+              background: 'var(--card-hover)',
               overflow: 'hidden',
               zIndex: 60,
               pointerEvents: 'none'
@@ -1484,7 +1842,7 @@ export default function NotesPage() {
               style={{
                 width: shouldReduceMotion ? '100%' : '42%',
                 height: '100%',
-                background: 'linear-gradient(90deg, rgba(99,179,237,0), rgba(167,139,250,0.9), rgba(99,179,237,0))',
+                background: 'linear-gradient(90deg, rgba(99,179,237,0), var(--badge-bg), rgba(99,179,237,0))',
                 willChange: 'transform, opacity'
               }}
             />
@@ -1496,15 +1854,14 @@ export default function NotesPage() {
       <AnimatePresence initial={false}>
         {showSidebar && (
           <motion.div
-            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, transform: 'translateX(-18px)' }}
-            animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, transform: 'translateX(0px)' }}
-            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, transform: 'translateX(-18px)' }}
-            transition={{ duration: shouldReduceMotion ? 0.12 : 0.22, ease: MOTION_EASE_OUT }}
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, width: 0, transform: 'translateX(-18px)' }}
+            animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, width: sidebarWidth, transform: 'translateX(0px)' }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, width: 0, transform: 'translateX(-18px)' }}
+            transition={{ duration: shouldReduceMotion ? 0.12 : 0.25, ease: MOTION_EASE_OUT }}
             style={{
-              width: sidebarWidth,
-              flexShrink: 0, borderRight: '1px solid rgba(255,255,255,0.1)',
+              flexShrink: 0, borderRight: '1px solid var(--card-border)',
               display: 'flex', flexDirection: 'column',
-              background: 'radial-gradient(at 0% 0%, rgba(160, 160, 160, 0.12) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(130, 130, 130, 0.08) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(200, 200, 200, 0.05) 0px, transparent 50%), rgba(5, 5, 7, 0.65)',
+              background: 'linear-gradient(360deg, var(--glass-surface), transparent)',
               backdropFilter: 'blur(16px)', overflow: 'hidden',
               position: isCompact ? 'absolute' : 'relative',
               inset: isCompact ? 0 : 'auto',
@@ -1513,12 +1870,12 @@ export default function NotesPage() {
           >
             <div style={{ width: sidebarWidth, height: '100%', display: 'flex', flexDirection: 'column' }}>
               {/* Sidebar Header */}
-              <div style={{ height: isPhone ? '64px' : '72px', padding: isPhone ? '0 0.9rem' : '0 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center' }}>
+              <div style={{ height: isPhone ? '64px' : '72px', padding: isPhone ? '0 0.9rem' : '0 1.5rem', display: 'flex', alignItems: 'center' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.28rem' }}>
-                      <h2 className="title-sparkle-effect" style={{ margin: 0, fontSize: isPhone ? '1.3rem' : 'clamp(1.35rem, 2.8vw, 1.7rem)', fontWeight: 800, fontFamily: 'var(--font-display)', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', gap: '0.55rem', background: 'linear-gradient(180deg, #fff 0%, #9ca3af 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                        <FileText size={20} color="rgba(147,197,253,0.95)" style={{ filter: 'drop-shadow(0 0 10px rgba(147,197,253,0.5))' }} />
+                      <h2 className="title-sparkle-effect">
+                        <FileText size={20} color="var(--accent-primary)" style={{}} />
                         Notes
                       </h2>
                       {notesPendingSyncCount > 0 && (
@@ -1528,11 +1885,11 @@ export default function NotesPage() {
                           fontWeight: 700,
                           letterSpacing: '0.05em',
                           textTransform: 'uppercase',
-                          color: 'rgba(255,255,255,0.9)',
-                          border: '1px solid rgba(255,255,255,0.22)',
+                          color: 'var(--text-primary)',
+                          border: '1px solid var(--text-secondary)',
                           borderRadius: '999px',
                           padding: '0.14rem 0.44rem',
-                          background: 'rgba(255,255,255,0.08)'
+                          background: 'var(--card-hover)'
                         }}>
                           {notesPendingSyncCount} pending sync
                         </span>
@@ -1549,7 +1906,7 @@ export default function NotesPage() {
                       size={isPhone ? 34 : 32}
                     />
                     <IconActionButton
-                      icon={PanelLeftClose}
+                      icon={ChevronLeft}
                       label="Hide sidebar"
                       title="Hide sidebar"
                       onClick={() => setShowSidebar(false)}
@@ -1560,22 +1917,22 @@ export default function NotesPage() {
               </div>
 
               {/* Sidebar Search Area */}
-              <div style={{ padding: isPhone ? '0.75rem 0.9rem' : '1rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ padding: isPhone ? '0.75rem 0.9rem' : '1rem 1.5rem', borderBottom: '1px solid var(--card-bg)' }}>
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: '0.6rem',
-                  background: 'rgba(255,255,255,0.06)', borderRadius: '0.8rem',
+                  background: 'var(--card-hover)', borderRadius: '0.8rem',
                   padding: isPhone ? '0.55rem 0.75rem' : '0.6rem 0.9rem',
-                  border: `1px solid ${isSearchFocused ? 'rgba(167, 139, 250, 0.7)' : 'rgba(255,255,255,0.15)'}`,
+                  border: `1px solid ${isSearchFocused ? 'var(--badge-bg)' : 'var(--text-secondary)'}`,
                   boxShadow: isSearchFocused ? FOCUS_RING : 'none',
                   transition: 'border-color 0.16s ease, box-shadow 0.16s ease'
                 }}>
-                  <Search size={14} color="rgba(255,255,255,0.3)" />
+                  <Search size={14} color="var(--text-secondary)" />
                   <input
                     value={search} onChange={handleSearchChange}
                     onFocus={() => setIsSearchFocused(true)}
                     onBlur={() => setIsSearchFocused(false)}
                     placeholder="Search notes..."
-                    style={{ background: 'none', border: 'none', outline: 'none', color: 'white', fontSize: '0.85rem', flex: 1 }}
+                    style={{ background: 'none', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: '0.85rem', flex: 1 }}
                   />
                 </div>
                 <div style={{ marginTop: '0.65rem' }}>
@@ -1601,10 +1958,10 @@ export default function NotesPage() {
                 }}
               >
                 {loading ? (
-                  <div style={{ padding: '2rem', textAlign: 'center', color: 'rgba(255,255,255,0.2)', fontSize: '0.85rem' }}>Loading...</div>
+                  <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Loading...</div>
                 ) : notesLoadError ? (
-                  <div style={{ padding: '1.15rem', textAlign: 'center', color: 'rgba(255,255,255,0.8)', fontSize: '0.8rem' }}>
-                    <div style={{ marginBottom: '0.72rem', color: 'rgba(248,113,113,0.94)', fontWeight: 700 }}>
+                  <div style={{ padding: '1.15rem', textAlign: 'center', color: 'var(--text-primary)', fontSize: '0.8rem' }}>
+                    <div style={{ marginBottom: '0.72rem', color: 'var(--danger)', fontWeight: 700 }}>
                       {notesLoadError}
                     </div>
                     <button
@@ -1613,9 +1970,9 @@ export default function NotesPage() {
                         fetchNotes({ background: false, force: true }).catch(() => undefined);
                       }}
                       style={{
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        background: 'rgba(255,255,255,0.08)',
-                        color: 'rgba(255,255,255,0.95)',
+                        border: '1px solid var(--text-secondary)',
+                        background: 'var(--card-hover)',
+                        color: 'var(--text-primary)',
                         borderRadius: '0.56rem',
                         padding: '0.4rem 0.72rem',
                         fontSize: '0.74rem',
@@ -1627,7 +1984,7 @@ export default function NotesPage() {
                     </button>
                   </div>
                 ) : filteredNotes.length === 0 ? (
-                  <div style={{ padding: '2rem', textAlign: 'center', color: 'rgba(255,255,255,0.15)', fontSize: '0.85rem' }}>
+                  <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
                     <div style={{ marginBottom: hasActiveFilters ? '0.75rem' : 0 }}>
                       {hasActiveFilters ? 'No notes match your current filters.' : 'No notes yet. Create one!'}
                     </div>
@@ -1639,9 +1996,9 @@ export default function NotesPage() {
                           setCategoryFilter('All');
                         }}
                         style={{
-                          border: '1px solid rgba(255,255,255,0.18)',
-                          background: 'rgba(255,255,255,0.08)',
-                          color: 'rgba(255,255,255,0.92)',
+                          border: '1px solid var(--text-secondary)',
+                          background: 'var(--card-hover)',
+                          color: 'var(--text-primary)',
                           borderRadius: '0.55rem',
                           padding: '0.36rem 0.62rem',
                           fontSize: '0.74rem',
@@ -1677,7 +2034,7 @@ export default function NotesPage() {
 
       {/* ── Editor Area ───────────────────────────────────────────────── */}
       {activeNote ? (
-        <div style={{ flexGrow: 4, flexShrink: 1, flexBasis: '0px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <motion.div layout style={{ flexGrow: 4, flexShrink: 1, flexBasis: '0px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {/* Editor Topbar */}
           <div style={{
             minHeight: isPhone ? 'auto' : '72px',
@@ -1686,13 +2043,12 @@ export default function NotesPage() {
             justifyContent: 'center',
             gap: isPhone ? '0.5rem' : '0.65rem',
             padding: isPhone ? '0.68rem 0.85rem' : '0.65rem 1.55rem',
-            borderBottom: '1px solid rgba(255,255,255,0.2)',
-            background: 'rgba(10,10,20,0.3)', backdropFilter: 'blur(8px)', flexShrink: 0
+            backdropFilter: 'blur(8px)', flexShrink: 0
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', width: '100%', minWidth: 0 }}>
               {!showSidebar && (
                 <IconActionButton
-                  icon={PanelLeftOpen}
+                  icon={Menu}
                   label="Show sidebar"
                   title="Show sidebar"
                   onClick={() => setShowSidebar(true)}
@@ -1706,10 +2062,10 @@ export default function NotesPage() {
                 onBlur={() => setIsTitleFocused(false)}
                 style={{
                   flex: 1, minWidth: 0, background: 'none', border: 'none', outline: 'none',
-                  color: 'white', fontWeight: 800, fontSize: isPhone ? '1rem' : '1.2rem',
+                  color: 'var(--text-primary)', fontWeight: 800, fontSize: isPhone ? '1rem' : '1.7rem',
                   fontFamily: 'var(--font-sidebar)',
                   borderRadius: '0.5rem',
-                  padding: '0.28rem 0.48rem',
+                  padding: '0.28rem 0.48rem 0.28rem 0',
                   boxShadow: isTitleFocused ? FOCUS_RING : 'none',
                   transition: 'box-shadow 0.16s ease'
                 }}
@@ -1738,14 +2094,14 @@ export default function NotesPage() {
                   />
                 ) : (
                   <span style={{
-                    color: 'rgba(255, 255, 255, 0.65)',
+                    color: 'var(--text-secondary)',
                     fontSize: isPhone ? '0.85rem' : '0.9rem',
                     fontWeight: 600,
                     letterSpacing: '0.01em',
                     padding: '0.3rem 0',
                     fontFamily: 'var(--font-sidebar)'
                   }}>
-                    #{category}
+                    <Box size={isCompact ? 11 : 13} color="var(--text-primary)" /> {category}
                   </span>
                 )}
               </div>
@@ -1754,9 +2110,9 @@ export default function NotesPage() {
               {isEditing && (
                 <div style={{
                   display: 'flex',
-                  background: 'rgba(255,255,255,0.04)',
+                  background: 'var(--card-bg)',
                   borderRadius: '0.6rem',
-                  border: '1px solid rgba(255,255,255,0.06)',
+                  border: '1px solid var(--card-hover)',
                   padding: '0.2rem',
                   flexShrink: 0,
                   position: 'relative'
@@ -1774,7 +2130,7 @@ export default function NotesPage() {
                         style={{
                           background: 'none',
                           border: 'none',
-                          color: isActive ? 'white' : 'rgba(255,255,255,0.35)',
+                          color: isActive ? 'white' : 'var(--text-secondary)',
                           cursor: 'pointer',
                           padding: isPhone ? '0.34rem 0.58rem' : '0.3rem 0.6rem',
                           borderRadius: '0.4rem',
@@ -1793,8 +2149,8 @@ export default function NotesPage() {
                               position: 'absolute',
                               inset: 0,
                               borderRadius: '0.4rem',
-                              background: 'rgba(255,255,255,0.12)',
-                              border: '1px solid rgba(255,255,255,0.12)',
+                              background: 'var(--text-secondary)',
+                              border: '1px solid var(--text-secondary)',
                               zIndex: -1
                             }}
                           />
@@ -1871,26 +2227,67 @@ export default function NotesPage() {
           {isEditing && view !== 'preview' && (
             <div style={{
               display: 'flex', alignItems: 'center', gap: '0.15rem', padding: isPhone ? '0.35rem 0.72rem' : '0.4rem 1.5rem',
-              borderBottom: '1px solid rgba(255,255,255,0.04)',
-              background: 'rgba(5,5,15,0.3)', flexShrink: 0, flexWrap: 'wrap'
+              borderBottom: '1px solid var(--card-bg)',
+              background: 'var(--card-bg)', flexShrink: 0, flexWrap: 'wrap'
             }}>
               <ToolbarBtn icon={Heading1} label="Heading 1" shortcut="Ctrl+Alt+1" onClick={() => ins('# ', '')} />
               <ToolbarBtn icon={Heading2} label="Heading 2" shortcut="Ctrl+Alt+2" onClick={() => ins('## ', '')} />
-              <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.08)', margin: '0 0.25rem' }} />
+              <div style={{ width: 1, height: 16, background: 'var(--card-hover)', margin: '0 0.25rem' }} />
               <ToolbarBtn icon={Bold} label="Bold" shortcut="Ctrl+B" onClick={() => ins('**', '**')} />
               <ToolbarBtn icon={Italic} label="Italic" shortcut="Ctrl+I" onClick={() => ins('*', '*')} />
               <ToolbarBtn icon={Code} label="Code" shortcut="Ctrl+`" onClick={() => ins('`', '`')} />
-              <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.08)', margin: '0 0.25rem' }} />
+              <div style={{ width: 1, height: 16, background: 'var(--card-hover)', margin: '0 0.25rem' }} />
               <ToolbarBtn icon={List} label="Bullet List" shortcut="Ctrl+Shift+7" onClick={() => ins('- ', '')} />
               <ToolbarBtn icon={Quote} label="Blockquote" onClick={() => ins('> ', '')} />
               <ToolbarBtn icon={Link} label="Link" shortcut="Ctrl+K" onClick={() => ins('[', '](https://example.com)')} />
               <ToolbarBtn icon={Image} label="Image" onClick={() => ins('![Image description](', 'https://example.com/image.jpg)')} />
               <ToolbarBtn icon={Hash} label="Checkbox" onClick={() => ins('- [ ] ', '')} />
-              <div style={{ marginLeft: isPhone ? 0 : 'auto', width: isPhone ? '100%' : 'auto', fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)' }}>
+              <div style={{ width: 1, height: 16, background: 'var(--card-hover)', margin: '0 0.25rem' }} />
+              <motion.button
+                type="button"
+                aria-label="Toggle checklist panel"
+                title="Toggle checklist panel"
+                onClick={() => setShowChecklist(prev => !prev)}
+                whileHover={shouldReduceMotion
+                  ? {
+                    color: showChecklist ? 'rgba(167,139,250,1)' : 'var(--text-primary)',
+                    backgroundColor: showChecklist ? 'var(--badge-bg)' : 'var(--card-hover)',
+                  }
+                  : {
+                    y: -1,
+                    color: showChecklist ? 'rgba(167,139,250,1)' : 'var(--text-primary)',
+                    backgroundColor: showChecklist ? 'var(--badge-bg)' : 'var(--card-hover)',
+                  }}
+                whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
+                transition={{ duration: 0.16, ease: MOTION_EASE_OUT }}
+                style={{
+                  background: showChecklist ? 'var(--badge-bg)' : 'none',
+                  border: showChecklist ? '1px solid var(--badge-bg)' : '1px solid transparent',
+                  color: showChecklist ? 'var(--accent-primary)' : 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  padding: '0.35rem', borderRadius: '0.4rem', display: 'flex', alignItems: 'center',
+                  transition: 'color 0.16s ease, background-color 0.16s ease, border-color 0.16s ease'
+                }}
+              >
+                <ListChecks size={16} />
+              </motion.button>
+              <div style={{ marginLeft: isPhone ? 0 : 'auto', width: isPhone ? '100%' : 'auto', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
                 {wordCount(body)} words · {body.length} chars
               </div>
             </div>
           )}
+
+          {/* Inline Checklist Panel */}
+          <AnimatePresence>
+            {isEditing && showChecklist && (
+              <ChecklistPanel
+                body={body}
+                setBody={setBody}
+                setDirty={setDirty}
+                isPhone={isPhone}
+              />
+            )}
+          </AnimatePresence>
 
           {/* Editor + Preview Panes */}
           <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
@@ -1905,10 +2302,10 @@ export default function NotesPage() {
                 placeholder={`# Start writing\n\nSupports **Markdown**, _italics_, [links](https://example.com), ![images](https://example.com/image.jpg), \`code\`, lists, tables, and more...`}
                 style={{
                   flex: 1, padding: isCompact ? '0.9rem 0.95rem' : (showSidebar ? '1rem 2rem' : '2rem 10%'), resize: 'none', outline: 'none',
-                  background: 'transparent', border: 'none', borderRight: (isEditing && !isPhone && view === 'split') ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                  color: 'rgba(255,255,255,0.85)', fontSize: '1rem', lineHeight: 1.8,
+                  background: 'transparent', border: 'none', borderRight: (isEditing && !isPhone && view === 'split') ? '1px solid var(--card-bg)' : 'none',
+                  color: 'var(--text-primary)', fontSize: '1.05rem', lineHeight: 1.8,
                   fontFamily: 'var(--font-notes)',
-                  scrollbarWidth: 'thin', scrollbarColor: 'rgba(120,120,120,0.62) rgba(10,10,10,0.92)',
+                  scrollbarWidth: 'thin', scrollbarColor: 'var(--scrollbar-thumb) var(--scrollbar-track)',
                   boxShadow: isEditorFocused ? `inset ${FOCUS_RING}` : 'none',
                   transition: 'box-shadow 0.16s ease'
                 }}
@@ -1919,28 +2316,94 @@ export default function NotesPage() {
             {(!isEditing || view === 'preview' || (!isPhone && view === 'split')) && (
               <div style={{
                 flex: 1, overflowY: 'auto', padding: isCompact ? '0.9rem 0.95rem' : (showSidebar ? '1rem 2rem' : '2rem 10%'),
-                scrollbarWidth: 'thin', scrollbarColor: 'rgba(120,120,120,0.62) rgba(10,10,10,0.92)'
+                scrollbarWidth: 'thin', scrollbarColor: 'var(--scrollbar-thumb) var(--scrollbar-track)'
               }}>
                 <div className="markdown-preview" style={{
-                  color: 'rgba(255,255,255,0.85)', lineHeight: 1.8, fontSize: '1.1rem',
+                  color: 'var(--text-secondary)', lineHeight: 1.8, fontSize: '1.1rem',
                   fontFamily: 'var(--font-notes)',
                   maxWidth: '960px', margin: '0'
                 }}>
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
-                    components={{
-                      a: ({ ...props }) => (
-                        <a
-                          {...props}
-                          className="note-markdown-link"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title="Open link in a new tab"
-                        />
-                      ),
-                    }}
+                    components={(() => {
+                      let cbIdx = 0;
+                      let liIdx = 0;
+                      const items = parseChecklistItems(body);
+                      return {
+                        a: (aProps) => (
+                          <a
+                            {...aProps}
+                            className="note-markdown-link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Open link in a new tab"
+                          />
+                        ),
+                        input: (inputProps) => {
+                          const { type, checked, node, ...rest } = inputProps;
+                          if (type === 'checkbox') {
+                            const idx = cbIdx++;
+                            const item = items[idx];
+                            const lineIdx = item ? item.lineIndex : -1;
+                            return (
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => {
+                                  if (lineIdx >= 0) {
+                                    setBody(prev => toggleChecklistLine(prev, lineIdx));
+                                    setDirty(true);
+                                  }
+                                }}
+                                className="note-interactive-checkbox"
+                                style={{ cursor: 'pointer' }}
+                              />
+                            );
+                          }
+                          return <input type={type} checked={checked} {...rest} />;
+                        },
+                        li: (liProps) => {
+                          const { children, className, node, ...rest } = liProps;
+                          const isTask = className === 'task-list-item';
+                          let isChecked = false;
+                          if (isTask) {
+                            const idx = liIdx++;
+                            const item = items[idx];
+                            isChecked = item ? item.checked : false;
+                          }
+                          return (
+                            <li
+                              className={isTask ? 'task-list-item note-checklist-li' : undefined}
+                              style={isTask ? {
+                                listStyle: 'none',
+                                marginLeft: '-1.3rem',
+                                padding: '0.22rem 0.35rem',
+                                borderRadius: '0.4rem',
+                                background: isChecked ? 'var(--success)' : 'transparent',
+                                transition: 'background 0.2s ease',
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                gap: '0.1rem',
+                              } : undefined}
+                              {...rest}
+                            >
+                              {isTask ? (
+                                <span style={{
+                                  color: isChecked ? 'var(--text-secondary)' : 'inherit',
+                                  textDecoration: isChecked ? 'line-through' : 'none',
+                                  textDecorationColor: 'var(--text-secondary)',
+                                  transition: 'color 0.2s ease',
+                                }}>
+                                  {children}
+                                </span>
+                              ) : children}
+                            </li>
+                          );
+                        },
+                      };
+                    })()}
                   >
-                    {body || (isEditing ? '*Start writing to see a preview...*' : '_No content_')}
+                    {body || (isEditing ? '*Start writing to see a preview...*' : '_No content_')}  
                   </ReactMarkdown>
                 </div>
               </div>
@@ -1950,15 +2413,15 @@ export default function NotesPage() {
           {/* Status Bar */}
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: isPhone ? 'wrap' : 'nowrap',
-            gap: isPhone ? '0.25rem 0.6rem' : 0, padding: isPhone ? '0.35rem 0.75rem' : '0.35rem 1.5rem', borderTop: '1px solid rgba(255,255,255,0.04)',
-            background: 'rgba(5,5,15,0.5)', fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)', flexShrink: 0
+            gap: isPhone ? '0.25rem 0.6rem' : 0, padding: isPhone ? '0.35rem 0.75rem' : '0.35rem 1.5rem', borderTop: '1px solid var(--card-bg)',
+            background: 'var(--scrollbar-track)', fontSize: '0.7rem', color: 'var(--text-secondary)', flexShrink: 0
           }}>
             {!isTiny && <span>Markdown · GFM · Auto-save enabled</span>}
             <span>{activeNote.updatedAt ? `Last saved ${formatTime(activeNote.updatedAt)}` : 'Not saved'}</span>
           </div>
-        </div>
+        </motion.div>
       ) : (
-        <div style={{ flexGrow: 4, flexShrink: 1, flexBasis: '0px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem', color: 'rgba(255,255,255,0.15)' }}>
+        <motion.div layout style={{ flexGrow: 4, flexShrink: 1, flexBasis: '0px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem', color: 'var(--text-secondary)' }}>
           <FileText size={52} strokeWidth={1} />
           <p style={{ margin: 0, fontSize: '1rem', fontWeight: 500 }}>Select a note or create a new one</p>
           <motion.button
@@ -1968,14 +2431,14 @@ export default function NotesPage() {
             onClick={createNote}
             style={{
               marginTop: '0.5rem', padding: '0.75rem 1.5rem', borderRadius: '0.75rem',
-              background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.2)',
-              color: '#a78bfa', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem'
+              background: 'var(--badge-bg)', border: '1px solid var(--badge-bg)',
+              color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem'
             }}>
             <Plus size={18} /> New Note
           </motion.button>
-        </div>
+        </motion.div>
       )}
+      <AuthoringToast toast={toast} reduceMotion={shouldReduceMotion} />
     </div>
   );
 }
-

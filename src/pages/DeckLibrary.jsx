@@ -108,7 +108,7 @@ function PromptModal({ onClose, shouldReduceMotion }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2, ease: STRONG_EASE_OUT }}
-      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}
+      style={{ position: 'fixed', inset: 0, background: 'var(--shadow-color)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}
       onClick={onClose}
     >
       <Motion.div
@@ -121,12 +121,12 @@ function PromptModal({ onClose, shouldReduceMotion }) {
         aria-modal="true"
         aria-labelledby={promptTitleId}
         aria-describedby={promptDescriptionId}
-        style={{ background: '#111', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-2xl)', padding: '2rem', maxWidth: '680px', width: '100%', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxShadow: '0 40px 80px rgba(0,0,0,0.7)' }}
+        style={{ background: '#111', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-2xl)', padding: '2rem', maxWidth: '680px', width: '100%', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxShadow: '0 40px 80px rgba(0,0,0,0.7)' }}
       >
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <h2 id={promptTitleId} style={{ fontFamily: 'var(--font-display)', color: 'white', margin: 0, fontSize: '1.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <h2 id={promptTitleId} style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)', margin: 0, fontSize: '1.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Wand2 size={22} color="var(--primary)" /> AI Prompt Template
             </h2>
             <p id={promptDescriptionId} style={{ color: 'var(--secondary)', margin: '0.4rem 0 0 0', fontFamily: 'var(--font-body)', fontSize: '0.9rem' }}>
@@ -140,25 +140,25 @@ function PromptModal({ onClose, shouldReduceMotion }) {
 
         {/* Prompt Box */}
         <div style={{ position: 'relative' }}>
-          <pre style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 'var(--radius-lg)', padding: '1.5rem', fontFamily: 'monospace', fontSize: '0.82rem', color: '#d4d4d8', lineHeight: 1.7, whiteSpace: 'pre-wrap', wordBreak: 'break-word', margin: 0, maxHeight: '320px', overflowY: 'auto' }}>
+          <pre style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-lg)', padding: '1.5rem', fontFamily: 'monospace', fontSize: '0.82rem', color: '#d4d4d8', lineHeight: 1.7, whiteSpace: 'pre-wrap', wordBreak: 'break-word', margin: 0, maxHeight: '320px', overflowY: 'auto' }}>
             {PROMPT_TEMPLATE}
           </pre>
         </div>
 
         {/* Actions */}
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-          <button type="button" onClick={onClose} style={{ padding: '0.65rem 1.2rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--secondary)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600, transition: INTERACTIVE_TRANSITION }}>
+          <button type="button" onClick={onClose} style={{ padding: '0.65rem 1.2rem', background: 'transparent', border: '1px solid var(--card-border)', color: 'var(--secondary)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600, transition: INTERACTIVE_TRANSITION }}>
             Close
           </button>
-          <button type="button" onClick={handleCopy} style={{ padding: '0.65rem 1.5rem', background: copied ? '#22c55e' : 'var(--primary)', color: 'black', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'background-color 200ms cubic-bezier(0.23, 1, 0.32, 1)' }}>
+          <button type="button" onClick={handleCopy} style={{ padding: '0.65rem 1.5rem', background: copied ? 'var(--success)' : 'var(--primary)', color: 'var(--text-inverse)', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'background-color 200ms cubic-bezier(0.23, 1, 0.32, 1)' }}>
             {copied ? <><Check size={15} /> Copied!</> : <><Copy size={15} /> Copy Prompt</>}
           </button>
         </div>
 
         {/* Workflow hint */}
         <div style={{ background: 'rgba(217,119,6,0.08)', border: '1px solid rgba(217,119,6,0.2)', borderRadius: 'var(--radius-md)', padding: '1rem 1.2rem' }}>
-          <p style={{ margin: 0, fontFamily: 'var(--font-body)', fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
-            <strong style={{ color: 'var(--primary)' }}>How to use:</strong> Copy prompt → paste into any AI → replace [ENTER YOUR TOPIC] → get the JSON back → save it as a <code style={{ background: 'rgba(255,255,255,0.08)', padding: '0.1rem 0.3rem', borderRadius: '4px' }}>.json</code> file → use the Import button in the Library.
+          <p style={{ margin: 0, fontFamily: 'var(--font-body)', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+            <strong style={{ color: 'var(--primary)' }}>How to use:</strong> Copy prompt → paste into any AI → replace [ENTER YOUR TOPIC] → get the JSON back → save it as a <code style={{ background: 'var(--card-hover)', padding: '0.1rem 0.3rem', borderRadius: '4px' }}>.json</code> file → use the Import button in the Library.
           </p>
         </div>
       </Motion.div>
@@ -224,7 +224,7 @@ function PublishConfirmModal({ deck, onConfirm, onClose, shouldReduceMotion }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2, ease: STRONG_EASE_OUT }}
       onClick={onClose}
-      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}
+      style={{ position: 'fixed', inset: 0, background: 'var(--shadow-color)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}
     >
       <Motion.div
         initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: 14 }}
@@ -236,14 +236,14 @@ function PublishConfirmModal({ deck, onConfirm, onClose, shouldReduceMotion }) {
         aria-modal="true"
         aria-labelledby={publishTitleId}
         aria-describedby={publishDescriptionId}
-        style={{ background: '#111', border: `1px solid ${toxic ? 'rgba(239,68,68,0.35)' : 'rgba(99,179,237,0.25)'}`, borderRadius: 'var(--radius-xl)', padding: '2.5rem', maxWidth: '460px', width: '100%', boxShadow: '0 40px 80px rgba(0,0,0,0.8)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+        style={{ background: '#111', border: `1px solid ${toxic ? 'rgba(239,68,68,0.35)' : 'var(--badge-bg)'}`, borderRadius: 'var(--radius-xl)', padding: '2.5rem', maxWidth: '460px', width: '100%', boxShadow: '0 40px 80px rgba(0,0,0,0.8)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
       >
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div style={{ background: toxic ? 'rgba(239,68,68,0.15)' : 'rgba(99,179,237,0.12)', border: `1px solid ${toxic ? 'rgba(239,68,68,0.35)' : 'rgba(99,179,237,0.35)'}`, borderRadius: '50%', padding: '0.65rem', display: 'flex' }}>
-            {toxic ? <AlertTriangle size={18} color="#f87171" /> : <Globe size={18} color="#63b3ed" />}
+            {toxic ? <AlertTriangle size={18} color="var(--danger)" /> : <Globe size={18} color="var(--accent-primary)" />}
           </div>
-          <h3 id={publishTitleId} style={{ fontFamily: 'var(--font-display)', color: 'white', margin: 0, fontSize: '1.4rem' }}>
+          <h3 id={publishTitleId} style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)', margin: 0, fontSize: '1.4rem' }}>
             {toxic ? 'Content Policy Violation' : listedOnDiscover ? 'Remove from Discover?' : 'Publish to Discover?'}
           </h3>
         </div>
@@ -251,24 +251,24 @@ function PublishConfirmModal({ deck, onConfirm, onClose, shouldReduceMotion }) {
         {/* Toxic warning */}
         {toxic ? (
           <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 'var(--radius-md)', padding: '1rem 1.2rem' }}>
-            <p id={publishDescriptionId} style={{ margin: 0, fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: '#fca5a5', lineHeight: 1.6 }}>
+            <p id={publishDescriptionId} style={{ margin: 0, fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--danger)', lineHeight: 1.6 }}>
               ⚠️ This deck contains <strong>potentially harmful or toxic content</strong> and cannot be published to the community Discover feed. Please review and remove any offensive material before sharing.
             </p>
           </div>
         ) : listedOnDiscover ? (
           <p id={publishDescriptionId} style={{ margin: 0, fontFamily: 'var(--font-body)', color: 'var(--secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>
-            <strong style={{ color: 'white' }}>{deck.title}</strong> will be removed from the Discover feed. It will no longer be visible to other users.
+            <strong style={{ color: 'var(--text-primary)' }}>{deck.title}</strong> will be removed from the Discover feed. It will no longer be visible to other users.
           </p>
         ) : (
           <>
             <p id={publishDescriptionId} style={{ margin: 0, fontFamily: 'var(--font-body)', color: 'var(--secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>
-              <strong style={{ color: 'white' }}>{deck.title}</strong> ({deck.cards?.length || 0} nodes) will be visible to all users in the Discover feed. Other users will be able to save a copy to their library.
+              <strong style={{ color: 'var(--text-primary)' }}>{deck.title}</strong> ({deck.cards?.length || 0} nodes) will be visible to all users in the Discover feed. Other users will be able to save a copy to their library.
             </p>
             {/* Policy agreement */}
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 'var(--radius-md)', padding: '1rem 1.2rem' }}>
+            <div style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-md)', padding: '1rem 1.2rem' }}>
               <p style={{ margin: '0 0 0.85rem 0', fontFamily: 'var(--font-body)', fontSize: '0.82rem', color: 'var(--secondary)', lineHeight: 1.5 }}>
                 <Shield size={12} style={{ marginRight: '0.3rem', verticalAlign: 'middle' }} />
-                By publishing you confirm this deck does <strong style={{ color: 'white' }}>not contain</strong> harmful, toxic, adult, or copyrighted content.
+                By publishing you confirm this deck does <strong style={{ color: 'var(--text-primary)' }}>not contain</strong> harmful, toxic, adult, or copyrighted content.
               </p>
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer' }}>
                 <input
@@ -291,7 +291,7 @@ function PublishConfirmModal({ deck, onConfirm, onClose, shouldReduceMotion }) {
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            style={{ padding: '0.7rem 1.4rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--secondary)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600, transition: INTERACTIVE_TRANSITION }}
+            style={{ padding: '0.7rem 1.4rem', background: 'transparent', border: '1px solid var(--card-border)', color: 'var(--secondary)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600, transition: INTERACTIVE_TRANSITION }}
           >
             {toxic ? 'Got it' : 'Cancel'}
           </button>
@@ -301,7 +301,7 @@ function PublishConfirmModal({ deck, onConfirm, onClose, shouldReduceMotion }) {
               type="button"
               onClick={onConfirm}
               disabled={!listedOnDiscover && !agreed}
-              style={{ padding: '0.7rem 1.6rem', background: listedOnDiscover ? 'rgba(239,68,68,0.85)' : 'rgba(99,179,237,0.85)', border: '1px solid transparent', color: 'white', borderRadius: 'var(--radius-md)', cursor: (!listedOnDiscover && !agreed) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: (!listedOnDiscover && !agreed) ? 0.4 : 1, transition: INTERACTIVE_TRANSITION }}
+              style={{ padding: '0.7rem 1.6rem', background: listedOnDiscover ? 'rgba(239,68,68,0.85)' : 'rgba(99,179,237,0.85)', border: '1px solid transparent', color: 'var(--text-primary)', borderRadius: 'var(--radius-md)', cursor: (!listedOnDiscover && !agreed) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: (!listedOnDiscover && !agreed) ? 0.4 : 1, transition: INTERACTIVE_TRANSITION }}
             >
               <Globe size={14} /> {listedOnDiscover ? 'Remove' : 'Publish Now'}
             </button>
@@ -338,11 +338,11 @@ function DeckLibrarySkeletonGrid({ isCompact, shouldReduceMotion }) {
             }}
             aria-hidden="true"
           >
-            <div style={{ height: '140px', background: 'linear-gradient(110deg, rgba(255,255,255,0.03), rgba(255,255,255,0.09), rgba(255,255,255,0.03))' }} />
+            <div style={{ height: '140px', background: 'linear-gradient(110deg, var(--card-bg), var(--card-hover), var(--card-bg))' }} />
             <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div style={{ width: '72%', height: '16px', borderRadius: '999px', background: 'rgba(255,255,255,0.12)' }} />
-              <div style={{ width: '54%', height: '16px', borderRadius: '999px', background: 'rgba(255,255,255,0.09)' }} />
-              <div style={{ width: '88%', height: '10px', borderRadius: '999px', background: 'rgba(255,255,255,0.08)' }} />
+              <div style={{ width: '72%', height: '16px', borderRadius: '999px', background: 'var(--card-border)' }} />
+              <div style={{ width: '54%', height: '16px', borderRadius: '999px', background: 'var(--card-hover)' }} />
+              <div style={{ width: '88%', height: '10px', borderRadius: '999px', background: 'var(--card-hover)' }} />
               <div style={{ marginTop: '1.05rem', width: '100%', height: '38px', borderRadius: 'var(--radius-sm)', background: 'rgba(217,119,6,0.18)' }} />
             </div>
           </Motion.div>
@@ -703,13 +703,13 @@ export default function DeckLibrary() {
   };
 
   return (
-    <div style={{ padding: isCompact ? '0.9rem 1rem 0' : '0.9rem 3rem 0', width: '100%', maxWidth: '1200px', margin: '0 auto', color: 'white' }}>
+    <div style={{ padding: isCompact ? '0.9rem 1rem 0' : '0.9rem 3rem 0', width: '100%', maxWidth: '1200px', margin: '0 auto', color: 'var(--text-primary)' }}>
 
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h2 className="title-sparkle-effect" style={{ fontFamily: 'var(--font-display)', fontSize: isCompact ? '2rem' : '2.4rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem', letterSpacing: '-0.03em', background: 'linear-gradient(180deg, #fff 0%, #9ca3af 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          <FolderGit2 size={isCompact ? 24 : 28} color="rgba(147,197,253,0.95)" style={{ filter: 'drop-shadow(0 0 10px rgba(147,197,253,0.5))' }} />
-          Archived Syntheses
+        <h2 className="title-sparkle-effect">
+          <FolderGit2 size={isCompact ? 24 : 28} color="var(--accent-primary)" style={{}} />
+          Saved Decks
         </h2>
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -720,10 +720,10 @@ export default function DeckLibrary() {
               aria-haspopup="menu"
               aria-expanded={showImportMenu}
               aria-controls="deck-library-import-menu"
-              whileHover={canHover ? { backgroundColor: 'rgba(255,255,255,0.08)' } : undefined}
+              whileHover={canHover ? { backgroundColor: 'var(--card-hover)' } : undefined}
               whileTap={{ scale: 0.97 }}
               transition={{ duration: 0.18, ease: STRONG_EASE_OUT }}
-              style={{ padding: '0.6rem 1.1rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: INTERACTIVE_TRANSITION }}
+              style={{ padding: '0.6rem 1.1rem', background: 'var(--card-bg)', border: '1px solid var(--card-border)', color: 'var(--text-primary)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: INTERACTIVE_TRANSITION }}
             >
               <MoreHorizontal size={15} /> Import Options
             </Motion.button>
@@ -737,37 +737,37 @@ export default function DeckLibrary() {
                   animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
                   exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.98 }}
                   transition={{ duration: 0.18, ease: STRONG_EASE_OUT }}
-                  style={{ position: 'absolute', right: 0, top: 'calc(100% + 0.45rem)', minWidth: '210px', background: 'rgba(10,10,10,0.96)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-md)', padding: '0.4rem', zIndex: 100, boxShadow: '0 12px 35px rgba(0,0,0,0.5)' }}
+                  style={{ position: 'absolute', right: 0, top: 'calc(100% + 0.45rem)', minWidth: '210px', background: 'rgba(10,10,10,0.96)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-md)', padding: '0.4rem', zIndex: 100, boxShadow: '0 12px 35px rgba(0,0,0,0.5)' }}
                 >
                   <Motion.button
                     type="button"
                     role="menuitem"
                     onClick={() => { setShowPrompt(true); setShowImportMenu(false); }}
-                    style={{ width: '100%', textAlign: 'left', padding: '0.58rem 0.65rem', background: 'transparent', border: 'none', color: 'white', borderRadius: '0.55rem', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.45rem' }}
-                    whileHover={canHover ? { backgroundColor: 'rgba(255,255,255,0.07)' } : undefined}
+                    style={{ width: '100%', textAlign: 'left', padding: '0.58rem 0.65rem', background: 'transparent', border: 'none', color: 'var(--bg-secondary)', borderRadius: '0.55rem', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.45rem' }}
+                    whileHover={canHover ? { backgroundColor: 'var(--card-hover)' } : undefined}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <Wand2 size={15} color="var(--primary)" /> AI Prompt
+                    <Wand2 size={15} color="var(--bg-secondary)" /> AI Prompt
                   </Motion.button>
                   <Motion.button
                     type="button"
                     role="menuitem"
                     onClick={() => { setShowPaste(true); setImportError(null); setShowImportMenu(false); }}
-                    style={{ width: '100%', textAlign: 'left', padding: '0.58rem 0.65rem', background: 'transparent', border: 'none', color: 'white', borderRadius: '0.55rem', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.45rem' }}
-                    whileHover={canHover ? { backgroundColor: 'rgba(255,255,255,0.07)' } : undefined}
+                    style={{ width: '100%', textAlign: 'left', padding: '0.58rem 0.65rem', background: 'transparent', border: 'none', color: 'var(--bg-secondary)', borderRadius: '0.55rem', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.45rem' }}
+                    whileHover={canHover ? { backgroundColor: 'var(--card-hover)' } : undefined}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <Copy size={15} /> Paste JSON
+                    <Copy size={15} color="var(--bg-secondary)" /> Paste JSON
                   </Motion.button>
                   <Motion.button
                     type="button"
                     role="menuitem"
                     onClick={() => { importRef.current.click(); setShowImportMenu(false); }}
-                    style={{ width: '100%', textAlign: 'left', padding: '0.58rem 0.65rem', background: 'transparent', border: 'none', color: 'white', borderRadius: '0.55rem', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.45rem' }}
-                    whileHover={canHover ? { backgroundColor: 'rgba(255,255,255,0.07)' } : undefined}
+                    style={{ width: '100%', textAlign: 'left', padding: '0.58rem 0.65rem', background: 'transparent', border: 'none', color: 'var(--bg-secondary)', borderRadius: '0.55rem', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.45rem' }}
+                    whileHover={canHover ? { backgroundColor: 'var(--card-hover)' } : undefined}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <Upload size={15} /> Import JSON
+                    <Upload size={15} color="var(--bg-secondary)" /> Import JSON
                   </Motion.button>
                 </Motion.div>
               )}
@@ -788,9 +788,9 @@ export default function DeckLibrary() {
             value={searchQuery}
             onChange={e => handleSearchChange(e.target.value)}
             placeholder="Search decks..."
-            style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '0.6rem 1rem 0.6rem 2.4rem', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
+            style={{ width: '100%', background: 'var(--card-bg)', border: '1px solid var(--card-border)', color: 'var(--text-primary)', padding: '0.6rem 1rem 0.6rem 2.4rem', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
             onFocus={e => e.target.style.borderColor = 'rgba(217,119,6,0.5)'}
-            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+            onBlur={e => e.target.style.borderColor = 'var(--card-border)'}
           />
           {searchQuery && (
             <button type="button" aria-label="Clear deck search" onClick={handleClearSearch} style={{ position: 'absolute', right: '0.7rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--secondary)', cursor: 'pointer', padding: 0 }}><X size={14} /></button>
@@ -808,8 +808,8 @@ export default function DeckLibrary() {
               gap: '0.4rem', 
               padding: '0.35rem 0.85rem', 
               borderRadius: 'var(--radius-full)', 
-              border: `1px solid ${dueOnly ? 'var(--primary)' : 'rgba(255,255,255,0.1)'}`, 
-              background: dueOnly ? 'rgba(217,119,6,0.12)' : 'transparent', 
+              border: `1px solid ${dueOnly ? 'var(--primary)' : 'var(--card-border)'}`, 
+              background: dueOnly ? 'var(--badge-bg)' : 'transparent', 
               color: dueOnly ? 'var(--primary)' : 'var(--secondary)', 
               fontFamily: 'var(--font-body)', 
               fontSize: '0.78rem', 
@@ -824,12 +824,12 @@ export default function DeckLibrary() {
             Due Today
           </button>
 
-          <div style={{ width: '1px', height: '1.2rem', background: 'rgba(255,255,255,0.1)', margin: '0 0.2rem' }} />
+          <div style={{ width: '1px', height: '1.2rem', background: 'var(--card-hover)', margin: '0 0.2rem' }} />
 
           <button
             type="button"
             onClick={handleShowAllLabels}
-            style={{ padding: '0.35rem 0.85rem', borderRadius: 'var(--radius-full)', border: `1px solid ${!activeLabel ? 'var(--primary)' : 'rgba(255,255,255,0.1)'}`, background: !activeLabel ? 'rgba(217,119,6,0.12)' : 'transparent', color: !activeLabel ? 'var(--primary)' : 'var(--secondary)', fontFamily: 'var(--font-body)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', transition: INTERACTIVE_TRANSITION, textTransform: 'uppercase', letterSpacing: '0.04em' }}
+            style={{ padding: '0.35rem 0.85rem', borderRadius: 'var(--radius-full)', border: `1px solid ${!activeLabel ? 'var(--primary)' : 'var(--card-border)'}`, background: !activeLabel ? 'var(--badge-bg)' : 'transparent', color: !activeLabel ? 'var(--primary)' : 'var(--secondary)', fontFamily: 'var(--font-body)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', transition: INTERACTIVE_TRANSITION, textTransform: 'uppercase', letterSpacing: '0.04em' }}
           >All</button>
           
           {allLabels.map(label => (
@@ -837,7 +837,7 @@ export default function DeckLibrary() {
               type="button"
               key={label}
               onClick={() => handleToggleLabel(label)}
-              style={{ padding: '0.35rem 0.85rem', borderRadius: 'var(--radius-full)', border: `1px solid ${activeLabel === label ? 'var(--primary)' : 'rgba(255,255,255,0.1)'}`, background: activeLabel === label ? 'rgba(217,119,6,0.12)' : 'transparent', color: activeLabel === label ? 'var(--primary)' : 'var(--secondary)', fontFamily: 'var(--font-body)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', transition: INTERACTIVE_TRANSITION, textTransform: 'uppercase', letterSpacing: '0.04em' }}
+              style={{ padding: '0.35rem 0.85rem', borderRadius: 'var(--radius-full)', border: `1px solid ${activeLabel === label ? 'var(--primary)' : 'var(--card-border)'}`, background: activeLabel === label ? 'var(--badge-bg)' : 'transparent', color: activeLabel === label ? 'var(--primary)' : 'var(--secondary)', fontFamily: 'var(--font-body)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', transition: INTERACTIVE_TRANSITION, textTransform: 'uppercase', letterSpacing: '0.04em' }}
             >{label}</button>
           ))}
         </div>
@@ -849,10 +849,10 @@ export default function DeckLibrary() {
             initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-md)', padding: '1rem 1.5rem', marginBottom: '1.5rem', color: '#fca5a5', fontFamily: 'var(--font-body)', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+            style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-md)', padding: '1rem 1.5rem', marginBottom: '1.5rem', color: 'var(--danger)', fontFamily: 'var(--font-body)', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
           >
             <span>⚠️ {importError}</span>
-            <button type="button" aria-label="Dismiss import error" onClick={() => setImportError(null)} style={{ background: 'none', border: 'none', color: '#fca5a5', cursor: 'pointer' }}><X size={16} /></button>
+            <button type="button" aria-label="Dismiss import error" onClick={() => setImportError(null)} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer' }}><X size={16} /></button>
           </Motion.div>
         )}
       </AnimatePresence>
@@ -884,18 +884,18 @@ export default function DeckLibrary() {
             >
               <div style={{ width: '100%', height: '140px', overflow: 'hidden', position: 'relative' }}>
                 <img loading="lazy" decoding="async" sizes="(max-width: 900px) 45vw, 300px" src={deck.thumbnail || getFallbackImage(deck.id)} alt="cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', padding: '0.2rem 0.5rem', borderRadius: 'var(--radius-full)', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.7rem', color: 'var(--secondary)', fontFamily: 'var(--font-body)', fontWeight: 600 }}>
+                <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', background: 'var(--outline)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', padding: '0.2rem 0.5rem', borderRadius: 'var(--radius-full)', border: '1px solid var(--card-border)', fontSize: '0.7rem', color: 'var(--primary)', fontFamily: 'var(--font-body)', fontWeight: 600 }}>
                   {deck.cards.length} Total Nodes
                 </div>
               </div>
 
               <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                <h4 style={{ margin: '0 0 0.5rem 0', fontFamily: 'var(--font-display)', color: 'white', fontSize: '1.25rem', lineHeight: 1.2, display: '-webkit-box', WebkitLineClamp: LIBRARY_TITLE_MAX_LINES, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: `${titleMetrics?.height || LIBRARY_TITLE_LINE_HEIGHT}px` }}>{deck.title}</h4>
+                <h4 style={{ margin: '0 0 0.5rem 0', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontSize: '1.25rem', lineHeight: 1.2, display: '-webkit-box', WebkitLineClamp: LIBRARY_TITLE_MAX_LINES, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: `${titleMetrics?.height || LIBRARY_TITLE_LINE_HEIGHT}px` }}>{deck.title}</h4>
 
                 {deck.labels && deck.labels.length > 0 && (
                   <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
                     {deck.labels.map((lbl, idx) => (
-                      <span key={idx} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.7rem', color: 'var(--primary)', fontFamily: 'var(--font-body)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{lbl}</span>
+                      <span key={idx} style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.7rem', color: 'var(--primary)', fontFamily: 'var(--font-body)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{lbl}</span>
                     ))}
                   </div>
                 )}
@@ -904,7 +904,7 @@ export default function DeckLibrary() {
                   <button
                     type="button"
                     onClick={() => navigate(`/study/${deck.id}`)}
-                    style={{ flex: 1, padding: '0.6rem', background: 'var(--primary)', color: 'black', border: 'none', borderRadius: 'var(--radius-sm)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontWeight: 600, fontFamily: 'var(--font-body)', fontSize: '0.85rem' }}
+                    style={{ flex: 1, padding: '0.6rem', background: 'var(--primary)', color: 'var(--text-inverse)', border: 'none', borderRadius: 'var(--radius-sm)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontWeight: 600, fontFamily: 'var(--font-body)', fontSize: '0.85rem' }}
                   >
                     <Play size={14} /> {getCardsDueCount(deck.cards)} Due
                   </button>
@@ -917,18 +917,18 @@ export default function DeckLibrary() {
                     aria-expanded={openMenuDeckId === deck.id}
                     aria-controls={openMenuDeckId === deck.id ? `deck-library-menu-${deck.id}` : undefined}
                     title="More actions"
-                    style={{ padding: '0.6rem 0.9rem', background: openMenuDeckId === deck.id ? 'rgba(255,255,255,0.08)' : 'transparent', border: '1px solid var(--glass-border)', color: 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: INTERACTIVE_TRANSITION }}
+                    style={{ padding: '0.6rem 0.9rem', background: openMenuDeckId === deck.id ? 'var(--card-hover)' : 'transparent', border: '1px solid var(--glass-border)', color: 'var(--secondary)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: INTERACTIVE_TRANSITION }}
                   >
                     <MoreHorizontal size={14} />
                   </button>
 
                   {openMenuDeckId === deck.id && (
-                    <div id={`deck-library-menu-${deck.id}`} role="menu" style={{ position: 'absolute', right: 0, bottom: 'calc(100% + 0.45rem)', background: 'rgba(12,12,12,0.98)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 'var(--radius-md)', minWidth: '190px', boxShadow: '0 20px 40px rgba(0,0,0,0.65)', overflow: 'hidden', zIndex: 30 }}>
+                    <div id={`deck-library-menu-${deck.id}`} role="menu" style={{ position: 'absolute', right: 0, bottom: 'calc(100% + 0.45rem)', background: 'rgba(12,12,12,0.98)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-md)', minWidth: '190px', boxShadow: '0 20px 40px rgba(0,0,0,0.65)', overflow: 'hidden', zIndex: 30 }}>
                       <button
                         type="button"
                         role="menuitem"
                         onClick={() => { setOpenMenuDeckId(null); navigate(`/edit/${deck.id}`); }}
-                        style={{ width: '100%', background: 'transparent', border: 'none', color: 'white', padding: '0.65rem 0.8rem', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.45rem', cursor: 'pointer', fontSize: '0.82rem' }}
+                        style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-inverse)', padding: '0.65rem 0.8rem', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.45rem', cursor: 'pointer', fontSize: '0.82rem' }}
                       >
                         <Edit2 size={14} /> Edit deck
                       </button>
@@ -936,7 +936,7 @@ export default function DeckLibrary() {
                         type="button"
                         role="menuitem"
                         onClick={() => { setOpenMenuDeckId(null); handleExport(deck); }}
-                        style={{ width: '100%', background: 'transparent', border: 'none', color: 'white', padding: '0.65rem 0.8rem', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.45rem', cursor: 'pointer', fontSize: '0.82rem' }}
+                        style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-inverse)', padding: '0.65rem 0.8rem', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.45rem', cursor: 'pointer', fontSize: '0.82rem' }}
                       >
                         <Download size={14} /> Export JSON
                       </button>
@@ -945,7 +945,7 @@ export default function DeckLibrary() {
                         role="menuitem"
                         onClick={() => { handleCopyDeckLink(deck); setOpenMenuDeckId(null); }}
                         disabled={!getDeckShareLink(deck)}
-                        style={{ width: '100%', background: 'transparent', border: 'none', color: getDeckShareLink(deck) ? 'white' : 'rgba(255,255,255,0.35)', padding: '0.65rem 0.8rem', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.45rem', cursor: getDeckShareLink(deck) ? 'pointer' : 'not-allowed', fontSize: '0.82rem' }}
+                        style={{ width: '100%', background: 'transparent', border: 'none', color: getDeckShareLink(deck) ? 'white' : 'var(--text-secondary)', padding: '0.65rem 0.8rem', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.45rem', cursor: getDeckShareLink(deck) ? 'pointer' : 'not-allowed', fontSize: '0.82rem' }}
                       >
                         {copiedDeckId === deck.id ? <Check size={14} /> : <Link2 size={14} />} {copiedDeckId === deck.id ? 'Copied' : 'Copy URL'}
                       </button>
@@ -953,7 +953,7 @@ export default function DeckLibrary() {
                         type="button"
                         role="menuitem"
                         onClick={() => { setOpenMenuDeckId(null); setConfirmPublish(deck); }}
-                        style={{ width: '100%', background: 'transparent', border: 'none', color: listedOnDiscover ? '#93c5fd' : 'white', padding: '0.65rem 0.8rem', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.45rem', cursor: 'pointer', fontSize: '0.82rem' }}
+                        style={{ width: '100%', background: 'transparent', border: 'none', color: listedOnDiscover ? 'var(--accent-primary)' : 'white', padding: '0.65rem 0.8rem', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.45rem', cursor: 'pointer', fontSize: '0.82rem' }}
                       >
                         <Globe size={14} /> {listedOnDiscover ? 'Remove from Discover' : 'Publish to Discover'}
                       </button>
@@ -961,7 +961,7 @@ export default function DeckLibrary() {
                         type="button"
                         role="menuitem"
                         onClick={() => { setOpenMenuDeckId(null); setConfirmDelete(deck.id); }}
-                        style={{ width: '100%', background: 'rgba(239,68,68,0.08)', border: 'none', color: '#fca5a5', padding: '0.65rem 0.8rem', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.45rem', cursor: 'pointer', fontSize: '0.82rem' }}
+                        style={{ width: '100%', background: 'rgba(239,68,68,0.08)', border: 'none', color: 'var(--danger)', padding: '0.65rem 0.8rem', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.45rem', cursor: 'pointer', fontSize: '0.82rem' }}
                       >
                         <Trash2 size={14} /> Delete deck
                       </button>
@@ -1003,7 +1003,7 @@ export default function DeckLibrary() {
             onClick={() => setConfirmDelete(null)}
             style={{
               position: 'fixed', inset: 0,
-              background: 'rgba(0,0,0,0.7)',
+              background: 'var(--shadow-color)',
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)',
               zIndex: 1000,
@@ -1035,12 +1035,12 @@ export default function DeckLibrary() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
                   <div style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '50%', padding: '0.6rem', display: 'flex' }}>
-                    <Trash2 size={18} color="#f87171" />
+                    <Trash2 size={18} color="var(--danger)" />
                   </div>
-                  <h3 id="deck-library-delete-title" style={{ fontFamily: 'var(--font-display)', color: 'white', margin: 0, fontSize: '1.4rem' }}>Delete Deck?</h3>
+                  <h3 id="deck-library-delete-title" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)', margin: 0, fontSize: '1.4rem' }}>Delete Deck?</h3>
                 </div>
                 <p id="deck-library-delete-description" style={{ fontFamily: 'var(--font-body)', color: 'var(--secondary)', margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  This will permanently erase <strong style={{ color: 'white' }}>{decks.find(d => d.id === confirmDelete)?.title}</strong> and all its cognitive nodes. This action cannot be undone.
+                  This will permanently erase <strong style={{ color: 'var(--text-primary)' }}>{decks.find(d => d.id === confirmDelete)?.title}</strong> and all its cognitive nodes. This action cannot be undone.
                 </p>
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
@@ -1048,18 +1048,18 @@ export default function DeckLibrary() {
                   ref={deleteCancelButtonRef}
                   type="button"
                   onClick={() => setConfirmDelete(null)}
-                  whileHover={canHover ? { borderColor: 'rgba(255,255,255,0.3)' } : undefined}
+                  whileHover={canHover ? { borderColor: 'var(--text-secondary)' } : undefined}
                   whileTap={{ scale: 0.97 }}
-                  style={{ padding: '0.7rem 1.4rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--secondary)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600, transition: INTERACTIVE_TRANSITION }}
+                  style={{ padding: '0.7rem 1.4rem', background: 'transparent', border: '1px solid var(--card-border)', color: 'var(--secondary)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 600, transition: INTERACTIVE_TRANSITION }}
                 >
                   Cancel
                 </Motion.button>
                 <Motion.button
                   type="button"
                   onClick={() => { removeDeck(confirmDelete); showToast('Deck deleted successfully'); setConfirmDelete(null); }}
-                  whileHover={canHover ? { backgroundColor: '#ef4444' } : undefined}
+                  whileHover={canHover ? { backgroundColor: 'var(--danger)' } : undefined}
                   whileTap={{ scale: 0.97 }}
-                  style={{ padding: '0.7rem 1.4rem', background: 'rgba(239,68,68,0.9)', border: '1px solid transparent', color: 'white', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', transition: INTERACTIVE_TRANSITION }}
+                  style={{ padding: '0.7rem 1.4rem', background: 'rgba(239,68,68,0.9)', border: '1px solid transparent', color: 'var(--text-primary)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', transition: INTERACTIVE_TRANSITION }}
                 >
                   <Trash2 size={14} /> Delete Forever
                 </Motion.button>
@@ -1097,7 +1097,7 @@ export default function DeckLibrary() {
             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
             exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.98 }}
             transition={{ duration: 0.2, ease: STRONG_EASE_OUT }}
-            style={{ position: 'fixed', left: '50%', transform: 'translateX(-50%)', bottom: '1.25rem', zIndex: 1200, background: toast.type === 'error' ? 'rgba(127,29,29,0.92)' : 'rgba(22,101,52,0.92)', border: `1px solid ${toast.type === 'error' ? 'rgba(248,113,113,0.5)' : 'rgba(74,222,128,0.45)'}`, color: '#fff', borderRadius: '999px', padding: '0.55rem 0.95rem', fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: 600, boxShadow: '0 18px 40px rgba(0,0,0,0.35)' }}
+            style={{ position: 'fixed', left: '50%', transform: 'translateX(-50%)', bottom: '1.25rem', zIndex: 1200, background: toast.type === 'error' ? 'rgba(127,29,29,0.92)' : 'rgba(22,101,52,0.92)', border: `1px solid ${toast.type === 'error' ? 'var(--danger)' : 'rgba(74,222,128,0.45)'}`, color: '#fff', borderRadius: '999px', padding: '0.55rem 0.95rem', fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: 600, boxShadow: '0 18px 40px rgba(0,0,0,0.35)' }}
           >
             {toast.msg}
           </Motion.div>

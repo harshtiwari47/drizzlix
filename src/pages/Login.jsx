@@ -62,7 +62,7 @@ export default function Login() {
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="login-badge" aria-hidden="true">
-          <img src="/favicon.svg" alt="" className="login-logo-mark" />
+          <img src="/logo.png" alt="" className="login-logo-mark" />
         </div>
 
         <div className="login-heading-group">

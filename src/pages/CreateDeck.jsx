@@ -151,7 +151,7 @@ const CardEditorBlock = React.memo(function CardEditorBlock({
       <div className="card-input-header">
         <div className="node-id">
           <span className="node-num">{nodeNumberLabel}</span>
-          <span className="node-label">Cognitive Node</span>
+          <span className="node-label">Study Card</span>
         </div>
 
         <div className="card-header-actions">
@@ -737,11 +737,11 @@ export default function CreateDeck() {
     <div className="create-container">
       <header className="create-header">
         <div>
-          <h2 className="create-title title-sparkle-effect">
+          <h2 className="title-sparkle-effect">
             <Wand2 size={24} className="page-title-icon" />
-            {deckId ? 'Edit Vector' : 'Neural Authoring'}
+            {deckId ? 'Edit Deck' : 'Deck Studio'}
           </h2>
-          <p className="create-subtitle">{deckId ? 'Modify existing logic structures.' : 'Manually synthesize custom cognitive nodes.'}</p>
+          <p className="create-subtitle">{deckId ? 'Modify your flashcard collection.' : 'Convert concepts, notes, and definitions into flashcards.'}</p>
           {!deckId && (
             <button type="button" className="btn-load-last-draft" onClick={handleLoadLastDraft}>
               Load Last AI Draft
@@ -749,7 +749,7 @@ export default function CreateDeck() {
           )}
         </div>
         <button type="submit" form="create-deck-form" className="btn-save-primary" aria-label={deckId ? 'Update vector' : 'Save vector'}>
-          <Save size={14} strokeWidth={2.2} /> {deckId ? 'Update Vector' : 'Save Vector'}
+          <Save size={14} strokeWidth={2.2} /> {deckId ? 'Update Deck' : 'Save Deck'}
         </button>
       </header>
 
@@ -842,10 +842,10 @@ export default function CreateDeck() {
         </div>
 
         {deckId && (
-          <div style={{ marginTop: '0.6rem', marginBottom: '0.3rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 'var(--radius-lg)', padding: '1rem' }}>
+          <div style={{ marginTop: '0.6rem', marginBottom: '0.3rem', background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-lg)', padding: '1rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
               <div>
-                <div style={{ color: 'white', fontWeight: 700, fontFamily: 'var(--font-body)', fontSize: '0.9rem' }}>
+                <div style={{ color: 'var(--text-primary)', fontWeight: 700, fontFamily: 'var(--font-body)', fontSize: '0.9rem' }}>
                   {isPublic ? 'Public Deck' : 'Private Deck'}
                 </div>
                 <div style={{ color: 'var(--secondary)', fontFamily: 'var(--font-body)', fontSize: '0.78rem', marginTop: '0.2rem' }}>
@@ -861,7 +861,7 @@ export default function CreateDeck() {
                     return next;
                   });
                 }}
-                style={{ padding: '0.45rem 0.8rem', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.06)', color: 'white', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.8rem' }}
+                style={{ padding: '0.45rem 0.8rem', borderRadius: '999px', border: '1px solid var(--text-secondary)', background: 'var(--card-hover)', color: 'var(--text-primary)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.8rem' }}
               >
                 Switch to {isPublic ? 'Private' : 'Public'}
               </button>
@@ -903,7 +903,7 @@ export default function CreateDeck() {
                     type="button"
                     onClick={handleCopyShareLink}
                     disabled={!shareLink}
-                    style={{ padding: '0.45rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(99,179,237,0.35)', background: 'rgba(99,179,237,0.1)', color: '#93c5fd', cursor: shareLink ? 'pointer' : 'not-allowed', opacity: shareLink ? 1 : 0.5, fontFamily: 'var(--font-body)', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                    style={{ padding: '0.45rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--badge-bg)', background: 'var(--badge-bg)', color: 'var(--accent-primary)', cursor: shareLink ? 'pointer' : 'not-allowed', opacity: shareLink ? 1 : 0.5, fontFamily: 'var(--font-body)', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                   >
                     <Copy size={14} /> {copyLabel}
                   </button>
@@ -949,8 +949,8 @@ export default function CreateDeck() {
           </AnimatePresence>
         </div>
 
-        <button type="button" onClick={handleAddCard} className="btn-add-node" aria-label="Append active node">
-          <Plus size={16} /> Append Active Node
+        <button type="button" onClick={handleAddCard} className="btn-add-node" aria-label="Append active card">
+          <Plus size={16} /> Append Active Card
         </button>
       </form>
 

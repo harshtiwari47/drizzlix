@@ -15,4 +15,6 @@ const userSchema = new mongoose.Schema({
   pomodoroState: { type: Object, default: null }
 }, { timestamps: true });
 
+userSchema.index({ name: 1 });
+
 module.exports = mongoose.model('User', userSchema);

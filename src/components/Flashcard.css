@@ -24,7 +24,7 @@
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+  box-shadow: 0 20px 60px var(--shadow-color), 0 0 0 1px var(--card-border) inset;
   border-radius: var(--radius-2xl);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: var(--glass-surface-solid);
@@ -32,7 +32,7 @@
 
 .flashcard-inner:hover {
   transform: translateY(-2px);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  box-shadow: 0 30px 80px var(--shadow-color), 0 0 0 1px var(--outline) inset;
 }
 
 .flashcard-face {
@@ -84,7 +84,7 @@
   line-height: 1.28;
   letter-spacing: -0.03em;
   text-wrap: balance;
-  color: #f9fafb;
+  color: var(--text-primary);
 }
 
 .card-back-answer {
@@ -184,8 +184,8 @@
   width: 30px;
   height: 30px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
   color: var(--secondary);
   display: flex;
   align-items: center;
@@ -195,8 +195,8 @@
 }
 
 .tts-button:hover {
-  border-color: rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--outline);
+  background: var(--card-hover);
   color: var(--text-primary);
 }
 
@@ -219,8 +219,8 @@
   margin-top: 0.85rem;
   width: 100%;
   text-align: left;
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid var(--warning);
+  background: var(--card-hover);
   border-radius: var(--radius-md);
   padding: 0.55rem 0.7rem;
 }
@@ -230,7 +230,7 @@
   font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #fbbf24;
+  color: var(--warning);
   font-weight: 700;
 }
 
@@ -238,7 +238,7 @@
   margin: 0.3rem 0 0 0;
   font-size: 0.82rem;
   line-height: 1.55;
-  color: #fef3c7;
+  color: var(--text-primary);
   font-family: var(--font-body);
 }
 
@@ -265,7 +265,7 @@
 }
 
 .markdown-hint strong {
-  color: #fff7d6;
+  color: var(--warning);
 }
 
 @media (max-width: 760px) {
@@ -316,6 +316,6 @@
 @media (hover: none) and (pointer: coarse) {
   .flashcard-inner:hover {
     transform: none;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+    box-shadow: 0 20px 60px var(--shadow-color), 0 0 0 1px var(--card-border) inset;
   }
 }

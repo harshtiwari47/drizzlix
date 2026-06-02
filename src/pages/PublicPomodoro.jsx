@@ -20,7 +20,7 @@ export default function PublicPomodoro() {
       <header className="landing-topbar glass-panel">
         <div className="landing-brand">
           <div className="brand-icon">
-            <img src="/favicon.svg" alt="Drizzlix logo" width="24" height="24" />
+            <img src="/logo.png" alt="Drizzlix logo" width="24" height="24" />
           </div>
           <Link to="/" style={{color:'inherit', textDecoration:'none'}}>Drizzlix</Link>
         </div>
@@ -78,7 +78,7 @@ export default function PublicPomodoro() {
           </div>
           <div className="bento-grid">
             <article className="bento-card bento-pomo" style={{'--card-glow': 'rgba(251,191,36,0.12)', '--card-accent': '#fbbf24'}}>
-              <div className="bento-icon" style={{color: '#fbbf24'}}><Timer size={20}/></div>
+              <div className="bento-icon" style={{color: 'var(--warning)'}}><Timer size={20}/></div>
               <h3 className="bento-title">Smart Focus Intervals</h3>
               <p className="bento-text">Automatically transitions between deep focus, short mental breaks, and mandatory long breaks based on how many continuous cycles you’ve successfully completed. Fully customizable to fit your exact stamina thresholds.</p>
             </article>
@@ -117,9 +117,9 @@ export default function PublicPomodoro() {
             <h2>Who Relies on Our Pomodoro System?</h2>
             <div className="bento-text" style={{maxWidth: '800px', margin: '0 auto', textAlign: 'left', lineHeight: 1.8}}>
               <ul>
-                <li><strong style={{color:'#fff'}}>Medical and Law Students:</strong> Managing exhaustive pharmacology, anatomy, and case law decks requires intense pacing. The integrated timer ensures you get mandatory eye-rest to prevent exhaustion over a 10-hour study day, allowing you to retain massive volumes of rote memorization.</li>
-                <li><strong style={{color:'#fff'}}>Language Learners:</strong> Pairing vocabulary acquisition through AI flashcards with aggressive 25-minute sprints drastically improves recall. The rigid time constraint forces you to learn actively rather than passively scrolling.</li>
-                <li><strong style={{color:'#fff'}}>Software Engineers:</strong> Programmers studying LeetCode patterns use the Pomodoro timer to enforce a strict "20-minute struggle limit" on complex algorithmic problems prior to checking the AI-generated solution.</li>
+                <li><strong style={{color:'var(--text-primary)'}}>Medical and Law Students:</strong> Managing exhaustive pharmacology, anatomy, and case law decks requires intense pacing. The integrated timer ensures you get mandatory eye-rest to prevent exhaustion over a 10-hour study day, allowing you to retain massive volumes of rote memorization.</li>
+                <li><strong style={{color:'var(--text-primary)'}}>Language Learners:</strong> Pairing vocabulary acquisition through AI flashcards with aggressive 25-minute sprints drastically improves recall. The rigid time constraint forces you to learn actively rather than passively scrolling.</li>
+                <li><strong style={{color:'var(--text-primary)'}}>Software Engineers:</strong> Programmers studying LeetCode patterns use the Pomodoro timer to enforce a strict "20-minute struggle limit" on complex algorithmic problems prior to checking the AI-generated solution.</li>
               </ul>
             </div>
           </div>
@@ -132,17 +132,17 @@ export default function PublicPomodoro() {
             <div className="bento-text" style={{maxWidth: '800px', margin: '0 auto', textAlign: 'left'}}>
               
               <div style={{marginBottom: '2rem'}}>
-                <h3 style={{color:'#fff', marginBottom: '0.5rem'}}>How does the Pomodoro Timer integrate with active recall?</h3>
+                <h3 style={{color:'var(--text-primary)', marginBottom: '0.5rem'}}>How does the Pomodoro Timer integrate with active recall?</h3>
                 <p>The timer communicates directly with the Drizzlix SM-2 spaced repetition engine. During a 25-minute focus session, you are presented with high-priority flashcards. When the timer hits a 5-minute break, the study session safely pauses without losing progress.</p>
               </div>
 
               <div style={{marginBottom: '2rem'}}>
-                <h3 style={{color:'#fff', marginBottom: '0.5rem'}}>Can I configure the Pomodoro intervals?</h3>
+                <h3 style={{color:'var(--text-primary)', marginBottom: '0.5rem'}}>Can I configure the Pomodoro intervals?</h3>
                 <p>Yes. Drizzlix allows you to customize focus durations from 15 to 60 minutes, short breaks from 3 to 15 minutes, and long breaks from 15 to 30 minutes, adapting to your specific cognitive load threshold and attention span.</p>
               </div>
               
               <div style={{marginBottom: '2rem'}}>
-                <h3 style={{color:'#fff', marginBottom: '0.5rem'}}>Is the Pomodoro feature free to use?</h3>
+                <h3 style={{color:'var(--text-primary)', marginBottom: '0.5rem'}}>Is the Pomodoro feature free to use?</h3>
                 <p>Yes, the core timer and its synchronization with your flashcard study queues are entirely free. Advanced historical analytics tracking study efficiency across months may be part of premium tiers.</p>
               </div>
 
