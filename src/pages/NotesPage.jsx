@@ -4,7 +4,7 @@ import {
   Plus, Search, Pin, PinOff, Trash2, FileText, Eye, Edit3, Check,
   Bold, Italic, List, Code, Link, Image, Hash, ChevronRight,
   Save, X, AlignLeft, Heading1, Heading2, Quote, ChevronLeft, Menu, ChevronDown, Box,
-  ListChecks, Circle, CheckCircle2, GripVertical
+  ListChecks, Circle, CheckCircle2, GripVertical, Volume2, VolumeX
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ReactMarkdown from 'react-markdown';
@@ -904,6 +904,7 @@ export default function NotesPage() {
   const [categoryFilter, setCategoryFilter] = useState(() => cachedSnapshot?.categoryFilter || 'All');
   const [view, setView] = useState(() => cachedSnapshot?.view || 'split'); // 'editor' | 'preview' | 'split'
   const [isEditing, setIsEditing] = useState(() => Boolean(cachedSnapshot?.isEditing));
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [search, setSearch] = useState(() => cachedSnapshot?.search || '');
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(() => Boolean(cachedSnapshot?.dirty));
@@ -1737,6 +1738,44 @@ export default function NotesPage() {
 
   const viewportOffset = isPhone ? '0.45rem' : '0.9rem';
 
+  const handleSpeak = useCallback(() => {
+    if (!('speechSynthesis' in window)) {
+      toast.error('Text-to-speech is not supported in this browser.');
+      return;
+    }
+    
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    const cleanText = body.replace(/[#*`_\[\]]/g, '').trim();
+    if (!cleanText) {
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    const voices = window.speechSynthesis.getVoices();
+    const naturalVoice = voices.find(v => (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Online')) && v.lang.startsWith('en')) || voices.find(v => v.lang.startsWith('en'));
+    if (naturalVoice) utterance.voice = naturalVoice;
+
+    utterance.rate = 1.0;
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    setIsSpeaking(true);
+    window.speechSynthesis.speak(utterance);
+  }, [body, isSpeaking]);
+  
+  useEffect(() => {
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
   const handleSearchChange = useCallback((e) => {
     setSearch(e.target.value);
   }, []);
@@ -2189,6 +2228,16 @@ export default function NotesPage() {
                     size={iconButtonSize}
                   />
                 )}
+
+                <IconActionButton
+                  icon={isSpeaking ? VolumeX : Volume2}
+                  label={isSpeaking ? 'Stop reading' : 'Read aloud'}
+                  title={isSpeaking ? 'Stop reading' : 'Read aloud'}
+                  onClick={handleSpeak}
+                  tone={isSpeaking ? 'accent' : 'neutral'}
+                  isActive={isSpeaking}
+                  size={iconButtonSize}
+                />
 
                 <IconActionButton
                   icon={Pin}
