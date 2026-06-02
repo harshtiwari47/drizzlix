@@ -34,7 +34,8 @@ export function AuthProvider({ children }) {
   const fetchStats = useCallback(async (currentToken) => {
     if (!currentToken) return;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/stats`, {
+      const baseUrl = import.meta.env.VITE_API_URL || '/api';
+      const res = await fetch(`${baseUrl}/stats`, {
         headers: { Authorization: `Bearer ${currentToken}` }
       });
       if (res.ok) {
@@ -57,7 +58,8 @@ export function AuthProvider({ children }) {
   const logActivityAndXP = useCallback(async (xpGain = 0, logActivity = true) => {
     if (!token) return;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/stats`, {
+      const baseUrl = import.meta.env.VITE_API_URL || '/api';
+      const res = await fetch(`${baseUrl}/stats`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

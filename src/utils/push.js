@@ -28,7 +28,8 @@ export async function subscribeToPushNotifications(token) {
     applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
   });
 
-  const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/push/subscribe`, {
+  const baseUrl = import.meta.env.VITE_API_URL || '/api';
+  const response = await fetch(`${baseUrl}/push/subscribe`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -52,7 +53,8 @@ export async function unsubscribeFromPushNotifications(token) {
     await subscription.unsubscribe();
   }
 
-  await fetch(`${import.meta.env.VITE_API_URL || ''}/api/push/unsubscribe`, {
+  const baseUrl = import.meta.env.VITE_API_URL || '/api';
+  await fetch(`${baseUrl}/push/unsubscribe`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` }
   });
