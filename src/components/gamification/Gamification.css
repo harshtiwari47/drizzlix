@@ -124,45 +124,70 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }
 
 .reminder-content {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
+  flex: 1;
+  min-width: 150px;
 }
 
 .reminder-text h4 {
   margin: 0 0 0.25rem 0;
   color: var(--text-primary);
-  font-size: 1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
 .reminder-text p {
   margin: 0;
   color: var(--text-secondary);
   font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 .push-toggle-btn {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--input-bg);
-  border: 1px solid var(--card-border);
+  background: var(--input-bg, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.1));
   color: var(--text-primary);
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-.push-toggle-btn:hover {
-  background: var(--card-hover);
+.push-toggle-btn:hover:not(:disabled) {
+  background: var(--card-hover, rgba(255, 255, 255, 0.1));
+}
+
+.push-toggle-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .push-toggle-btn.enabled {
   background: var(--accent-primary, #63b3ed);
   border-color: var(--accent-primary, #63b3ed);
   color: #fff;
+}
+
+@media (max-width: 600px) {
+  .reminder-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .push-toggle-btn {
+    justify-content: center;
+    width: 100%;
+  }
 }

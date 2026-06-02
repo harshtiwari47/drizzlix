@@ -78,23 +78,12 @@ createRoot(document.getElementById('root')).render(
 )
 
 if ('serviceWorker' in navigator) {
-  const cleanupAllServiceWorkers = async () => {
-    try {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(
-        registrations.map((registration) => registration.unregister().catch(() => false)),
-      );
-
-      if ('caches' in window) {
-        const cacheKeys = await caches.keys();
-        const appCacheKeys = cacheKeys.filter((key) => key.startsWith('neurodeck-shell-v'));
-        await Promise.all(appCacheKeys.map((cacheKey) => caches.delete(cacheKey)));
-      }
-    } catch (error) {
-      console.warn('Failed to cleanup service worker:', error);
-    }
-  };
-
-  cleanupAllServiceWorkers();
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then((registration) => {
+      console.log('SW registered successfully');
+    }).catch((error) => {
+      console.warn('SW registration failed:', error);
+    });
+  });
 }
 
