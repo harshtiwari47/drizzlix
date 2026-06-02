@@ -2388,6 +2388,37 @@ export default function NotesPage() {
                             title="Open link in a new tab"
                           />
                         ),
+                        img: ({ node, alt, ...rest }) => {
+                          let width;
+                          let height;
+                          let cleanAlt = alt || '';
+                          
+                          // Check for size parameters at the end of the alt text
+                          // Formats: =300, =300x200, =100%, =50%xauto
+                          const sizeMatch = cleanAlt.match(/(.*?)\s*=(\d+%?)(?:x(\d+%?|auto))?$/i);
+                          
+                          if (sizeMatch) {
+                            cleanAlt = sizeMatch[1].trim();
+                            width = sizeMatch[2];
+                            if (!width.endsWith('%') && !width.endsWith('px') && width !== 'auto') {
+                              width = `${width}px`;
+                            }
+                            if (sizeMatch[3]) {
+                              height = sizeMatch[3];
+                              if (!height.endsWith('%') && !height.endsWith('px') && height !== 'auto') {
+                                height = `${height}px`;
+                              }
+                            }
+                          }
+                          
+                          return (
+                            <img
+                              alt={cleanAlt}
+                              style={{ width, height, maxWidth: '100%', borderRadius: '0.4rem', marginTop: '0.5rem', marginBottom: '0.5rem' }}
+                              {...rest}
+                            />
+                          );
+                        },
                         input: (inputProps) => {
                           const { type, checked, node, ...rest } = inputProps;
                           if (type === 'checkbox') {
