@@ -612,6 +612,29 @@ app.post('/api/push/send-due-reminders', async (req, res) => {
   }
 });
 
+// Route: Test Push Notification
+app.post('/api/push/test', authenticate, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+    if (!user.pushSubscription) {
+      return res.status(400).json({ msg: 'No push subscription found' });
+    }
+
+    const payload = JSON.stringify({
+      title: 'Test Notification',
+      body: 'It works! Your push notifications are active.',
+      icon: '/icon-192.png'
+    });
+
+    await webpush.sendNotification(user.pushSubscription, payload);
+    res.json({ msg: 'Test notification sent' });
+  } catch (err) {
+    console.error('Push test error:', err);
+    res.status(500).json({ msg: 'Failed to send test notification' });
+  }
+});
+
 // Route: Retrieve persisted Pomodoro state
 app.get('/api/pomodoro-state', authenticate, async (req, res) => {
   try {
@@ -971,7 +994,7 @@ app.get('/api/u/:username', async (req, res) => {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
   try {
     const username = req.params.username.toLowerCase();
-    const user = await User.findOne({ username }).select('name username bio picture createdAt overlayEffect avatarEffect');
+    const user = await User.findOne({ username }).select('name username bio picture createdAt overlayEffect avatarEffect stats');
     if (!user) return res.status(404).json({ msg: 'User not found' });
 
     const sharedDecks = await Deck.find({

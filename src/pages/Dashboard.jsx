@@ -40,6 +40,7 @@ const DeckGallery = lazy(() => import('../components/DeckGallery'));
 const DraftEditor = lazy(() => import('../components/DraftEditor'));
 const DashboardOverlayEffects = lazy(() => import('../components/DashboardOverlayEffects'));
 const GamificationPanel = lazy(() => import('../components/gamification/GamificationPanel'));
+const InteractivePet = lazy(() => import('../components/gamification/InteractivePet'));
 
 export default function Dashboard() {
   const MAX_UPLOAD_MB = 20;
@@ -669,9 +670,12 @@ export default function Dashboard() {
             <Suspense fallback={<div style={{ minHeight: '180px' }} />}>
               <DeckGallery />
             </Suspense>
-          </Motion.div>
         )}
       </section>
+      
+      <Suspense fallback={null}>
+        <InteractivePet />
+      </Suspense>
 
       <AnimatePresence>
         {popupCard && (

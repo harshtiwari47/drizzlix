@@ -23,6 +23,7 @@ import {
   parseDashboardOverlaySpeed,
   parseProfileAvatarEffect,
 } from '../services/globalSettings';
+import ActivityHeatmap from '../components/gamification/ActivityHeatmap';
 
 const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -992,6 +993,13 @@ export default function Profile() {
               </div>
             </div>
           </motion.div>
+
+          {/* Activity Heatmap */}
+          {profile?.stats && profile.stats.activityLog && (
+            <div style={{ marginBottom: '2.5rem' }}>
+              <ActivityHeatmap stats={profile.stats} />
+            </div>
+          )}
 
           {/* Shared Decks */}
           <div style={{ marginBottom: '1.5rem' }}>
