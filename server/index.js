@@ -636,7 +636,7 @@ app.post('/api/pomodoro-state', authenticate, async (req, res) => {
 // Route: Retrieve Neural Decks
 app.get('/api/decks', authenticate, async (req, res) => {
   try {
-    const decks = await Deck.find({ userId: req.user.id }).select('-cards').lean();
+    const decks = await Deck.find({ userId: req.user.id }).lean();
     res.json(decks);
   } catch (err) {
     console.error('API /decks GET error:', err);
@@ -897,7 +897,7 @@ app.get('/api/u/:username', async (req, res) => {
       ]
     })
       .sort({ saves: -1, updatedAt: -1 })
-      .select('id title thumbnail labels saves updatedAt -cards')
+      .select('id title thumbnail labels cards saves updatedAt')
       .lean();
     res.json({ user, decks: sharedDecks });
   } catch (err) {
@@ -944,7 +944,7 @@ app.get('/api/discover', async (req, res) => {
       ]
     })
       .sort({ saves: -1, updatedAt: -1 })
-      .select('id title thumbnail labels saves publishedBy discoverMetadata updatedAt -cards')
+      .select('id title thumbnail labels cards saves publishedBy discoverMetadata updatedAt')
       .lean();
 
     // Enrich publishedBy with the latest username from the User collection
