@@ -670,6 +670,7 @@ export default function Dashboard() {
             <Suspense fallback={<div style={{ minHeight: '180px' }} />}>
               <DeckGallery />
             </Suspense>
+          </Motion.div>
         )}
       </section>
       
