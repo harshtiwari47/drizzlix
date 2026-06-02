@@ -172,7 +172,7 @@ const HistoryModal = memo(function HistoryModal({ isOpen, rows, onClose, onClear
 // Main Pomodoro Component
 // ---------------------------------------------------------------------
 export default function Pomodoro() {
-  const { token, user } = useAuth();
+  const { token, user, logActivityAndXP } = useAuth();
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -187,6 +187,7 @@ export default function Pomodoro() {
   const stateRef = useRef(state);
   const cloudSyncDebounceTimerRef = useRef(null);
   const lastLocalVersionRef = useRef(0);
+  const historyLenRef = useRef(0);
 
   const safeDispatch = (action) => {
     dispatch(action);
@@ -226,6 +227,15 @@ export default function Pomodoro() {
 
       if (state.updatedAt === previousUpdatedAtRef.current) return;
       previousUpdatedAtRef.current = state.updatedAt;
+
+      // Reward XP for completed focus sessions
+      if (state.history.length > historyLenRef.current) {
+        const newRecord = state.history[state.history.length - 1];
+        if (newRecord.mode === SESSION_MODE.FOCUS && newRecord.status === SESSION_STATUS.COMPLETED) {
+          if (logActivityAndXP) logActivityAndXP(25, true);
+        }
+        historyLenRef.current = state.history.length;
+      }
 
       // Floating timeout ensures IDB writes don't get magically destroyed unmounting
       setTimeout(() => {

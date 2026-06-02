@@ -696,7 +696,7 @@ const TaskModal = ({ task, onClose, onSave, compact = false }) => {
 
 /* ── Main Page ────────────────────────────────────────────────────── */
 export default function TasksPage() {
-  const { token } = useAuth();
+  const { token, logActivityAndXP } = useAuth();
   const viewportWidth = useViewportWidth();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1003,6 +1003,9 @@ export default function TasksPage() {
   const toggleTaskStatus = async (task) => {
     const nextStatus = task.status === 'done' ? 'todo' : 'done';
     saveTask({ ...task, status: nextStatus });
+    if (nextStatus === 'done' && logActivityAndXP) {
+      logActivityAndXP(15, true); // 15 XP for task completion
+    }
   };
 
   const deleteTask = async (id) => {

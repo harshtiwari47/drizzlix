@@ -94,7 +94,7 @@ export function useDeck() {
 }
 
 export function DeckProvider({ children }) {
-  const { token, logout } = useAuth();
+  const { token, logout, logActivityAndXP } = useAuth();
   const [decks, setDecks] = useState([]);
   const [isDecksLoading, setIsDecksLoading] = useState(false);
 
@@ -461,9 +461,15 @@ export function DeckProvider({ children }) {
       };
 
       syncStatsToDB(nextStats);
+      
+      // Grant XP and log activity for Gamification
+      if (logActivityAndXP) {
+        logActivityAndXP(10, true);
+      }
+
       return nextStats;
     });
-  }, [syncStatsToDB]);
+  }, [syncStatsToDB, logActivityAndXP]);
 
   const getReviewUpdate = useCallback((card, quality) => {
     const qualityNum = quality === 'easy' ? 5 : quality === 'good' ? 4 : 2;

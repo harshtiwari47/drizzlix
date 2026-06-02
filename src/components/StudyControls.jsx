@@ -8,9 +8,9 @@ export default function StudyControls({ onNext }) {
     const handleKeyDown = (e) => {
       if (document.activeElement.tagName === 'INPUT') return;
       
-      if (e.key === '1') onNext('hard');
+      if (e.key === '1') onNext('easy');
       if (e.key === '2') onNext('good');
-      if (e.key === '3') onNext('easy');
+      if (e.key === '3') onNext('hard');
     };
     
     window.addEventListener('keydown', handleKeyDown);
@@ -19,12 +19,12 @@ export default function StudyControls({ onNext }) {
 
   return (
     <div className="study-controls">
-      <button className="control-btn btn-hard" onClick={() => onNext('hard')}>
+      <button className="control-btn btn-easy" onClick={() => onNext('easy')}>
         <div className="btn-glow" />
         <div className="btn-shimmer" />
-        <CloudLightning className="btn-icon" />
+        <Rocket className="btn-icon" />
         <div className="btn-label">
-          <span className="label-text">Hard</span>
+          <span className="label-text">Easy</span>
           <span className="shortcut-pill">1</span>
         </div>
       </button>
@@ -39,12 +39,12 @@ export default function StudyControls({ onNext }) {
         </div>
       </button>
 
-      <button className="control-btn btn-easy" onClick={() => onNext('easy')}>
+      <button className="control-btn btn-hard" onClick={() => onNext('hard')}>
         <div className="btn-glow" />
         <div className="btn-shimmer" />
-        <Rocket className="btn-icon" />
+        <CloudLightning className="btn-icon" />
         <div className="btn-label">
-          <span className="label-text">Easy</span>
+          <span className="label-text">Hard</span>
           <span className="shortcut-pill">3</span>
         </div>
       </button>

@@ -444,13 +444,13 @@ export default function StudySession() {
 
       if (e.code === 'Digit1') {
         e.preventDefault();
-        handleNext('hard');
+        handleNext('easy');
       } else if (e.code === 'Digit2') {
         e.preventDefault();
         handleNext('good');
       } else if (e.code === 'Digit3') {
         e.preventDefault();
-        handleNext('easy');
+        handleNext('hard');
       } else if (e.code === 'KeyH') {
         e.preventDefault();
         setShowHint(prev => !prev);
@@ -658,7 +658,7 @@ export default function StudySession() {
                     <div style={{ borderTop: '1px solid var(--card-hover)', paddingTop: '0.85rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
                       <p style={{ margin: 0, fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Keyboard Shortcuts</p>
                       <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)' }}><strong>Space:</strong> Flip card</p>
-                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)' }}><strong>1 / 2 / 3:</strong> Hard / Good / Easy</p>
+                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)' }}><strong>1 / 2 / 3:</strong> Easy / Good / Hard</p>
                       <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)' }}><strong>H:</strong> Toggle hint</p>
                       <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)' }}><strong>R:</strong> Read aloud toggle</p>
                     </div>

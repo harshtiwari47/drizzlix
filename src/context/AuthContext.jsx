@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -29,6 +29,50 @@ function readStoredUser() {
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => readStoredToken());
   const [user, setUser] = useState(() => readStoredUser());
+  const [stats, setStats] = useState(null);
+
+  const fetchStats = useCallback(async (currentToken) => {
+    if (!currentToken) return;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/stats`, {
+        headers: { Authorization: `Bearer ${currentToken}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setStats(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch stats:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      fetchStats(token);
+    } else {
+      setStats(null);
+    }
+  }, [token, fetchStats]);
+
+  const logActivityAndXP = useCallback(async (xpGain = 0, logActivity = true) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/stats`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ xpGain, logActivity })
+      });
+      if (res.ok) {
+        const updatedStats = await res.json();
+        setStats(updatedStats);
+      }
+    } catch (err) {
+      console.error('Failed to log activity/XP:', err);
+    }
+  }, [token]);
 
   const login = useCallback((jwtData, userData) => {
     setToken(jwtData);
@@ -52,7 +96,14 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const authValue = useMemo(() => ({ token, user, login, logout }), [token, user, login, logout]);
+  const authValue = useMemo(() => ({
+    token, 
+    user, 
+    stats,
+    login, 
+    logout,
+    logActivityAndXP
+  }), [token, user, stats, login, logout, logActivityAndXP]);
 
   return (
     <AuthContext.Provider value={authValue}>

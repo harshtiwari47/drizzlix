@@ -7,6 +7,15 @@ const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const webpush = require('web-push');
+
+if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(
+    process.env.VAPID_SUBJECT || 'mailto:admin@drizzlix.com',
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+}
 
 const User = require('./models/User');
 const Deck = require('./models/Deck');
@@ -508,18 +517,98 @@ app.post('/api/stats', authenticate, async (req, res) => {
 
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ msg: 'User not found.' });
-    const allowedKeys = ['totalStudyTime', 'cardsReviewed', 'streakDays', 'lastStudyDate', 'xp'];
+    
+    const allowedKeys = [
+      'version', 'totals', 'streak', 'daily', 'decks', 'cards', 
+      'totalStudyTime', 'cardsReviewed', 'streakDays', 'lastStudyDate', 'xp', 'petName'
+    ];
     const sanitizedStats = {};
     for (const k of allowedKeys) {
       if (req.body[k] !== undefined) sanitizedStats[k] = req.body[k];
     }
-    user.stats = { ...user.stats, ...sanitizedStats };
+    
+    const currentStats = user.stats || {};
+    
+    // Handle specific XP accumulation
+    if (req.body.xpGain) {
+      sanitizedStats.xp = (currentStats.xp || 0) + Number(req.body.xpGain);
+    }
+    
+    // Handle daily streak & heatmap activity log
+    if (req.body.logActivity) {
+      const todayStr = new Date().toISOString().split('T')[0];
+      
+      let log = Array.isArray(currentStats.activityLog) ? [...currentStats.activityLog] : [];
+      if (!log.includes(todayStr)) {
+        log.push(todayStr);
+        if (log.length > 365) log.shift();
+      }
+      sanitizedStats.activityLog = log;
+      
+      if (currentStats.lastStudyDate !== todayStr) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        
+        if (currentStats.lastStudyDate === yesterdayStr) {
+          sanitizedStats.streakDays = (currentStats.streakDays || 0) + 1;
+        } else {
+          sanitizedStats.streakDays = 1;
+        }
+        sanitizedStats.lastStudyDate = todayStr;
+      }
+    }
+
+    user.stats = { ...currentStats, ...sanitizedStats };
     user.markModified('stats');
     await user.save();
     res.json(user.stats);
   } catch (err) {
     console.error('API /stats POST error:', err);
     res.status(500).json({ msg: 'Database Injection Error' });
+  }
+});
+
+// Route: Subscribe to Web Push
+app.post('/api/push/subscribe', authenticate, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+    if (!req.body || !req.body.endpoint) {
+      return res.status(400).json({ msg: 'Invalid push subscription object' });
+    }
+    user.pushSubscription = req.body;
+    await user.save();
+    res.json({ msg: 'Subscription saved' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Failed to save subscription' });
+  }
+});
+
+// Route: Unsubscribe from Web Push
+app.post('/api/push/unsubscribe', authenticate, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+    user.pushSubscription = null;
+    await user.save();
+    res.json({ msg: 'Subscription removed' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Failed to remove subscription' });
+  }
+});
+
+// Route: Send Reminders (Can be called by cron)
+app.post('/api/push/send-due-reminders', async (req, res) => {
+  try {
+    if (req.headers['authorization'] !== `Bearer ${process.env.JWT_SECRET}`) {
+      return res.status(401).json({ msg: 'Unauthorized cron request' });
+    }
+    // We would fetch all users with pushSubscription and due cards, but for scale we should do batches.
+    // For now this serves as the hook point.
+    res.json({ msg: 'Reminder job queued' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Failed to queue reminders' });
   }
 });
 

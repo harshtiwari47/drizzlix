@@ -12,7 +12,9 @@ const userSchema = new mongoose.Schema({
   // Flexible object for evolving spaced-repetition analytics schema (v2+).
   stats: { type: Object, default: {} },
   // Persisted Pomodoro state backup for authenticated users.
-  pomodoroState: { type: Object, default: null }
+  pomodoroState: { type: Object, default: null },
+  // Web Push API Subscription for spaced repetition reminders
+  pushSubscription: { type: Object, default: null }
 }, { timestamps: true });
 
 userSchema.index({ name: 1 });
